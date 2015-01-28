@@ -1,0 +1,44 @@
+.progress-bar .track {
+    -fx-background-color: #d9dee1;
+    -fx-background-radius: .3em;
+}
+
+.progress-bar .bar {
+    -fx-background-color: #95d946;
+    -fx-background-radius: .3em;
+    -fx-background-insets: 1 1 2 1;
+    -fx-padding: 0.20em;
+}
+
+.popover > .border {
+    -fx-fill: #4d5052 !important;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #4d5052;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #4d5052;
+    -fx-border-color: #393939;
+}
+
+.tab:selected .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: #f92672;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #393939;
+    -fx-focus-color: transparent;
+}
+
+.list-cell {
+    -fx-background-color: #3b3b3b;
+}
+
+.list-cell:even {
+    -fx-background-color: #393939;
+}

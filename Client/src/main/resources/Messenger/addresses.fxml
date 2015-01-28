@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="306.0" prefWidth="450.0" style="-fx-background-color: #4d5052;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Messenger.AddressWindowController">
+   <children>
+      <StackPane fx:id="uiStack" prefHeight="306.0" prefWidth="450.0">
+         <children>
+            <TabPane fx:id="tabPane" prefHeight="307.0" prefWidth="444.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="            My Addresses               ">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <ListView fx:id="addressList" prefHeight="273.0" prefWidth="450.0" style="-fx-background-color: #393939;" />
+                              <Button fx:id="btnAddAddress" layoutX="375.0" layoutY="213.0" mnemonicParsing="false" onAction="#newAddress" onMousePressed="#addButtonPress" onMouseReleased="#addButtonRelease" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                                 <graphic>
+                                    <ImageView fitHeight="56.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@add.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab closable="false" text="                Contacts                ">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <ListView fx:id="contactList" prefHeight="273.0" prefWidth="450.0" style="-fx-background-color: #393939;" />
+                              <Button fx:id="btnAddContact" layoutX="375.0" layoutY="213.0" mnemonicParsing="false" onAction="#newContact" onMousePressed="#addButtonPress" onMouseReleased="#addButtonRelease" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                                 <graphic>
+                                    <ImageView fitHeight="56.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@add.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+            <Pane fx:id="addAddressPane" layoutX="-15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="239.0" prefWidth="338.0" style="-fx-background-color: white;" visible="false">
+               <children>
+                  <Label layoutX="38.0" layoutY="54.0" prefHeight="37.0" prefWidth="273.0" text="Note: the name you enter here will be visible to the recipients of your messages" wrapText="true">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </Label>
+                  <TextField layoutX="38.0" layoutY="30.0" prefHeight="25.0" prefWidth="261.0" />
+                  <Button layoutX="62.0" layoutY="203.0" mnemonicParsing="false" text="Cancel" />
+                  <Button layoutX="202.0" layoutY="206.0" mnemonicParsing="false" text="Done" />
+                  <Slider blockIncrement="1.0" layoutX="41.0" layoutY="119.0" majorTickUnit="6.0" max="32.0" minorTickCount="6" prefHeight="15.0" prefWidth="261.0" showTickLabels="true" showTickMarks="true" />
+                  <Label layoutX="36.0" layoutY="94.0" prefHeight="15.0" prefWidth="92.0" text="Prefix Length:" />
+                  <Label layoutX="38.0" layoutY="156.0" prefHeight="43.0" prefWidth="273.0" text="Each additional bit in your prefix reduces your bandwidth useage by 50% with also reducing your anonymity set by 50%." wrapText="true">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="38.0" layoutY="12.0" text="Enter a name:" />
+               </children>
+            </Pane>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>

@@ -1,0 +1,2 @@
+twisted>=14.0
+rpcudp>=1.0

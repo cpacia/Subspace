@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="990.0" style="-fx-background-color: #4d5052;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Messenger.Controller">
+   <children>
+      <ListView fx:id="chatList" layoutX="-1.0" layoutY="94.0" prefHeight="507.0" prefWidth="252.0" style="-fx-background-color: #393939;" />
+      <Button fx:id="btnChat" layoutY="6.0" mnemonicParsing="false" onAction="#chatClick" prefHeight="27.0" prefWidth="51.0" style="-fx-background-color: transparent; -fx-background-radius: 0;">
+         <graphic>
+            <ImageView fitHeight="50.0" fitWidth="47.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@chat-2-icon2.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
+      <Button fx:id="btnEmail" layoutX="62.0" layoutY="8.0" mnemonicParsing="false" onAction="#emailClick" prefHeight="25.0" prefWidth="43.0" style="-fx-background-color: transparent; -fx-background-radius: 0;">
+         <graphic>
+            <ImageView fitHeight="42.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@email-icon.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
+      <Button fx:id="btnChannel" layoutX="128.0" layoutY="9.0" mnemonicParsing="false" onAction="#channelClick" prefHeight="25.0" prefWidth="0.0" style="-fx-background-color: transparent; -fx-background-radius: 0;">
+         <graphic>
+            <ImageView fitHeight="43.0" fitWidth="44.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@people-icon.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
+      <Button fx:id="btnAddress" layoutX="187.0" layoutY="4.0" mnemonicParsing="false" onAction="#addressCLick" onMousePressed="#setAddressTab2" onMouseReleased="#setAddressTab1" prefHeight="25.0" prefWidth="0.0" style="-fx-background-color: transparent; -fx-background-radius: 0;">
+         <graphic>
+            <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@contacts.png" />
+               </image>
+            </ImageView>
+         </graphic></Button>
+      <ProgressBar fx:id="torProgressBar" layoutX="10.0" layoutY="608.0" maxHeight="20.0" prefHeight="16.0" prefWidth="232.0" progress="0.0" />
+      <Label fx:id="torLabel" layoutX="13.0" layoutY="638.0" style="-fx-text-fill: #dc78dc;" text="Tor Ready!" visible="true">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+      <ImageView fx:id="torIcon" fitHeight="25.0" fitWidth="25.0" layoutX="222.0" layoutY="634.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@Tor_color.png" />
+         </image>
+      </ImageView>
+      <Label fx:id="lblNewMessage" layoutX="-1.0" layoutY="65.0" prefHeight="29.0" prefWidth="252.0" style="-fx-text-fill: #14d0a0; -fx-padding: 2; -fx-cursor: hand; -fx-background-color: #393939" text="       New Chat Message [+]">
+         <font>
+            <Font size="16.0" />
+         </font></Label>
+   </children>
+</AnchorPane>
