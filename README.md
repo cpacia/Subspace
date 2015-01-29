@@ -14,7 +14,7 @@ Sending transactions directly to the recipient over a different channel removes 
 
 #####Users should be able to attach a private message for the recipient to the transaction.
 
-Currently, short memos can be attached to transactions, but they are publically visible for everyone to see. By using an alternative channel we use can use the ‘memo’ field in the BIP70 payment message to attach private messages to transactions.
+Currently, short memos can be attached to transactions, but they are publicly visible for everyone to see. By using an alternative channel we use can use the ‘memo’ field in the BIP70 payment message to attach private messages to transactions.
 
 #####An alternate communication channel would enable person-to-person payment requests.
 
@@ -88,7 +88,7 @@ In this protocol anyone will be able to run a server. Obviously, clients will ne
 
 There would be nothing stopping wallets themselves from being a node in the DHT, but doing so would require them to host their own messages, accept incoming connections, remain permanently online, and likely operate as a hidden service to remain private. Hence, why a network of servers is more attractive.
 
-***In order for a server to serve a message to a client as soon as it’s inserted, the server needs to be made aware of DHT insertions by other servers. The topology of the Kademlia overlay makes for effient broadcast messaging. Nodes can relay messages to one node per sub-tree who in turn relay it to their own sub-trees. Likely more than one relay node per sub-tree would need to recieve the message to insulate from network errors. 
+***In order for a server to serve a message to a client as soon as it’s inserted, the server needs to be made aware of DHT insertions by other servers. The topology of the Kademlia overlay makes for efficient broadcast messaging. Nodes can relay messages to one node per sub-tree who in turn relay it to their own sub-trees. Likely more than one relay node per sub-tree would need to receive the message to insulate from network errors. 
 
 #####Encryption
 
@@ -106,7 +106,7 @@ For example, if a length of zero is used, the sender would use a random number a
 
 If a length of one is used, the sender would set the first bit in the message tag to the same bit (zero or one) of the stealth address prefix. The remaining bits in the tag would be random.
 
-The recipient would give the server his prefix and the server would return all the messages with tags starting with the same bit. Like before, the user would attempt to decrypt each message message. This would effectively reduce the amount of messages the user needs to sort through by 50% (while also decreasing the anonymity set by 50%).
+The recipient would give the server his prefix and the server would return all the messages with tags starting with the same bit. Like before, the user would attempt to decrypt each message. This would effectively reduce the amount of messages the user needs to sort through by 50% (while also decreasing the anonymity set by 50%).
 
 Each additional bit of length reduces the number of returned messages (and anonymity set) by another 50%. A prefix of 4 bits, for example, would return about 6.25% of all messages in the network.
 
