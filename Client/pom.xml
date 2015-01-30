@@ -68,6 +68,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.github.donpark.identicon</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20080701</version>
+        </dependency>
+        <dependency>
             <groupId>org.bitcoinj</groupId>
             <artifactId>bitcoinj-core</artifactId>
             <version>0.12</version>

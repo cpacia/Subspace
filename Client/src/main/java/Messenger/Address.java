@@ -8,6 +8,7 @@ import org.bouncycastle.util.encoders.Hex;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.SecureRandom;
 
 /**
@@ -55,7 +56,7 @@ public class Address {
             this.publicKey[i] = pubkeyBytes[i];
         }
         for (int i=0; i<4; i++){
-            this.prefix[i] = publicKey[i];
+            this.prefix[i] = publicKey[i+1];
         }
         byte[] addressBytes = outputStream.toByteArray();
         byte[] fullChecksum = Utils.doubleDigest(addressBytes);
@@ -75,7 +76,7 @@ public class Address {
         this.version = this.versionedchecksummed[0] & 0xFF;
         this.prefixLength = this.versionedchecksummed[1] & 0xFF;
         for (int i=0; i<4; i++){
-            this.prefix[i] = this.versionedchecksummed[i+2];
+            this.prefix[i] = this.versionedchecksummed[i+3];
         }
         for (int i=0; i<33; i++){
             this.publicKey[i] = this.versionedchecksummed[i+2];
@@ -96,6 +97,26 @@ public class Address {
 
     public ECKey getECKey(){
         return key;
+    }
+
+    public int getPrefixLength(){
+        return prefixLength;
+    }
+
+    public byte[] getFullPrefix(){
+        return prefix;
+    }
+
+    public String getPrefix(){
+        if (prefixLength==0){return "null";}
+        else {
+            String binary = "";
+            for (byte b : prefix){
+                String s = String.format("%8s", Integer.toBinaryString(b & 0xFF)).replace(' ', '0');
+                binary = binary + s;
+            }
+            return binary.substring(0, prefixLength);
+        }
     }
 
 }

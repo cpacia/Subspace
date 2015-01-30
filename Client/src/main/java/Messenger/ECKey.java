@@ -54,20 +54,6 @@ public class ECKey {
         ((ECPointEncoder)this.pubKey).setPointFormat("COMPRESSED");
     }
 
-    public ECKey(String curve){
-        ECNamedCurveParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec(curve);
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        KeyPairGenerator g = null;
-        try {
-            g = KeyPairGenerator.getInstance("EC", "BC");
-            g.initialize(ecSpec, secureRandom);
-        } catch (NoSuchProviderException | InvalidAlgorithmParameterException | NoSuchAlgorithmException e) {e.printStackTrace();}
-        KeyPair KeyPair = g.generateKeyPair();
-        this.pubKey = (ECPublicKey) KeyPair.getPublic();
-        this.privKey = (ECPrivateKey) KeyPair.getPrivate();
-        ((ECPointEncoder)this.pubKey).setPointFormat("COMPRESSED");
-    }
-
     public ECKey(byte[] privKeyBytes, byte[] pubKeyBytes){
         this.pubKey = getPubKeyFromBytes(pubKeyBytes);
         this.privKey = getPrivKeyFromBytes(privKeyBytes);
@@ -79,23 +65,6 @@ public class ECKey {
     }
 
     public ECKey(ECPrivateKey privateKey){
-        /*MessageDigest m = null;
-        try{m=MessageDigest.getInstance("MD5");}
-        catch (NoSuchAlgorithmException e){e.printStackTrace();}
-        m.update(privateKey.getEncoded(), 0, privateKey.getEncoded().length);
-        BigInteger bi = new BigInteger(1,m.digest());
-        ECPoint point = CURVE.getG().multiply(bi);
-        ECPoint pub = CURVE.getCurve().decodePoint(point.getEncoded(true));
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-        try {
-            outputStream.write(Hex.decode("3036301006072a8648ce3d020106052b8104000a032200"));
-            outputStream.write(pub.getEncoded());
-        } catch (IOException e){e.printStackTrace();}
-        byte[] pubKeyBytes = outputStream.toByteArray();
-        ECNamedCurveParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec("secp256k1");
-        KeyFactory fact = null;
-        try {fact = KeyFactory.getInstance("EC", "BC");}
-        catch (NoSuchAlgorithmException | NoSuchProviderException e){e.printStackTrace();}*/
         X9ECParameters ecp = SECNamedCurves.getByName("secp256k1");
         ECDomainParameters domainParams = new ECDomainParameters(ecp.getCurve(),
                 ecp.getG(), ecp.getN(), ecp.getH(),
@@ -146,7 +115,6 @@ public class ECKey {
 
     public static ECPrivateKey getPrivKeyFromBytes(byte[] privKeyBytes){
         ECNamedCurveParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec("secp256k1");
-        MessageDigest m = null;
         KeyFactory fact = null;
         try{fact = KeyFactory.getInstance("EC", "BC");}
         catch (NoSuchAlgorithmException | NoSuchProviderException e){e.printStackTrace();}

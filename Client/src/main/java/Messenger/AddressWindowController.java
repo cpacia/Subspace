@@ -1,24 +1,38 @@
 package Messenger;
 
 import Messenger.Utils.easing.GuiUtils;
+import Messenger.Utils.easing.Identicon;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.*;
 import javafx.util.Callback;
+import org.bouncycastle.util.encoders.Hex;
+import org.controlsfx.glyphfont.FontAwesome;
+import org.controlsfx.glyphfont.GlyphFont;
+import org.controlsfx.glyphfont.GlyphFontRegistry;
 
 import javax.annotation.Nullable;
+import java.awt.*;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 
@@ -42,174 +56,142 @@ public class AddressWindowController {
     TabPane tabPane;
     @FXML
     Pane addAddressPane;
-
+    @FXML
+    Button btnAddressDone;
+    @FXML
+    Button btnAddressCancel;
+    @FXML
+    ChoiceBox cbNode;
+    @FXML
+    Slider prefixSlider;
     @FXML
     StackPane uiStack;
+    @FXML
+    TextField txtName;
+    ObservableList<HBox> data;
+    HBox init = new HBox();
 
 
     public void initialize() {
-        ObservableList<String> data = FXCollections.observableArrayList();
-        data.add("init");
+        data = FXCollections.observableArrayList();
+        data.add(init);
         addressList.setItems(data);
-        addressList.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
-                                       @Override
-                                       public ListCell<String> call(ListView<String> list) {
-                                           return new AddressListCell();
-                                       }
-                                   }
-        );
-        contactList.setItems(data);
-        contactList.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
-                                       @Override
-                                       public ListCell<String> call(ListView<String> list) {
-                                           return new ContactListCell();
-                                       }
-                                   }
-        );
 
-    }
-
-    static class AddressListCell extends ListCell<String> {
-        @Override
-        public void updateItem(String item, boolean empty) {
-            super.updateItem(item, empty);
-            Pane pane = new Pane();
-            pane.setPrefHeight(30);
-            if (item!=null && item.equals("init")){
-
-            }
-            else {setGraphic(pane);}
-        }
-    }
-
-    static class ContactListCell extends ListCell<String> {
-        @Override
-        public void updateItem(String item, boolean empty) {
-            super.updateItem(item, empty);
-            Pane pane = new Pane();
-            pane.setPrefHeight(30);
-            if (item!=null && item.equals("init")){
-
-            }
-            else {setGraphic(pane);}
-        }
     }
 
     @FXML
-    void addButtonPress(MouseEvent e){
-        btnAddAddress.setLayoutY(216);
-        btnAddContact.setLayoutY(216);
-        btnAddAddress.setLayoutX(376);
-        btnAddContact.setLayoutX(376);
+    void addButtonPress(MouseEvent e) {
+        btnAddAddress.setLayoutY(270);
+        btnAddContact.setLayoutY(270);
+        btnAddAddress.setLayoutX(484);
+        btnAddContact.setLayoutX(484);
     }
 
     @FXML
-    void addButtonRelease(MouseEvent e){
-        btnAddAddress.setLayoutY(213);
-        btnAddContact.setLayoutY(213);
-        btnAddAddress.setLayoutX(375);
-        btnAddContact.setLayoutX(375);
+    void addButtonRelease(MouseEvent e) {
+        btnAddAddress.setLayoutY(268);
+        btnAddContact.setLayoutY(268);
+        btnAddAddress.setLayoutX(483);
+        btnAddContact.setLayoutX(483);
     }
 
     @FXML
-    void newAddress(ActionEvent e){
+    void newAddress(ActionEvent e) {
         blurOut(tabPane);
         addAddressPane.setVisible(true);
         fadeIn(addAddressPane);
+        cbNode.setItems(FXCollections.observableArrayList(
+                        "bitcoinauthenticator.org", "localhost")
+        );
+        cbNode.getSelectionModel().selectFirst();
+
     }
 
     @FXML
-    void newContact(ActionEvent e){
-
+    void newContact(ActionEvent e) {
     }
 
-    private Node stopClickPane = new Pane();
+    @FXML
+    void addressCancelClicked(ActionEvent e) {
+        fadeOut(addAddressPane);
+        addAddressPane.setVisible(false);
+        blurIn(tabPane);
+    }
 
-    public class OverlayUI<T> {
-        public Node ui;
-        public T controller;
-
-        public OverlayUI(Node ui, T controller) {
-            this.ui = ui;
-            this.controller = controller;
+    @FXML
+    void addressDoneClicked(ActionEvent e){
+        Address addr = null;
+        try{addr = new Address((int) prefixSlider.getValue());}
+        catch (InvalidPrefixLengthException e2){e2.printStackTrace();}
+        data.remove(init);
+        Label lblAddress = new Label(addr.toString());
+        lblAddress.setStyle("-fx-text-fill: #dc78dc;");
+        ImageView imView = null;
+        if ( (data.size()+1) % 2 == 0 ) {
+            try{imView = Identicon.generate(addr.toString(),Color.decode("#3b3b3b"));}
+            catch (Exception e1){e1.printStackTrace();}
+        } else {
+            try{imView = Identicon.generate(addr.toString(), Color.decode("#393939"));}
+            catch (Exception e1){e1.printStackTrace();}
         }
-
-        public void show() {
-            checkGuiThread();
-            if (currentOverlay == null) {
-                uiStack.getChildren().add(stopClickPane);
-                uiStack.getChildren().add(ui);
-                blurOut(anchorPane);
-                //darken(mainUI);
-                fadeIn(ui);
-                //zoomIn(ui);
-            } else {
-                // Do a quick transition between the current overlay and the next.
-                // Bug here: we don't pay attention to changes in outsideClickDismisses.
-                explodeOut(currentOverlay.ui);
-                fadeOutAndRemove(uiStack, currentOverlay.ui);
-                uiStack.getChildren().add(ui);
-                ui.setOpacity(0.0);
-                fadeIn(ui, 100);
-                zoomIn(ui, 100);
+        HBox hBox = new HBox();
+        imView.setFitWidth(25);
+        imView.setFitHeight(25);
+        GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
+        Button btnCopy = new Button("", fontAwesome.create("COPY").color(javafx.scene.paint.Color.CYAN));
+        Tooltip.install(btnCopy, new Tooltip("Copy address to clipboard"));
+        btnCopy.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;");
+        btnCopy.setPrefSize(10, 10);
+        btnCopy.setOnMousePressed(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent t) {
+                hBox.setMargin(btnCopy, new Insets(-1, 2, 0, 10));
             }
-            currentOverlay = this;
-        }
-
-        public void outsideClickDismisses() {
-            stopClickPane.setOnMouseClicked((ev) -> done());
-        }
-
-        public void done() {
-            checkGuiThread();
-            if (ui == null) return;  // In the middle of being dismissed and got an extra click.
-            explodeOut(ui);
-            fadeOutAndRemove(uiStack, ui, stopClickPane);
-            blurIn(anchorPane);
-            //undark(mainUI);
-            this.ui = null;
-            this.controller = null;
-            currentOverlay = null;
-        }
-    }
-
-    @Nullable
-    private OverlayUI currentOverlay;
-
-    public <T> OverlayUI<T> overlayUI(Node node, T controller) {
-        checkGuiThread();
-        OverlayUI<T> pair = new OverlayUI<T>(node, controller);
-        // Auto-magically set the overlayUI member, if it's there.
-        try {
-            controller.getClass().getField("overlayUI").set(controller, pair);
-        } catch (IllegalAccessException | NoSuchFieldException ignored) {
-        }
-        pair.show();
-        return pair;
-    }
-
-    /** Loads the FXML file with the given name, blurs out the main UI and puts this one on top. */
-    public <T> OverlayUI<T> overlayUI(String name) {
-        try {
-            checkGuiThread();
-            // Load the UI from disk.
-            URL location = Main.class.getResource(name);
-            FXMLLoader loader = new FXMLLoader(location);
-            Pane ui = loader.load();
-            T controller = loader.getController();
-            OverlayUI<T> pair = new OverlayUI<T>(ui, controller);
-            // Auto-magically set the overlayUI member, if it's there.
-            try {
-                if (controller != null)
-                    controller.getClass().getField("overlayUI").set(controller, pair);
-            } catch (IllegalAccessException | NoSuchFieldException ignored) {
-                ignored.printStackTrace();
+        });
+        btnCopy.setOnMouseReleased(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent t) {
+                hBox.setMargin(btnCopy, new Insets(-2, 0, 0, 10));
             }
-            pair.show();
-            return pair;
-        } catch (IOException e) {
-            throw new RuntimeException(e);  // Can't happen.
-        }
+        });
+        btnCopy.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                final Clipboard clipboard = Clipboard.getSystemClipboard();
+                final ClipboardContent content = new ClipboardContent();
+                content.putString(lblAddress.getText());
+                clipboard.setContent(content);
+            }
+        });
+
+        hBox.getChildren().addAll(imView, lblAddress, btnCopy);
+        hBox.setMargin(lblAddress, new Insets(4, 0, 0, 10));
+        hBox.setMargin(btnCopy, new Insets(-2, 0, 0, 10));
+        lblAddress.setPrefWidth(485);
+        data.add(hBox);
+        fadeOut(addAddressPane);
+        addAddressPane.setVisible(false);
+        blurIn(tabPane);
+        txtName.setText("");
+    }
+
+    @FXML
+    void doneButtonPressed(MouseEvent e){
+        btnAddressDone.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
+
+    @FXML
+    void doneButtonReleased(MouseEvent e){
+        btnAddressDone.setStyle("-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
+
+    @FXML
+    void cancelButtonPressed(MouseEvent e){
+        btnAddressCancel.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
+
+    @FXML
+    void cancelButtonReleased(MouseEvent e){
+        btnAddressCancel.setStyle("-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
     }
 
 }

@@ -10,6 +10,21 @@
     -fx-padding: 0.20em;
 }
 
+.choice-box .label {
+    -fx-text-fill: white;
+}
+.choice-box .context-menu {
+    -fx-background-color: #4d5052;
+}
+
+.slider .track {
+    -fx-background-color: #4d5052;
+}
+
+.text-field {
+    -fx-focus-color: transparent;
+}
+
 .popover > .border {
     -fx-fill: #4d5052 !important;
 }

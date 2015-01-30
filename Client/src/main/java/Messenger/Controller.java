@@ -23,6 +23,8 @@ import javafx.animation.ParallelTransition;
 import Messenger.Utils.easing.EasingMode;
 import Messenger.Utils.easing.ElasticInterpolator;
 import org.controlsfx.control.PopOver;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
@@ -158,7 +160,7 @@ public class Controller {
 
             @Override
             public void run() {
-                if (i < 30) {
+                if (i < 50) {
                     Stage stage = Main.getStage();
                     stage.setWidth(stage.getWidth() + 15);
                 } else {
@@ -256,7 +258,7 @@ public class Controller {
             stage.setTitle("Addresses");
             stage.setX(700);
             stage.setY(200);
-            stage.setScene(new Scene(addressUI, 438, 306));
+            stage.setScene(new Scene(addressUI, 576, 386));
             stage.setResizable(false);
             String file = Main.class.getResource("gui.css").toString();
             stage.getScene().getStylesheets().add(file);
