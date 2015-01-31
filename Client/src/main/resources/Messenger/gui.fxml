@@ -51,7 +51,7 @@
             <Image url="@Tor_color.png" />
          </image>
       </ImageView>
-      <Label fx:id="lblNewMessage" layoutX="-1.0" layoutY="65.0" prefHeight="29.0" prefWidth="252.0" style="-fx-text-fill: #14d0a0; -fx-padding: 2; -fx-cursor: hand; -fx-background-color: #393939" text="       New Chat Message [+]">
+      <Label fx:id="lblNewMessage" layoutX="0.0" layoutY="65.0" prefHeight="29.0" prefWidth="252.0" style="-fx-text-fill: #14d0a0; -fx-padding: 2; -fx-cursor: hand; -fx-background-color: #393939" text="       New Chat Message [+]">
          <font>
             <Font size="16.0" />
          </font></Label>

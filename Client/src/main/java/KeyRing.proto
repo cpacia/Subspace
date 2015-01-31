@@ -1,0 +1,12 @@
+message SavedKeys {
+	repeated Key key                    = 1;
+}
+
+
+message Key {
+	required bytes privateKey           = 1;
+	optional bytes publicKey            = 2;
+	required string name                = 3;
+	required int32 prefixLength         = 4;
+	optional string address             = 5;
+}

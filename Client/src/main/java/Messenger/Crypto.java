@@ -26,6 +26,7 @@ public class Crypto {
 
         // Generate static key pair
         Address addr = null;
+        Address addr1 = null;
         Address.version = 0;
         try {
             addr = new Address(0);
@@ -35,11 +36,14 @@ public class Crypto {
         System.out.println(addr.toString());
         System.out.println(Hex.toHexString(addr.getECKey().getPrivKeyBtyes()));
         System.out.println(Hex.toHexString(addr.getECKey().getPubKeyBytes()));
+        try {
+            addr1 = new Address(addr.toString());
+        } catch (AddressFormatException e) {
+            e.printStackTrace();
+        }
 
-        ECKey key2 = ECKey.fromPrivOnly(addr.getECKey().getPrivKeyBtyes());
 
-        System.out.println(Hex.toHexString(key2.getPrivKeyBtyes()));
-        System.out.println(Hex.toHexString(key2.getPubKeyBytes()));
+        System.out.println(addr1.toString());
 
 
 

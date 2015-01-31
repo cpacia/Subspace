@@ -114,6 +114,7 @@ public class ECKey {
     }
 
     public static ECPrivateKey getPrivKeyFromBytes(byte[] privKeyBytes){
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         ECNamedCurveParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec("secp256k1");
         KeyFactory fact = null;
         try{fact = KeyFactory.getInstance("EC", "BC");}
@@ -125,6 +126,7 @@ public class ECKey {
     }
 
     public static ECPublicKey getPubKeyFromBytes(byte[] pubKeyBytes){
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         if (pubKeyBytes.length==33){
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
             try {

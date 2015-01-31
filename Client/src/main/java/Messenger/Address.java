@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.Arrays;
 
 /**
  * Created by chris on 1/26/15.
@@ -117,6 +118,26 @@ public class Address {
             }
             return binary.substring(0, prefixLength);
         }
+    }
+
+    public static boolean validateAddress(String addr){
+        byte[] versionedchecksummed;
+        try{versionedchecksummed = Base58.decode(addr);}
+        catch (AddressFormatException e){return false;}
+        if (versionedchecksummed.length != 39) return false;
+        byte[] lenAndPubKey = new byte[34];
+        for (int i=0; i<34; i++){
+            lenAndPubKey[i] = versionedchecksummed[i+1];
+        }
+        byte[] checksum = new byte[4];
+        for (int i=0; i<4; i++) {
+            checksum[i] = versionedchecksummed[i + 35];
+        }
+        byte[] fullChecksum = Utils.doubleDigest(lenAndPubKey);
+        byte[] check = new byte[4];
+        for (int i=0; i<4; i++){check[i] = fullChecksum[i];}
+        if (!Arrays.equals(checksum, check))return false;
+        return true;
     }
 
 }

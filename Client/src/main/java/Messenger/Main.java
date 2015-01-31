@@ -19,6 +19,7 @@ public class Main extends Application {
     static Controller controller;
     static TorClient torClient;
     private static Stage stg;
+    public static ApplicationParams params;
     @Override
     public void start(Stage primaryStage) throws Exception{
         URL location = getClass().getResource("gui.fxml");
@@ -39,7 +40,6 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        ApplicationParams params = null;
         try{params = new ApplicationParams(args);}
         catch (IOException e){e.printStackTrace();}
         torClient = new TorClient();

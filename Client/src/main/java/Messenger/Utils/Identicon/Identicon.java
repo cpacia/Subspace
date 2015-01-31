@@ -1,9 +1,5 @@
-package Messenger.Utils.easing;
+package Messenger.Utils.Identicon;
 
-import com.docuverse.identicon.IdenticonRenderer;
-import com.docuverse.identicon.NineBlockIdenticonRenderer2;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -14,7 +10,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.security.MessageDigest;
 
 /**

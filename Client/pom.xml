@@ -68,9 +68,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.donpark.identicon</groupId>
-            <artifactId>core</artifactId>
-            <version>1.0</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.6</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>

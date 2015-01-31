@@ -25,18 +25,23 @@ package Messenger;
 // $HeadURL: $
 // $Id: $
 
+        import org.apache.http.HttpEntity;
+        import org.apache.http.HttpException;
+        import org.apache.http.HttpResponse;
+        import org.apache.http.entity.ByteArrayEntity;
+        import org.apache.http.util.EntityUtils;
         import org.json.JSONException;
         import org.json.JSONObject;
 
-        import javax.net.ssl.SSLSession;
         import javax.net.ssl.SSLSocket;
         import javax.net.ssl.SSLSocketFactory;
         import java.io.*;
-        import java.math.BigInteger;
         import java.net.InetAddress;
         import java.net.Socket;
-        import java.security.cert.Certificate;
-        import java.security.cert.X509Certificate;
+        import java.nio.charset.Charset;
+        import java.nio.file.Files;
+        import java.nio.file.Path;
+        import java.nio.file.Paths;
 
 /**
  * The Onion Router Java Library routines<br />
@@ -176,7 +181,7 @@ public class TorLib {
      * @throws IOException
      * @throws JSONException
      */
-    static JSONObject getJSON(String hostname, String resource) throws IOException, JSONException{
+    static JSONObject getJSON(String hostname, String resource) throws IOException, JSONException, HttpException{
 
         //Create a SSL socket using Tor
         Socket socket = TorSocket(hostname, 443);
@@ -195,15 +200,52 @@ public class TorLib {
 
         //Listen for a response on the inputstream
         BufferedReader br = new BufferedReader(new InputStreamReader(sslSocket.getInputStream()));
-        String ret = null;
         String t;
+        boolean start = false;
+        String output = "";
         while ((t = br.readLine()) != null) {
-            ret = ret + t;
+            if (t.equals("")){start=true;}
+            if (start){output=output+t;}
         }
         br.close();
         pw.close();
         sslSocket.close();
-        return new JSONObject(ret.substring(ret.indexOf("{")));
+        System.out.println(output);
+        return new JSONObject(output);
+    }
+
+    static byte[] getImageBytes(String hostname, String resource) throws IOException, HttpException{
+
+        //Create a SSL socket using Tor
+        Socket socket = TorSocket(hostname, 443);
+        SSLSocketFactory sslSf = (SSLSocketFactory)SSLSocketFactory.getDefault();
+        SSLSocket sslSocket = (SSLSocket) sslSf.createSocket(socket, null,
+                socket.getPort(), false);
+        sslSocket.setUseClientMode(true);
+        sslSocket.startHandshake();
+
+        //Create the HTTP GET request and push it over the outputstream
+        PrintWriter pw = new PrintWriter( new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream())));
+        pw.println("GET /" + resource + " HTTP/1.1");
+        pw.println("Host: " + hostname);
+        pw.println("");
+        pw.flush();
+
+        BufferedReader br = new BufferedReader(new InputStreamReader(sslSocket.getInputStream()));
+        String t;
+        boolean start = false;
+        String output = null;
+        while ((t = br.readLine()) != null && !start) {
+            if (t.equals("")){break;}
+        }
+
+        Files.copy(sslSocket.getInputStream(), Paths.get(Main.params.getApplicationDataFolder() + "/test.jpg"));
+
+        br.close();
+        pw.close();
+        sslSocket.close();
+
+        return output.getBytes(Charset.forName("UTF-8"));
     }
 
 

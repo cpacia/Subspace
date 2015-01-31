@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,6 +15,7 @@ import javafx.scene.control.*;
 import javafx.animation.TranslateTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -50,6 +52,8 @@ public class Controller {
     Button btnChannel;
     @FXML
     Button btnAddress;
+    @FXML
+    Label lblNewMessage;
     PopOver pop;
 
     public void initialize() {
@@ -68,6 +72,32 @@ public class Controller {
         if(tor != null) {
             tor.addInitializationListener(listener);
         }
+        lblNewMessage.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Parent root;
+                try {
+                    URL location = getClass().getResource("chat.fxml");
+                    FXMLLoader loader = new FXMLLoader(location);
+                    AnchorPane addressUI = (AnchorPane) loader.load();
+                    Stage stage = new Stage();
+                    stage.setTitle("New chat message");
+                    stage.setX(700);
+                    stage.setY(200);
+                    stage.setScene(new Scene(addressUI, 642, 429));
+                    stage.setResizable(false);
+                    ChatWindowController controller = (ChatWindowController) loader.getController();
+                    controller.setStage(stage);
+                    String file = Main.class.getResource("gui.css").toString();
+                    stage.getScene().getStylesheets().add(file);
+                    stage.show();
+
+                } catch (IOException e2) {
+                    e2.printStackTrace();
+                }
+            }
+        });
+
     }
 
     static class ChatListCell extends ListCell<String> {
@@ -110,16 +140,18 @@ public class Controller {
             leave2.play();
         };
         new Thread(task).start();
-
-        Label lblPopOver = new Label("You don't yet have an address.\nClick here to create one.");
-        lblPopOver.setWrapText(true);
-        lblPopOver.setStyle("-fx-text-fill: #dc78dc; -fx-padding: 10; -fx-font-size: 16;");
-        pop = new PopOver(lblPopOver);
-        pop.setDetachable(false);
-        pop.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
-        pop.show(btnAddress);
-        pop.setAutoHide(true);
-        pop.setHideOnEscape(true);
+        FileWriter f = new FileWriter();
+        if (!f.hasKeys()) {
+            Label lblPopOver = new Label("You don't yet have an address.\nClick here to create one.");
+            lblPopOver.setWrapText(true);
+            lblPopOver.setStyle("-fx-text-fill: #dc78dc; -fx-padding: 10; -fx-font-size: 16;");
+            pop = new PopOver(lblPopOver);
+            pop.setDetachable(false);
+            pop.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
+            pop.show(btnAddress);
+            pop.setAutoHide(true);
+            pop.setHideOnEscape(true);
+        }
     }
 
     void setEmailTab1(){
@@ -248,7 +280,7 @@ public class Controller {
     }
 
     @FXML void addressCLick(ActionEvent e){
-        pop.hide();
+        if (pop != null){pop.hide();}
         Parent root;
         try {
             URL location = getClass().getResource("addresses.fxml");
@@ -258,7 +290,7 @@ public class Controller {
             stage.setTitle("Addresses");
             stage.setX(700);
             stage.setY(200);
-            stage.setScene(new Scene(addressUI, 576, 386));
+            stage.setScene(new Scene(addressUI, 582, 386));
             stage.setResizable(false);
             String file = Main.class.getResource("gui.css").toString();
             stage.getScene().getStylesheets().add(file);

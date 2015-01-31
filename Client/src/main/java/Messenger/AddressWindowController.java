@@ -1,41 +1,29 @@
 package Messenger;
 
-import Messenger.Utils.easing.GuiUtils;
-import Messenger.Utils.easing.Identicon;
+import Messenger.Utils.Identicon.Identicon;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
-import javafx.scene.paint.*;
-import javafx.util.Callback;
-import org.bouncycastle.util.encoders.Hex;
-import org.controlsfx.glyphfont.FontAwesome;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import org.bitcoinj.core.AddressFormatException;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
 
-import javax.annotation.Nullable;
 import java.awt.*;
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
-
 import static Messenger.Utils.easing.GuiUtils.*;
 
 /**
@@ -73,8 +61,15 @@ public class AddressWindowController {
 
 
     public void initialize() {
+        FileWriter f = new FileWriter();
         data = FXCollections.observableArrayList();
-        data.add(init);
+        if (!f.hasKeys()) {data.add(init);}
+        else {
+            for (KeyRing.Key key : f.getSavedKeys()){
+                HBox node = getAddressListViewNode(key.getAddress());
+                data.add(node);
+            }
+        }
         addressList.setItems(data);
 
     }
@@ -97,6 +92,7 @@ public class AddressWindowController {
 
     @FXML
     void newAddress(ActionEvent e) {
+        txtName.setText("");
         blurOut(tabPane);
         addAddressPane.setVisible(true);
         fadeIn(addAddressPane);
@@ -123,15 +119,46 @@ public class AddressWindowController {
         Address addr = null;
         try{addr = new Address((int) prefixSlider.getValue());}
         catch (InvalidPrefixLengthException e2){e2.printStackTrace();}
+        FileWriter writer = new FileWriter();
+        writer.addKey(addr.getECKey(), txtName.getText(), (int)prefixSlider.getValue(), addr.toString());
         data.remove(init);
-        Label lblAddress = new Label(addr.toString());
+        HBox hBox = getAddressListViewNode(addr.toString());
+        data.add(hBox);
+        fadeOut(addAddressPane);
+        addAddressPane.setVisible(false);
+        blurIn(tabPane);
+
+    }
+
+    @FXML
+    void doneButtonPressed(MouseEvent e){
+        btnAddressDone.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
+
+    @FXML
+    void doneButtonReleased(MouseEvent e){
+        btnAddressDone.setStyle("-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
+
+    @FXML
+    void cancelButtonPressed(MouseEvent e){
+        btnAddressCancel.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
+
+    @FXML
+    void cancelButtonReleased(MouseEvent e){
+        btnAddressCancel.setStyle("-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
+
+    HBox getAddressListViewNode(String address){
+        Label lblAddress = new Label(address);
         lblAddress.setStyle("-fx-text-fill: #dc78dc;");
         ImageView imView = null;
         if ( (data.size()+1) % 2 == 0 ) {
-            try{imView = Identicon.generate(addr.toString(),Color.decode("#3b3b3b"));}
+            try{imView = Identicon.generate(address,Color.decode("#3b3b3b"));}
             catch (Exception e1){e1.printStackTrace();}
         } else {
-            try{imView = Identicon.generate(addr.toString(), Color.decode("#393939"));}
+            try{imView = Identicon.generate(address, Color.decode("#393939"));}
             catch (Exception e1){e1.printStackTrace();}
         }
         HBox hBox = new HBox();
@@ -166,32 +193,8 @@ public class AddressWindowController {
         hBox.getChildren().addAll(imView, lblAddress, btnCopy);
         hBox.setMargin(lblAddress, new Insets(4, 0, 0, 10));
         hBox.setMargin(btnCopy, new Insets(-2, 0, 0, 10));
-        lblAddress.setPrefWidth(485);
-        data.add(hBox);
-        fadeOut(addAddressPane);
-        addAddressPane.setVisible(false);
-        blurIn(tabPane);
-        txtName.setText("");
-    }
-
-    @FXML
-    void doneButtonPressed(MouseEvent e){
-        btnAddressDone.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
-    }
-
-    @FXML
-    void doneButtonReleased(MouseEvent e){
-        btnAddressDone.setStyle("-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
-    }
-
-    @FXML
-    void cancelButtonPressed(MouseEvent e){
-        btnAddressCancel.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
-    }
-
-    @FXML
-    void cancelButtonReleased(MouseEvent e){
-        btnAddressCancel.setStyle("-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+        lblAddress.setPrefWidth(482);
+        return hBox;
     }
 
 }
