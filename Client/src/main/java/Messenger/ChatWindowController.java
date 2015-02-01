@@ -3,10 +3,13 @@ package Messenger;
 import Messenger.Utils.Identicon.Identicon;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -48,8 +51,9 @@ public class ChatWindowController {
     @FXML
     ScrollPane scrollPane;
     @FXML
-    VBox scrollVBox = new VBox();
+    ChoiceBox cbAddrs;
 
+    private VBox scrollVBox = new VBox();
     private boolean shift = false;
     private Address toAddress;
     private Stage stage;
@@ -59,6 +63,15 @@ public class ChatWindowController {
     }
 
     public void initialize(){
+        ObservableList<String> cbData = FXCollections.observableArrayList("Select your from address");
+        FileWriter f = new FileWriter();
+        if (f.hasKeys()) {
+            for (KeyRing.Key key : f.getSavedKeys()) {
+                cbData.add(key.getAddress());
+            }
+        }
+        cbAddrs.setItems(cbData);
+        cbAddrs.getSelectionModel().selectFirst();
         scrollPane.setContent(scrollVBox);
         txtArea1.setWrapText(true);
         txtArea2.setWrapText(true);
@@ -66,13 +79,22 @@ public class ChatWindowController {
             @Override
             public void handle(KeyEvent keyEvent) {
                 if (keyEvent.getCode() == KeyCode.ENTER) {
-                    if (!shift){
-                        if(!btnSend.isDisabled()){sendMessage();}
-                    }
-                    else {
-                        String s = txtArea1.getText();
-                        txtArea1.setText(s + "\n");
-                        txtArea1.positionCaret(txtArea1.getLength());
+                    if (txtArea1.getText().equals("")) {
+                        txtArea1.clear();
+                        keyEvent.consume();
+                    } else {
+                        if (!shift) {
+                            if (cbAddrs.getSelectionModel().getSelectedIndex() == 0) {
+                                cbAddrs.setStyle("-fx-background-color: #393939; -fx-border-color: #f92672;");
+                            }
+                            if (!btnSend.isDisabled()) {
+                                sendMessage();
+                            }
+                        } else {
+                            String s = txtArea1.getText();
+                            txtArea1.setText(s + "\n");
+                            txtArea1.positionCaret(txtArea1.getLength());
+                        }
                     }
                 }
                 if (keyEvent.getCode() == KeyCode.SHIFT) {
@@ -88,18 +110,33 @@ public class ChatWindowController {
                 }
             }
         });
+        txtArea1.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
+                if (!txtArea1.getText().equals("") && cbAddrs.getSelectionModel().getSelectedIndex() != 0 && Address.validateAddress(txtAddress.getText())){
+                    btnSend.setDisable(false);
+                }
+                else {
+                    btnSend.setDisable(true);
+                }
+            }
+        });
         txtArea2.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
                 if (keyEvent.getCode() == KeyCode.ENTER) {
-                    if (!shift){
-                        sendMessage();
+                    if (txtArea2.getText().equals("")) {
+                        txtArea2.clear();
                         keyEvent.consume();
-                    }
-                    else {
-                        String s = txtArea2.getText();
-                        txtArea2.setText(s + "\n");
-                        txtArea2.positionCaret(txtArea2.getLength());
+                    } else {
+                        if (!shift) {
+                            sendMessage();
+                            keyEvent.consume();
+                        } else {
+                            String s = txtArea2.getText();
+                            txtArea2.setText(s + "\n");
+                            txtArea2.positionCaret(txtArea2.getLength());
+                        }
                     }
                 }
                 if (keyEvent.getCode() == KeyCode.SHIFT) {
@@ -122,7 +159,7 @@ public class ChatWindowController {
             {
                 if (!newPropertyValue) {
                     if(Address.validateAddress(txtAddress.getText())){
-                        btnSend.setDisable(false);
+                        if (cbAddrs.getSelectionModel().getSelectedIndex()!=0 && !txtArea1.getText().equals("")){btnSend.setDisable(false);}
                         txtAddress.setStyle("-fx-background-color: #393939; -fx-text-fill: #f92672; -fx-border-color: #00d0d0;");
                     }
                     else {
@@ -130,6 +167,16 @@ public class ChatWindowController {
                         txtAddress.setStyle("-fx-background-color: #393939; -fx-text-fill: #b4b5b1; -fx-border-color: #f92672;");
                     }
                 }
+            }
+        });
+        cbAddrs.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+                if((Integer)number2 != 0){cbAddrs.setStyle("-fx-background-color: #393939;-fx-border-color: #00d0d0;");}
+                if((Integer)number2!=0 && Address.validateAddress(txtAddress.getText()) && !txtArea1.getText().equals("")){
+                    btnSend.setDisable(false);
+                }
+                else {btnSend.setDisable(true);}
             }
         });
     }
@@ -144,10 +191,14 @@ public class ChatWindowController {
         else {
             HBox h = new HBox();
             Label lblMessage = new Label(txtArea2.getText());
-            lblMessage.setMaxWidth(600);
+            lblMessage.setMaxWidth(400);
             lblMessage.setWrapText(true);
+            lblMessage.setStyle("-fx-text-fill: #a7ec21; -fx-font-size: 16;");
+            lblMessage.setPadding(new Insets(10, 0, 10, 0));
             h.getChildren().add(lblMessage);
-            scrollVBox.getChildren().add(lblMessage);
+            h.setAlignment(Pos.CENTER_RIGHT);
+            h.setPrefWidth(590);
+            scrollVBox.getChildren().add(h);
             txtArea2.clear();
         }
     }
@@ -167,8 +218,14 @@ public class ChatWindowController {
         paneTwo.setVisible(true);
         HBox h = new HBox();
         Label lblMessage = new Label(txtArea1.getText());
+        lblMessage.setMaxWidth(400);
+        lblMessage.setWrapText(true);
+        lblMessage.setStyle("-fx-text-fill: #a7ec21; -fx-font-size: 16;");
+        lblMessage.setPadding(new Insets(10, 0, 10, 0));
         h.getChildren().add(lblMessage);
-        scrollVBox.getChildren().add(lblMessage);
+        h.setAlignment(Pos.CENTER_RIGHT);
+        h.setPrefWidth(590);
+        scrollVBox.getChildren().add(h);
         try{toAddress = new Address(txtAddress.getText().toString());}
         catch(AddressFormatException e){e.printStackTrace();}
         Label lblTo = new Label("  " + toAddress.toString());
