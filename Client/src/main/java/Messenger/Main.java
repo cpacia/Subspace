@@ -1,17 +1,22 @@
 package Messenger;
 
 import com.subgraph.orchid.TorClient;
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 public class Main extends Application {
@@ -20,6 +25,7 @@ public class Main extends Application {
     static TorClient torClient;
     private static Stage stg;
     public static ApplicationParams params;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         URL location = getClass().getResource("gui.fxml");
@@ -42,10 +48,13 @@ public class Main extends Application {
     public static void main(String[] args) {
         try{params = new ApplicationParams(args);}
         catch (IOException e){e.printStackTrace();}
+        Runnable task = () -> {
         torClient = new TorClient();
         torClient.getConfig().setDataDirectory(params.getApplicationDataFolder());
         torClient.enableSocksListener();
         torClient.start();
+        };
+        new Thread(task).start();
         launch(args);
         try{torClient.waitUntilReady(5000);}
         catch (TimeoutException | InterruptedException e){e.printStackTrace();}

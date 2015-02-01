@@ -120,7 +120,7 @@ public class AddressWindowController {
         try{addr = new Address((int) prefixSlider.getValue());}
         catch (InvalidPrefixLengthException e2){e2.printStackTrace();}
         FileWriter writer = new FileWriter();
-        writer.addKey(addr.getECKey(), txtName.getText(), (int)prefixSlider.getValue(), addr.toString());
+        writer.addKey(addr.getECKey(), txtName.getText(), (int)prefixSlider.getValue(), addr.toString(), cbNode.getValue().toString());
         data.remove(init);
         HBox hBox = getAddressListViewNode(addr.toString());
         data.add(hBox);

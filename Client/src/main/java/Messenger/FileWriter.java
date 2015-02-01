@@ -36,7 +36,7 @@ public class FileWriter {
         output.close();
     }
 
-    public void addKey(ECKey key, String name, int prefixLength, String address){
+    public void addKey(ECKey key, String name, int prefixLength, String address, String uploadHostName){
         KeyRing.SavedKeys.Builder builder = getKeyFileBuilder();
         ByteString priv = ByteString.copyFrom(key.getPrivKeyBtyes());
         ByteString pub = ByteString.copyFrom(key.getPubKeyBytes());
@@ -45,6 +45,7 @@ public class FileWriter {
                                                     .setPublicKey(pub)
                                                     .setPrefixLength(prefixLength)
                                                     .setAddress(address)
+                                                    .setUploadNode(uploadHostName)
                                                     .build();
         builder.addKey(addKey);
         try {writeKeyFile(builder);
@@ -61,5 +62,39 @@ public class FileWriter {
     public List<KeyRing.Key> getSavedKeys(){
         KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
         return b.getKeyList();
+    }
+
+    public Address getSavedAddress(String address) throws InvalidPrefixLengthException{
+        KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
+        List<KeyRing.Key> keys = b.getKeyList();
+        for (KeyRing.Key key : keys){
+            if (key.getAddress().equals(address)){
+                ECKey ecKey = ECKey.fromPrivOnly(key.getPrivateKey().toByteArray());
+                return new Address(key.getPrefixLength(), ecKey);
+            }
+        }
+        return null;
+    }
+
+    public String getNameFromAddress(String address){
+        KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
+        List<KeyRing.Key> keys = b.getKeyList();
+        for (KeyRing.Key key : keys){
+            if (key.getAddress().equals(address)){
+               return key.getName();
+            }
+        }
+        return null;
+    }
+
+    public KeyRing.Key getKeyFromAddress(String address){
+        KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
+        List<KeyRing.Key> keys = b.getKeyList();
+        for (KeyRing.Key key : keys){
+            if (key.getAddress().equals(address)){
+                return key;
+            }
+        }
+        return null;
     }
 }

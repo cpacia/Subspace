@@ -53,8 +53,9 @@ public class Controller {
     @FXML
     Button btnAddress;
     @FXML
-    Label lblNewMessage;
-    PopOver pop;
+    private Label lblNewMessage;
+    private PopOver pop;
+    private boolean readyToGo = false;
 
     public void initialize() {
         ObservableList<String> data = FXCollections.observableArrayList();
@@ -152,6 +153,7 @@ public class Controller {
             pop.setAutoHide(true);
             pop.setHideOnEscape(true);
         }
+        readyToGo = true;
     }
 
     void setEmailTab1(){
@@ -281,23 +283,25 @@ public class Controller {
 
     @FXML void addressCLick(ActionEvent e){
         if (pop != null){pop.hide();}
-        Parent root;
-        try {
-            URL location = getClass().getResource("addresses.fxml");
-            FXMLLoader loader = new FXMLLoader(location);
-            AnchorPane addressUI = (AnchorPane) loader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Addresses");
-            stage.setX(700);
-            stage.setY(200);
-            stage.setScene(new Scene(addressUI, 582, 386));
-            stage.setResizable(false);
-            String file = Main.class.getResource("gui.css").toString();
-            stage.getScene().getStylesheets().add(file);
-            stage.show();
+        if (readyToGo) {
+            Parent root;
+            try {
+                URL location = getClass().getResource("addresses.fxml");
+                FXMLLoader loader = new FXMLLoader(location);
+                AnchorPane addressUI = (AnchorPane) loader.load();
+                Stage stage = new Stage();
+                stage.setTitle("Addresses");
+                stage.setX(700);
+                stage.setY(200);
+                stage.setScene(new Scene(addressUI, 582, 386));
+                stage.setResizable(false);
+                String file = Main.class.getResource("gui.css").toString();
+                stage.getScene().getStylesheets().add(file);
+                stage.show();
 
-        } catch (IOException e2) {
-            e2.printStackTrace();
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
         }
     }
 

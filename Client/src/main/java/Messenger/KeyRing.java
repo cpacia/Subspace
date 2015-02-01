@@ -756,6 +756,21 @@ public final class KeyRing {
      */
     com.google.protobuf.ByteString
         getAddressBytes();
+
+    // required string uploadNode = 6;
+    /**
+     * <code>required string uploadNode = 6;</code>
+     */
+    boolean hasUploadNode();
+    /**
+     * <code>required string uploadNode = 6;</code>
+     */
+    java.lang.String getUploadNode();
+    /**
+     * <code>required string uploadNode = 6;</code>
+     */
+    com.google.protobuf.ByteString
+        getUploadNodeBytes();
   }
   /**
    * Protobuf type {@code Key}
@@ -831,6 +846,11 @@ public final class KeyRing {
             case 42: {
               bitField0_ |= 0x00000010;
               address_ = input.readBytes();
+              break;
+            }
+            case 50: {
+              bitField0_ |= 0x00000020;
+              uploadNode_ = input.readBytes();
               break;
             }
           }
@@ -1007,12 +1027,56 @@ public final class KeyRing {
       }
     }
 
+    // required string uploadNode = 6;
+    public static final int UPLOADNODE_FIELD_NUMBER = 6;
+    private java.lang.Object uploadNode_;
+    /**
+     * <code>required string uploadNode = 6;</code>
+     */
+    public boolean hasUploadNode() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>required string uploadNode = 6;</code>
+     */
+    public java.lang.String getUploadNode() {
+      java.lang.Object ref = uploadNode_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          uploadNode_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string uploadNode = 6;</code>
+     */
+    public com.google.protobuf.ByteString
+        getUploadNodeBytes() {
+      java.lang.Object ref = uploadNode_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        uploadNode_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       privateKey_ = com.google.protobuf.ByteString.EMPTY;
       publicKey_ = com.google.protobuf.ByteString.EMPTY;
       name_ = "";
       prefixLength_ = 0;
       address_ = "";
+      uploadNode_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1028,6 +1092,10 @@ public final class KeyRing {
         return false;
       }
       if (!hasPrefixLength()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasUploadNode()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -1052,6 +1120,9 @@ public final class KeyRing {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeBytes(5, getAddressBytes());
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeBytes(6, getUploadNodeBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -1081,6 +1152,10 @@ public final class KeyRing {
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(5, getAddressBytes());
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, getUploadNodeBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1208,6 +1283,8 @@ public final class KeyRing {
         bitField0_ = (bitField0_ & ~0x00000008);
         address_ = "";
         bitField0_ = (bitField0_ & ~0x00000010);
+        uploadNode_ = "";
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
 
@@ -1256,6 +1333,10 @@ public final class KeyRing {
           to_bitField0_ |= 0x00000010;
         }
         result.address_ = address_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.uploadNode_ = uploadNode_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1291,6 +1372,11 @@ public final class KeyRing {
           address_ = other.address_;
           onChanged();
         }
+        if (other.hasUploadNode()) {
+          bitField0_ |= 0x00000020;
+          uploadNode_ = other.uploadNode_;
+          onChanged();
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -1305,6 +1391,10 @@ public final class KeyRing {
           return false;
         }
         if (!hasPrefixLength()) {
+          
+          return false;
+        }
+        if (!hasUploadNode()) {
           
           return false;
         }
@@ -1583,6 +1673,80 @@ public final class KeyRing {
         return this;
       }
 
+      // required string uploadNode = 6;
+      private java.lang.Object uploadNode_ = "";
+      /**
+       * <code>required string uploadNode = 6;</code>
+       */
+      public boolean hasUploadNode() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>required string uploadNode = 6;</code>
+       */
+      public java.lang.String getUploadNode() {
+        java.lang.Object ref = uploadNode_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          uploadNode_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string uploadNode = 6;</code>
+       */
+      public com.google.protobuf.ByteString
+          getUploadNodeBytes() {
+        java.lang.Object ref = uploadNode_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          uploadNode_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string uploadNode = 6;</code>
+       */
+      public Builder setUploadNode(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        uploadNode_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string uploadNode = 6;</code>
+       */
+      public Builder clearUploadNode() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        uploadNode_ = getDefaultInstance().getUploadNode();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string uploadNode = 6;</code>
+       */
+      public Builder setUploadNodeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        uploadNode_ = value;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:Key)
     }
 
@@ -1614,9 +1778,10 @@ public final class KeyRing {
   static {
     java.lang.String[] descriptorData = {
       "\n\rKeyRing.proto\"\036\n\tSavedKeys\022\021\n\003key\030\001 \003(" +
-      "\0132\004.Key\"a\n\003Key\022\022\n\nprivateKey\030\001 \002(\014\022\021\n\tpu" +
+      "\0132\004.Key\"u\n\003Key\022\022\n\nprivateKey\030\001 \002(\014\022\021\n\tpu" +
       "blicKey\030\002 \001(\014\022\014\n\004name\030\003 \002(\t\022\024\n\014prefixLen" +
-      "gth\030\004 \002(\005\022\017\n\007address\030\005 \001(\t"
+      "gth\030\004 \002(\005\022\017\n\007address\030\005 \001(\t\022\022\n\nuploadNode" +
+      "\030\006 \002(\t"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1634,7 +1799,7 @@ public final class KeyRing {
           internal_static_Key_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Key_descriptor,
-              new java.lang.String[] { "PrivateKey", "PublicKey", "Name", "PrefixLength", "Address", });
+              new java.lang.String[] { "PrivateKey", "PublicKey", "Name", "PrefixLength", "Address", "UploadNode", });
           return null;
         }
       };

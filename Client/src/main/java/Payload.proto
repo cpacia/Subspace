@@ -1,0 +1,17 @@
+message SignedPayload {
+	required bytes serializedMessageData = 1;
+	required bytes HMac                  = 5;
+}
+
+message MessageData {
+	required string senderAddress      = 1;
+	required MessageType messageType   = 2;
+	required uint64 timeStamp          = 3;
+	required string UnencryptedMessage = 4;
+}
+
+enum MessageType {
+	CHAT     = 1;
+	EMAIL    = 2;
+	CHATROOM = 3;
+}
