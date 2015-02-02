@@ -771,6 +771,21 @@ public final class KeyRing {
      */
     com.google.protobuf.ByteString
         getUploadNodeBytes();
+
+    // required string timeOfLastGET = 7 [default = "0"];
+    /**
+     * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+     */
+    boolean hasTimeOfLastGET();
+    /**
+     * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+     */
+    java.lang.String getTimeOfLastGET();
+    /**
+     * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+     */
+    com.google.protobuf.ByteString
+        getTimeOfLastGETBytes();
   }
   /**
    * Protobuf type {@code Key}
@@ -851,6 +866,11 @@ public final class KeyRing {
             case 50: {
               bitField0_ |= 0x00000020;
               uploadNode_ = input.readBytes();
+              break;
+            }
+            case 58: {
+              bitField0_ |= 0x00000040;
+              timeOfLastGET_ = input.readBytes();
               break;
             }
           }
@@ -1070,6 +1090,49 @@ public final class KeyRing {
       }
     }
 
+    // required string timeOfLastGET = 7 [default = "0"];
+    public static final int TIMEOFLASTGET_FIELD_NUMBER = 7;
+    private java.lang.Object timeOfLastGET_;
+    /**
+     * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+     */
+    public boolean hasTimeOfLastGET() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+     */
+    public java.lang.String getTimeOfLastGET() {
+      java.lang.Object ref = timeOfLastGET_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          timeOfLastGET_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+     */
+    public com.google.protobuf.ByteString
+        getTimeOfLastGETBytes() {
+      java.lang.Object ref = timeOfLastGET_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        timeOfLastGET_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       privateKey_ = com.google.protobuf.ByteString.EMPTY;
       publicKey_ = com.google.protobuf.ByteString.EMPTY;
@@ -1077,6 +1140,7 @@ public final class KeyRing {
       prefixLength_ = 0;
       address_ = "";
       uploadNode_ = "";
+      timeOfLastGET_ = "0";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1096,6 +1160,10 @@ public final class KeyRing {
         return false;
       }
       if (!hasUploadNode()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasTimeOfLastGET()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -1123,6 +1191,9 @@ public final class KeyRing {
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         output.writeBytes(6, getUploadNodeBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeBytes(7, getTimeOfLastGETBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -1156,6 +1227,10 @@ public final class KeyRing {
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(6, getUploadNodeBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(7, getTimeOfLastGETBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1285,6 +1360,8 @@ public final class KeyRing {
         bitField0_ = (bitField0_ & ~0x00000010);
         uploadNode_ = "";
         bitField0_ = (bitField0_ & ~0x00000020);
+        timeOfLastGET_ = "0";
+        bitField0_ = (bitField0_ & ~0x00000040);
         return this;
       }
 
@@ -1337,6 +1414,10 @@ public final class KeyRing {
           to_bitField0_ |= 0x00000020;
         }
         result.uploadNode_ = uploadNode_;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.timeOfLastGET_ = timeOfLastGET_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1377,6 +1458,11 @@ public final class KeyRing {
           uploadNode_ = other.uploadNode_;
           onChanged();
         }
+        if (other.hasTimeOfLastGET()) {
+          bitField0_ |= 0x00000040;
+          timeOfLastGET_ = other.timeOfLastGET_;
+          onChanged();
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -1395,6 +1481,10 @@ public final class KeyRing {
           return false;
         }
         if (!hasUploadNode()) {
+          
+          return false;
+        }
+        if (!hasTimeOfLastGET()) {
           
           return false;
         }
@@ -1747,6 +1837,80 @@ public final class KeyRing {
         return this;
       }
 
+      // required string timeOfLastGET = 7 [default = "0"];
+      private java.lang.Object timeOfLastGET_ = "0";
+      /**
+       * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+       */
+      public boolean hasTimeOfLastGET() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+       */
+      public java.lang.String getTimeOfLastGET() {
+        java.lang.Object ref = timeOfLastGET_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          timeOfLastGET_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+       */
+      public com.google.protobuf.ByteString
+          getTimeOfLastGETBytes() {
+        java.lang.Object ref = timeOfLastGET_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          timeOfLastGET_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+       */
+      public Builder setTimeOfLastGET(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000040;
+        timeOfLastGET_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+       */
+      public Builder clearTimeOfLastGET() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        timeOfLastGET_ = getDefaultInstance().getTimeOfLastGET();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+       */
+      public Builder setTimeOfLastGETBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000040;
+        timeOfLastGET_ = value;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:Key)
     }
 
@@ -1778,10 +1942,10 @@ public final class KeyRing {
   static {
     java.lang.String[] descriptorData = {
       "\n\rKeyRing.proto\"\036\n\tSavedKeys\022\021\n\003key\030\001 \003(" +
-      "\0132\004.Key\"u\n\003Key\022\022\n\nprivateKey\030\001 \002(\014\022\021\n\tpu" +
-      "blicKey\030\002 \001(\014\022\014\n\004name\030\003 \002(\t\022\024\n\014prefixLen" +
-      "gth\030\004 \002(\005\022\017\n\007address\030\005 \001(\t\022\022\n\nuploadNode" +
-      "\030\006 \002(\t"
+      "\0132\004.Key\"\217\001\n\003Key\022\022\n\nprivateKey\030\001 \002(\014\022\021\n\tp" +
+      "ublicKey\030\002 \001(\014\022\014\n\004name\030\003 \002(\t\022\024\n\014prefixLe" +
+      "ngth\030\004 \002(\005\022\017\n\007address\030\005 \001(\t\022\022\n\nuploadNod" +
+      "e\030\006 \002(\t\022\030\n\rtimeOfLastGET\030\007 \002(\t:\0010"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1799,7 +1963,7 @@ public final class KeyRing {
           internal_static_Key_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Key_descriptor,
-              new java.lang.String[] { "PrivateKey", "PublicKey", "Name", "PrefixLength", "Address", "UploadNode", });
+              new java.lang.String[] { "PrivateKey", "PublicKey", "Name", "PrefixLength", "Address", "UploadNode", "TimeOfLastGET", });
           return null;
         }
       };

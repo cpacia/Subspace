@@ -25,6 +25,7 @@ public class Main extends Application {
     static TorClient torClient;
     private static Stage stg;
     public static ApplicationParams params;
+    public static MessageRetriever retriever;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -55,6 +56,8 @@ public class Main extends Application {
         torClient.start();
         };
         new Thread(task).start();
+        retriever = new MessageRetriever(new FileWriter().getSavedKeys());
+        retriever.start();
         launch(args);
         try{torClient.waitUntilReady(5000);}
         catch (TimeoutException | InterruptedException e){e.printStackTrace();}

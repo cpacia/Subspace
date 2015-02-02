@@ -10,4 +10,5 @@ message Key {
 	required int32 prefixLength         = 4;
 	optional string address             = 5;
 	required string uploadNode          = 6;
+	required string timeOfLastGET       = 7 [default = "0"];
 }

@@ -6,9 +6,8 @@ import org.bouncycastle.util.encoders.Hex;
 
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import javax.net.ssl.HttpsURLConnection;
+import java.io.*;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -32,7 +31,6 @@ public class Message {
     private String postKey;
 
     public Message(Address toAddress, String message, KeyRing.Key fromKey, Payload.MessageType type){
-        System.out.println("1");
         this.sendingKey = ECKey.fromPrivOnly(fromKey.getPrivateKey().toByteArray());
         this.fromAddress = fromKey.getAddress();
         this.uploadHost = fromKey.getUploadNode();
@@ -91,18 +89,35 @@ public class Message {
     }
 
     public void sendToLocalHost(){
-        System.out.println("2");
+
         try {
-            URL url = new URL("http://localhost:8080/" + postKey);
-            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
-            httpCon.setDoOutput(true);
-            httpCon.setRequestMethod("POST");
+            URL obj = new URL("http://localhost:8080/" + postKey);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+            //add reuqest header
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+
             String urlParameters = Hex.toHexString(this.encryptedPayload);
-            DataOutputStream wr = new DataOutputStream(httpCon.getOutputStream());
+
+            //Send post request
+            con.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
             wr.writeBytes(urlParameters);
             wr.flush();
             wr.close();
-            System.out.println("Response Code : " + httpCon.getResponseCode());
+
+            int responseCode = con.getResponseCode();
+
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
         } catch (IOException e){e.printStackTrace();}
 
     }
@@ -118,6 +133,11 @@ public class Message {
         }
         String binaryKey = this.prefix + binary.substring(0, binary.length()-this.prefix.length());
         postKey = new BigInteger(binaryKey, 2).toString(16);
+        if (postKey.length()<24){
+            for (int i=0; i<24-postKey.length(); i++){
+                postKey = "0" + postKey;
+            }
+        }
     }
 
 }

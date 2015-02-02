@@ -109,7 +109,7 @@ public class Address {
     }
 
     public String getPrefix(){
-        if (prefixLength==0){return "null";}
+        if (prefixLength==0){return "";}
         else {
             String binary = "";
             for (byte b : prefix){

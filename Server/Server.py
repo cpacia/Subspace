@@ -13,6 +13,7 @@ from kademlia.network import Server
 from kademlia import log
 import datetime
 from bson.objectid import ObjectId
+import json
 
 #start mongodb -> sudo service mongod start
 
@@ -57,7 +58,8 @@ class WebResource(resource.Resource):
             request.finish()
         prefix = request.path.split("/")[-1]
         ts = request.args["timestamp"][0]
-        utc = datetime.datetime.fromtimestamp(float(ts))
+        utc = datetime.datetime.utcfromtimestamp(float(ts))
+        print utc
         length = len(prefix)
         min = prefix
         max = prefix
@@ -66,8 +68,14 @@ class WebResource(resource.Resource):
             max = max + "1"
         max = hex(int(max, 2))[2:-1]
         min = hex(int(min, 2))[2:-1]
+        if len(min) < 24:
+            for x in range(0, 24-len(min)):
+                min = "0" + min
+        if len(max) < 24:
+            for x in range(0, 24-len(max)):
+                max = "0" + max
         log.msg("Getting key: %s" % prefix)
-        ret = ""
+        dict = {}
         for post in messages.find(
                                 {
                                     "$and":
@@ -81,9 +89,10 @@ class WebResource(resource.Resource):
                                             }
                                         ]
                                 }):
-            ret = ret + post.get("message") + " "
-        if ret != "":
-            respond(ret.encode("UTF-8"))
+            dict[str(post.get("_id"))] = post.get("message")
+            print post.get("timestamp")
+        if bool(dict)==True:
+            respond(json.dumps(dict))
             return server.NOT_DONE_YET
         else:
             self.delayed_requests.append(request)
@@ -94,6 +103,7 @@ class WebResource(resource.Resource):
     def render_POST(self, request):
         key = request.path.split('/')[-1]
         value = request.content.getvalue()
+        print ObjectId(key)
         post = {"_id": ObjectId(key),
                 "message": value,
                 "timestamp": datetime.datetime.utcnow()}
@@ -109,14 +119,21 @@ class WebResource(resource.Resource):
         any data to return last time around.
         """
         # run through delayed requests
+        x = len(self.delayed_requests)
         for request in self.delayed_requests:
+            x-=1
             reqkey = request.path.split("/")[-1]
             for postkey in self.incoming_posts:
-                binpostkey = bin(int(postkey, 16))[2:]
+                binpostkey = str(bin(int(postkey, 16))[2:])
+                if len(binpostkey)<24:
+                    for x in range(0, 24-len(binpostkey)):
+                        binpostkey = "0" + binpostkey
                 if binpostkey[:len(reqkey)] == reqkey:
                     try:
+                        map = {}
                         ret = messages.find_one({"_id": ObjectId(postkey)})
-                        request.write(ret.get("message").encode("UTF-8"))
+                        map[str(ret.get("_id"))] = ret.get("message")
+                        request.write(json.dumps(map))
                         request.finish()
                     except:
                         # Connection was lost
@@ -124,7 +141,8 @@ class WebResource(resource.Resource):
                     finally:
                         # Remove request from list
                         self.delayed_requests.remove(request)
-        self.incoming_posts = []
+                if x==0:
+                    self.incoming_posts.remove(postkey)
 
 website = server.Site(WebResource(kserver))
 webserver = internet.TCPServer(8080, website)
