@@ -35,8 +35,10 @@ public class Message {
     private String postKey;
     private boolean isForMe = false;
     private String message;
+    private Payload.MessageType messageType;
 
     public Message(Address toAddress, String message, KeyRing.Key fromKey, Payload.MessageType type){
+        this.messageType = type;
         this.senderName = fromKey.getName();
         this.message = message;
         this.sendingKey = ECKey.fromPrivOnly(fromKey.getPrivateKey().toByteArray());
@@ -112,6 +114,7 @@ public class Message {
                 this.timeStamp = data.getTimeStamp();
                 this.message = data.getUnencryptedMessage();
                 this.senderName = data.getName();
+                this.messageType = data.getMessageType();
             } catch (InvalidProtocolBufferException e){isForMe = false;}
 
             byte[] hmac = payload.getHMac().toByteArray();
@@ -211,6 +214,10 @@ public class Message {
 
     public Address getToAddress(){
         return toAddress;
+    }
+
+    public Payload.MessageType getMessageType(){
+        return this.messageType;
     }
 
 }

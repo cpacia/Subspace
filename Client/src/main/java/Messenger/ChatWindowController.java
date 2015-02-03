@@ -63,6 +63,7 @@ public class ChatWindowController {
     private String toName;
     private boolean iSentLastMessage=false;
     private boolean scrollToBottom = false;
+    private Label lblTo;
 
     public void setStage(Stage stage){
         this.stage = stage;
@@ -294,7 +295,7 @@ public class ChatWindowController {
         h.setAlignment(Pos.CENTER_RIGHT);
         h.setPrefWidth(590);
         scrollVBox.getChildren().add(h);
-        Label lblTo = new Label("  " + toAddress.toString());
+        lblTo = new Label("  " + toAddress.toString());
         lblTo.setStyle("-fx-text-fill: #dc78dc; -fx-font-size: 16");
         ImageView imView2 = null;
         try{imView2 = Identicon.generate(toAddress.toString(), Color.decode("#4d5052"));}
@@ -313,7 +314,7 @@ public class ChatWindowController {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    if (m.getToAddress().toString().equals(fromKey.getAddress())) {
+                    if (m.getToAddress().toString().equals(fromKey.getAddress()) && m.getMessageType()== Payload.MessageType.CHAT) {
                         HBox h = new HBox();
                         Label lblMessage = new Label(m.getDecryptedMessage());
                         lblMessage.setMaxWidth(400);
@@ -323,27 +324,31 @@ public class ChatWindowController {
                         lblMessage.setAlignment(Pos.CENTER_LEFT);
                         VBox v = new VBox();
                         v.setAlignment(Pos.CENTER_LEFT);
-                        Label lblFromName = new Label(m.getSenderName());
-                        lblFromName.setWrapText(true);
-                        lblFromName.setStyle("-fx-text-fill: #f92672; -fx-font-size: 16;");
-                        lblFromName.setPadding(new Insets(10, 0, 0, 10));
-                        v.getChildren().addAll(lblFromName, lblMessage);
-                        ImageView imView = null;
-                        try {
-                            imView = Identicon.generate(m.getFromAddress(), Color.decode("#393939"));
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
-                        }
-                        imView.setFitWidth(35);
-                        imView.setFitHeight(35);
-                        HBox imageHBox = new HBox();
-                        imageHBox.getChildren().add(imView);
-                        imageHBox.setPadding(new Insets(11, 0, 0, 0));
-                        h.getChildren().addAll(imageHBox, v);
+                        if (iSentLastMessage){
+                            Label lblFromName = new Label(m.getSenderName());
+                            lblFromName.setWrapText(true);
+                            lblFromName.setStyle("-fx-text-fill: #f92672; -fx-font-size: 16;");
+                            lblFromName.setPadding(new Insets(10, 0, 0, 10));
+                            v.getChildren().addAll(lblFromName, lblMessage);
+                            ImageView imView = null;
+                            try {
+                                imView = Identicon.generate(m.getFromAddress(), Color.decode("#393939"));
+                            } catch (Exception e1) {
+                                e1.printStackTrace();
+                            }
+                            imView.setFitWidth(35);
+                            imView.setFitHeight(35);
+                            HBox imageHBox = new HBox();
+                            imageHBox.getChildren().add(imView);
+                            imageHBox.setPadding(new Insets(11, 0, 0, 0));
+                            h.getChildren().addAll(imageHBox, v);
+                        } else {h.getChildren().add(lblMessage);}
                         h.setAlignment(Pos.TOP_LEFT);
                         h.setPrefWidth(590);
                         h.setPadding(new Insets(0, 0, 0, 20));
-                        scrollVBox.getChildren().add(h);
+                        lblTo.setText("  " + m.getSenderName());
+                        scrollVBox.getChildren(c).add(h);
+                        stage.setTitle("Chat with " + m.getSenderName());
                         iSentLastMessage = false;
                         scrollPane.setVvalue(scrollPane.getVmax());
                         scrollToBottom = true;
