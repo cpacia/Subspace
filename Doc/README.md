@@ -3,7 +3,7 @@ Proof-of-Concept Client and Server
 
 Server Setup
 ---------------------
-Until we get a server up and running you'll need server running on localhost to use the client. To do that you will need the following:
+Until we get a server up and running you'll need a server running on localhost to use the client. To do that you will need the following:
 
 1. MongoDB. Follow the [installation instructions](http://docs.mongodb.org/manual/installation/) for your OS.
 2. Python [Twisted](https://pypi.python.org/pypi/Twisted).  You may need to install python-dev and some other packages to get it running.
@@ -11,10 +11,14 @@ Until we get a server up and running you'll need server running on localhost to 
 
 ### Running
 Start mongodb 
-	sudo service mongod start
+```
+sudo service mongod start
+```
 
 Start the subspace server
-	twistd -noy Server.py
+```
+twistd -noy Server.py
+```
 
 Client Setup
 ---------------------
