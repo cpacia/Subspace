@@ -49,13 +49,10 @@ public class Main extends Application {
     public static void main(String[] args) {
         try{params = new ApplicationParams(args);}
         catch (IOException e){e.printStackTrace();}
-        Runnable task = () -> {
         torClient = new TorClient();
         torClient.getConfig().setDataDirectory(params.getApplicationDataFolder());
         torClient.enableSocksListener();
         torClient.start();
-        };
-        new Thread(task).start();
         retriever = new MessageRetriever(new FileWriter().getSavedKeys());
         retriever.start();
         launch(args);

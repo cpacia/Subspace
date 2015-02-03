@@ -1,0 +1,8 @@
+message ContactList {
+    repeated Contact contact = 1;
+}
+
+message Contact {
+    optional string name    = 1;
+    required string address = 2;
+}

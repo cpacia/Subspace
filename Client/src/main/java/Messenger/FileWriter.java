@@ -60,7 +60,7 @@ public class FileWriter {
         } catch (IOException e) {e.printStackTrace();}
     }
 
-    public void updateGETtime(String address){
+    public void updateGETtime(String address, String timestamp){
         KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
         int index = 0;
         List<KeyRing.Key> keys = b.getKeyList();
@@ -73,10 +73,8 @@ public class FileWriter {
             }
         }
         if (oldKey!=null) {
-            String time = String.valueOf(System.currentTimeMillis());
-            time = time.substring(0, time.length()-3) + "." + time.substring(time.length()-3, time.length());
             KeyRing.Key newKey = KeyRing.Key.newBuilder()
-                    .setTimeOfLastGET(time)
+                    .setTimeOfLastGET(timestamp)
                     .setName(oldKey.getName())
                     .setUploadNode(oldKey.getUploadNode())
                     .setAddress(oldKey.getAddress())

@@ -14,6 +14,7 @@ from kademlia import log
 import datetime
 from bson.objectid import ObjectId
 import json
+import calendar
 
 #start mongodb -> sudo service mongod start
 
@@ -33,6 +34,12 @@ udpserver.setServiceParent(application)
 db = MongoClient().message_database
 messages = db.messages
 messages.ensure_index("timestamp", expireAfterSeconds=3*60)
+
+'''This function is used to go from UTC to unix time with two decimal precision.'''
+def unix_time(utc):
+        epoch = datetime.datetime.utcfromtimestamp(0) - datetime.timedelta(0, 0, 10000)
+        delta = utc - epoch
+        return delta.total_seconds()
 
 class WebResource(resource.Resource):
     def __init__(self, kserver):
@@ -59,7 +66,6 @@ class WebResource(resource.Resource):
         prefix = request.path.split("/")[-1]
         ts = request.args["timestamp"][0]
         utc = datetime.datetime.utcfromtimestamp(float(ts))
-        print utc
         length = len(prefix)
         min = prefix
         max = prefix
@@ -76,6 +82,7 @@ class WebResource(resource.Resource):
                 max = "0" + max
         log.msg("Getting key: %s" % prefix)
         dict = {}
+        timestamp = datetime.datetime.utcfromtimestamp(float(0))
         for post in messages.find(
                                 {
                                     "$and":
@@ -89,9 +96,12 @@ class WebResource(resource.Resource):
                                             }
                                         ]
                                 }):
+
+            if post.get("timestamp") > timestamp:
+                timestamp = post.get("timestamp")
             dict[str(post.get("_id"))] = post.get("message")
-            print post.get("timestamp")
         if bool(dict)==True:
+            dict["timestamp"] = unix_time(post.get("timestamp"))
             respond(json.dumps(dict))
             return server.NOT_DONE_YET
         else:
@@ -132,6 +142,7 @@ class WebResource(resource.Resource):
                     try:
                         map = {}
                         ret = messages.find_one({"_id": ObjectId(postkey)})
+                        map["timestamp"] = unix_time(ret.get("timestamp"))
                         map[str(ret.get("_id"))] = ret.get("message")
                         request.write(json.dumps(map))
                         request.finish()

@@ -2,7 +2,6 @@ message SavedKeys {
 	repeated Key key                    = 1;
 }
 
-
 message Key {
 	required bytes privateKey           = 1;
 	optional bytes publicKey            = 2;

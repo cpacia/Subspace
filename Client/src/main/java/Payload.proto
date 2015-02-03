@@ -8,6 +8,7 @@ message MessageData {
 	required MessageType messageType   = 2;
 	required uint64 timeStamp          = 3;
 	required string UnencryptedMessage = 4;
+	required string name               = 5;
 }
 
 enum MessageType {

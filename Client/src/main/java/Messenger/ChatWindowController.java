@@ -1,6 +1,7 @@
 package Messenger;
 
 import Messenger.Utils.Identicon.Identicon;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -61,12 +62,15 @@ public class ChatWindowController {
     private FileWriter fileWriter = new FileWriter();
     private String toName;
     private boolean iSentLastMessage=false;
+    private boolean scrollToBottom = false;
 
     public void setStage(Stage stage){
         this.stage = stage;
     }
 
     public void initialize(){
+        ChatMessageListener listener = new ChatMessageListener();
+        Main.retriever.addListener(listener);
         ObservableList<String> cbData = FXCollections.observableArrayList("Select your from address");
         FileWriter f = new FileWriter();
         if (f.hasKeys()) {
@@ -183,6 +187,17 @@ public class ChatWindowController {
                 else {btnSend.setDisable(true);}
             }
         });
+
+        scrollPane.vvalueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                if(scrollToBottom) {
+                    scrollPane.setVvalue(scrollPane.getVmax());
+                    scrollToBottom = false;
+                }
+            }
+        });
+
     }
 
     @FXML
@@ -221,6 +236,8 @@ public class ChatWindowController {
             h.setAlignment(Pos.TOP_RIGHT);
             h.setPrefWidth(590);
             scrollVBox.getChildren().add(h);
+            scrollPane.setVvalue(scrollPane.getVmax());
+            scrollToBottom = true;
 
             Message m = new Message(toAddress, txtArea2.getText(), fromKey, Payload.MessageType.CHAT);
             m.send();
@@ -288,5 +305,54 @@ public class ChatWindowController {
         hBox.setMargin(imView2, new Insets(5, 0, 0, 15));
         hBox.setMargin(lblTo, new Insets(15, 0, 0, 0));
         this.stage.setTitle("Chat message");
+    }
+
+    private class ChatMessageListener implements MessageListener {
+
+        public void onMessageReceived(Message m) {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    if (m.getToAddress().toString().equals(fromKey.getAddress())) {
+                        HBox h = new HBox();
+                        Label lblMessage = new Label(m.getDecryptedMessage());
+                        lblMessage.setMaxWidth(400);
+                        lblMessage.setWrapText(true);
+                        lblMessage.setStyle("-fx-text-fill: #a7ec21; -fx-font-size: 16;");
+                        lblMessage.setPadding(new Insets(0, 0, 10, 10));
+                        lblMessage.setAlignment(Pos.CENTER_LEFT);
+                        VBox v = new VBox();
+                        v.setAlignment(Pos.CENTER_LEFT);
+                        Label lblFromName = new Label(m.getSenderName());
+                        lblFromName.setWrapText(true);
+                        lblFromName.setStyle("-fx-text-fill: #f92672; -fx-font-size: 16;");
+                        lblFromName.setPadding(new Insets(10, 0, 0, 10));
+                        v.getChildren().addAll(lblFromName, lblMessage);
+                        ImageView imView = null;
+                        try {
+                            imView = Identicon.generate(m.getFromAddress(), Color.decode("#393939"));
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
+                        imView.setFitWidth(35);
+                        imView.setFitHeight(35);
+                        HBox imageHBox = new HBox();
+                        imageHBox.getChildren().add(imView);
+                        imageHBox.setPadding(new Insets(11, 0, 0, 0));
+                        h.getChildren().addAll(imageHBox, v);
+                        h.setAlignment(Pos.TOP_LEFT);
+                        h.setPrefWidth(590);
+                        h.setPadding(new Insets(0, 0, 0, 20));
+                        scrollVBox.getChildren().add(h);
+                        iSentLastMessage = false;
+                        scrollPane.setVvalue(scrollPane.getVmax());
+                        scrollToBottom = true;
+                    }
+                }
+            });
+        }
+
+        public void onDataReceived(int bytes) {
+        }
     }
 }

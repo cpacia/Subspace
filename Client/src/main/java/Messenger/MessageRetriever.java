@@ -1,31 +1,24 @@
 package Messenger;
 
-import org.bitcoinj.core.AddressFormatException;
-import org.bouncycastle.jce.interfaces.ECPrivateKey;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by chris on 2/1/15.
  */
+
 public class MessageRetriever {
 
+    private List<MessageListener> listeners = new ArrayList<MessageListener>();
     private List<KeyRing.Key> keys;
     private boolean running = false;
     FileWriter writer = new FileWriter();
@@ -52,7 +45,7 @@ public class MessageRetriever {
     }
 
     private void GETfromLocalhost(Address addr){
-        System.out.println(addr.getPrefix());
+        while (true){
             StringBuffer response = null;
             System.out.println("Getting messages after " + writer.getKeyFromAddress(addr.toString()).getTimeOfLastGET());
             try {
@@ -60,17 +53,12 @@ public class MessageRetriever {
                         addr.getPrefix() + "?timestamp=" +
                         writer.getKeyFromAddress(addr.toString()).getTimeOfLastGET());
                 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-                // optional default is GET
                 con.setRequestMethod("GET");
-
                 int responseCode = con.getResponseCode();
-
                 BufferedReader in = new BufferedReader(
                         new InputStreamReader(con.getInputStream()));
                 String inputLine;
                 response = new StringBuffer();
-
                 while ((inputLine = in.readLine()) != null) {
                     response.append(inputLine);
                 }
@@ -79,35 +67,33 @@ public class MessageRetriever {
                 e.printStackTrace();
             }
             System.out.println(addr.toString() + ": " + response.toString());
+            JSONObject resp = null;
+            String ts = "0";
             try {
-                //print result
-
-                JSONObject resp = new JSONObject(response.toString());
-                Iterator<?> keys = resp.keys();
-
-                while (keys.hasNext()) {
-                    String key = (String) keys.next();
-                    String payloadString = resp.getString(key);
-                    byte[] encrypted = hexStringToByteArray(payloadString);
-                    Cipher c = Cipher.getInstance("ECIESwithAES-CBC");
-
-                    // Testing with null parameters and DHAES mode off
+                resp = new JSONObject(response.toString());
+                ts = resp.getString("timestamp");
+            } catch (JSONException e){e.printStackTrace();}
+            writer.updateGETtime(addr.toString(), ts);
+            Iterator<?> keys = resp.keys();
+            while (keys.hasNext()) {
+                String key = (String) keys.next();
+                if (!key.equals("timestamp")) {
+                    String payloadString = "";
+                    try{payloadString = resp.getString(key);}
+                    catch (JSONException e){e.printStackTrace();}
+                    byte[] cipherText = hexStringToByteArray(payloadString);
                     byte[] privKey = writer.getKeyFromAddress(addr.toString()).getPrivateKey().toByteArray();
-                    c.init(Cipher.DECRYPT_MODE, ECKey.fromPrivOnly(privKey).getPrivKey(), new SecureRandom());
-                    byte[] decrypted = c.doFinal(encrypted, 0, encrypted.length);
-                    Payload.SignedPayload payload = Payload.SignedPayload.parseFrom(decrypted);
-                    Payload.MessageData data = Payload.MessageData.parseFrom(payload.getSerializedMessageData());
-                    System.out.println(addr.toString() + ": " + data.getUnencryptedMessage());
+                    ECKey decryptKey = ECKey.fromPrivOnly(privKey);
+                    Message m = new Message(cipherText, decryptKey.getPrivKey(), addr);
+                    if (m.isMessageForMe()) {
+                        for (MessageListener l : listeners){l.onMessageReceived(m);}
+                        System.out.println("Received a message from " + m.getSenderName() + ": " + m.getDecryptedMessage());
+                    }
                 }
-
-            } catch (IOException | JSONException | IllegalBlockSizeException
-                    | BadPaddingException | InvalidKeyException | NoSuchAlgorithmException
-                    | NoSuchPaddingException e) {
-                System.out.println(addr.toString() + ": Message not intended for us");
             }
-            writer.updateGETtime(addr.toString());
-            System.out.println("finished");
-
+            try {Thread.sleep(500);}
+            catch (InterruptedException e) {e.printStackTrace();}
+        }
     }
 
     private void GETfromTOR(){
@@ -129,6 +115,10 @@ public class MessageRetriever {
             }
         } catch (IndexOutOfBoundsException e){data = new byte[]{0x00, 0x00};}
         return data;
+    }
+
+    public void addListener(MessageListener l){
+        listeners.add(l);
     }
 
 }
