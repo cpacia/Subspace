@@ -25,22 +25,17 @@ package Messenger;
 // $HeadURL: $
 // $Id: $
 
-        import org.apache.http.HttpEntity;
         import org.apache.http.HttpException;
-        import org.apache.http.HttpResponse;
-        import org.apache.http.entity.ByteArrayEntity;
-        import org.apache.http.util.EntityUtils;
         import org.json.JSONException;
         import org.json.JSONObject;
 
+        import javax.net.ssl.HttpsURLConnection;
         import javax.net.ssl.SSLSocket;
         import javax.net.ssl.SSLSocketFactory;
         import java.io.*;
-        import java.net.InetAddress;
-        import java.net.Socket;
+        import java.net.*;
         import java.nio.charset.Charset;
         import java.nio.file.Files;
-        import java.nio.file.Path;
         import java.nio.file.Paths;
 
 /**
@@ -168,6 +163,7 @@ public class TorLib {
             catch (Exception e) {e.printStackTrace(); }
         }
     }
+
 
     /**
      * This method makes a http GET request for the specified resource to the specified hostname.
@@ -371,4 +367,13 @@ public class TorLib {
         return(retval);
 
     }
+
+    public abstract class TorSSLSocketFactory extends SSLSocketFactory {
+        @Override
+        public Socket createSocket(Socket s, String hostname, int port, boolean autoClose) throws IOException{
+            Socket socket = TorSocket(hostname, port);
+            return socket;
+        }
+    }
+
 }

@@ -1,0 +1,44 @@
+message ChatConversationList {
+    repeated ChatConversation conversation = 1;
+}
+
+message ChatConversation {
+    repeated ChatMessage chatMessage = 1;
+    required string conversationID = 2;
+}
+
+message ChatMessage {
+    required bool sentFromMe       = 1;
+    required string name           = 2;
+    required string content        = 3;
+    required uint64 timestamp      = 4;
+
+}
+
+message EmailList {
+    repeated EmailMessage emailMessage = 1;
+}
+
+message EmailMessage {
+
+}
+
+message GroupChatList{
+    repeated GroupChat chat = 1;
+}
+
+message GroupChat {
+    required ChatRoom chatRoom            = 1;
+    repeated RoomMessage chatRoomMessages = 2;
+}
+
+message ChatRoom{
+    required string roomName      = 1;
+    optional bytes roomPrivateKey = 2;
+    optional bytes roomPublicKey  = 3;
+    required string timeOfLastGET = 4;
+}
+
+message RoomMessage{
+
+}

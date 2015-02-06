@@ -5,5 +5,6 @@ package Messenger;
  */
 public interface MessageListener {
     void onMessageReceived(Message m);
+    void onMessageSent(Message m);
     void onDataReceived(int bytes);
 }

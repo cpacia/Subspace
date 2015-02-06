@@ -28,6 +28,7 @@ import javafx.stage.Stage;
 import org.bitcoinj.core.AddressFormatException;
 
 import java.awt.*;
+import java.util.List;
 
 
 /**
@@ -54,6 +55,7 @@ public class ChatWindowController {
     @FXML
     ChoiceBox cbAddrs;
 
+    private String conversationID;
     private VBox scrollVBox = new VBox();
     private boolean shift = false;
     private Address toAddress;
@@ -198,7 +200,6 @@ public class ChatWindowController {
                 }
             }
         });
-
     }
 
     @FXML
@@ -242,6 +243,9 @@ public class ChatWindowController {
 
             Message m = new Message(toAddress, txtArea2.getText(), fromKey, Payload.MessageType.CHAT);
             m.send();
+            MessageListener l = Main.controller.getListener();
+            fileWriter.addChatMessage(conversationID, m, true);
+            l.onMessageSent(m);
             txtArea2.clear();
             iSentLastMessage = true;
 
@@ -262,9 +266,12 @@ public class ChatWindowController {
         try{toAddress = new Address(txtAddress.getText().toString());}
         catch(AddressFormatException e){e.printStackTrace();}
         fromKey = fileWriter.getKeyFromAddress(cbAddrs.getValue().toString());
-
+        conversationID = this.fromKey.getAddress() + txtAddress.getText().toString();
         Message m = new Message(toAddress, txtArea1.getText(), fromKey, Payload.MessageType.CHAT);
         m.send();
+        MessageListener l = Main.controller.getListener();
+        l.onMessageSent(m);
+        fileWriter.newChatConversation(conversationID, m);
 
         iSentLastMessage = true;
         paneOne.setVisible(false);
@@ -308,12 +315,14 @@ public class ChatWindowController {
         this.stage.setTitle("Chat message");
     }
 
-    private class ChatMessageListener implements MessageListener {
 
+    private class ChatMessageListener implements MessageListener {
         public void onMessageReceived(Message m) {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
+                    System.out.println(m.getToAddress().toString());
+                    System.out.println(fromKey.getAddress());
                     if (m.getToAddress().toString().equals(fromKey.getAddress()) && m.getMessageType()== Payload.MessageType.CHAT) {
                         HBox h = new HBox();
                         Label lblMessage = new Label(m.getDecryptedMessage());
@@ -347,17 +356,19 @@ public class ChatWindowController {
                         h.setPrefWidth(590);
                         h.setPadding(new Insets(0, 0, 0, 20));
                         lblTo.setText("  " + m.getSenderName());
-                        scrollVBox.getChildren(c).add(h);
+                        scrollVBox.getChildren().add(h);
                         stage.setTitle("Chat with " + m.getSenderName());
                         iSentLastMessage = false;
                         scrollPane.setVvalue(scrollPane.getVmax());
                         scrollToBottom = true;
+                        fileWriter.addChatMessage(conversationID, m, false);
                     }
                 }
             });
         }
 
-        public void onDataReceived(int bytes) {
-        }
+        public void onMessageSent(Message m) {}
+
+        public void onDataReceived(int bytes) {}
     }
 }

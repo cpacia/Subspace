@@ -15,18 +15,18 @@ public class FileWriter {
 
     File keyRingFile;
     String keyFilePath;
+    File messageFile;
+    String messageFilePath;
+
 
     public FileWriter() {
         keyFilePath = Main.params.getApplicationDataFolder() + "/keyring.dat";
         keyRingFile = new File(keyFilePath);
         try{if (!keyRingFile.exists()){keyRingFile.createNewFile();}}
         catch (IOException e){e.printStackTrace();}
-    }
-
-    public FileWriter(String keyFilePath) {
-        this.keyFilePath = keyFilePath;
-        keyRingFile = new File(keyFilePath);
-        try{if (!keyRingFile.exists()){keyRingFile.createNewFile();}}
+        messageFilePath = Main.params.getApplicationDataFolder() + "/messages.dat";
+        messageFile = new File(messageFilePath);
+        try{if (!messageFile.exists()){messageFile.createNewFile();}}
         catch (IOException e){e.printStackTrace();}
     }
 
@@ -40,6 +40,19 @@ public class FileWriter {
     private synchronized void writeKeyFile(KeyRing.SavedKeys.Builder savedKeys) throws IOException{
         FileOutputStream output = new FileOutputStream(keyFilePath);
         savedKeys.build().writeDelimitedTo(output);
+        output.close();
+    }
+
+    private synchronized History.ChatConversationList.Builder getMessageFileBuilder() {
+        History.ChatConversationList.Builder savedMessages = History.ChatConversationList.newBuilder();
+        try{savedMessages.mergeDelimitedFrom(new FileInputStream(messageFilePath)); }
+        catch(Exception e){e.printStackTrace();}
+        return savedMessages;
+    }
+
+    private synchronized void writeMessageFile(History.ChatConversationList.Builder savedMessages) throws IOException{
+        FileOutputStream output = new FileOutputStream(messageFilePath);
+        savedMessages.build().writeDelimitedTo(output);
         output.close();
     }
 
@@ -64,32 +77,19 @@ public class FileWriter {
         KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
         int index = 0;
         List<KeyRing.Key> keys = b.getKeyList();
-        KeyRing.Key oldKey = null;
         for (KeyRing.Key key : keys){
             if (key.getAddress().equals(address)){
                 index = keys.indexOf(key);
-                oldKey = key;
                 break;
             }
         }
-        if (oldKey!=null) {
-            KeyRing.Key newKey = KeyRing.Key.newBuilder()
-                    .setTimeOfLastGET(timestamp)
-                    .setName(oldKey.getName())
-                    .setUploadNode(oldKey.getUploadNode())
-                    .setAddress(oldKey.getAddress())
-                    .setPrefixLength(oldKey.getPrefixLength())
-                    .setPublicKey(oldKey.getPublicKey())
-                    .setPrivateKey(oldKey.getPrivateKey())
-                    .build();
-            b.removeKey(index);
-            b.addKey(index, newKey);
-            try {
-                writeKeyFile(b);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        KeyRing.Key.Builder newKey = KeyRing.Key.newBuilder();
+        newKey.mergeFrom(b.getKey(index));
+        newKey.setTimeOfLastGET(timestamp);
+        b.removeKey(index);
+        b.addKey(index, newKey);
+        try { writeKeyFile(b);}
+        catch (IOException e) {e.printStackTrace();}
     }
 
     public boolean hasKeys(){
@@ -137,4 +137,55 @@ public class FileWriter {
         }
         return null;
     }
+
+    public void newChatConversation(String conversationID, Message m){
+        History.ChatMessage chatMessage = History.ChatMessage.newBuilder()
+                .setContent(m.getDecryptedMessage())
+                .setName(m.getSenderName())
+                .setTimestamp(m.getTimeStamp())
+                .setSentFromMe(true).build();
+        History.ChatConversation conversation = History.ChatConversation.newBuilder()
+                .addChatMessage(chatMessage)
+                .setConversationID(conversationID).build();
+        History.ChatConversationList.Builder builder = getMessageFileBuilder();
+        builder.addConversation(conversation);
+        try {writeMessageFile(builder);
+        } catch (IOException e) {e.printStackTrace();}
+    }
+
+    public void addChatMessage(String conversationID, Message m, boolean isSentFromMe){
+        History.ChatMessage chatMessage = History.ChatMessage.newBuilder()
+                .setContent(m.getDecryptedMessage())
+                .setName(m.getSenderName())
+                .setTimestamp(m.getTimeStamp())
+                .setSentFromMe(isSentFromMe).build();
+        History.ChatConversationList.Builder builder = getMessageFileBuilder();
+        List<History.ChatConversation> conversations = builder.getConversationList();
+        int index = 0;
+        for (History.ChatConversation convo: conversations){
+            if (convo.getConversationID().equals(conversationID)){
+                index = conversations.indexOf(convo);
+                break;
+            }
+        }
+        History.ChatConversation.Builder convoBuilder = History.ChatConversation.newBuilder();
+        convoBuilder.mergeFrom(builder.getConversation(index));
+        convoBuilder.addChatMessage(chatMessage);
+        builder.removeConversation(index);
+        builder.addConversation(index, convoBuilder);
+        try {writeMessageFile(builder);
+        } catch (IOException e) {e.printStackTrace();}
+    }
+
+    public boolean conversationAlreadyExists(String conversationID){
+        History.ChatConversationList.Builder builder = getMessageFileBuilder();
+        List<History.ChatConversation> conversations = builder.getConversationList();
+        for (History.ChatConversation convo: conversations){
+            if (convo.getConversationID().equals(conversationID)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

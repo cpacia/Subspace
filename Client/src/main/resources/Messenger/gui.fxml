@@ -8,7 +8,7 @@
 
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="990.0" style="-fx-background-color: #4d5052;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Messenger.Controller">
    <children>
-      <ListView fx:id="chatList" layoutX="-1.0" layoutY="94.0" prefHeight="507.0" prefWidth="252.0" style="-fx-background-color: #393939;" />
+      <ListView fx:id="chatList" layoutX="-1.0" layoutY="94.0" prefHeight="507.0" prefWidth="253.0" style="-fx-background-color: #393939;" />
       <Button fx:id="btnChat" layoutY="6.0" mnemonicParsing="false" onAction="#chatClick" prefHeight="27.0" prefWidth="51.0" style="-fx-background-color: transparent; -fx-background-radius: 0;">
          <graphic>
             <ImageView fitHeight="50.0" fitWidth="47.0" pickOnBounds="true" preserveRatio="true">

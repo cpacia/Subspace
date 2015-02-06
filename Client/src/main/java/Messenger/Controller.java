@@ -1,5 +1,6 @@
 package Messenger;
 
+import Messenger.Utils.Identicon.Identicon;
 import com.subgraph.orchid.TorClient;
 import com.subgraph.orchid.TorInitializationListener;
 import javafx.application.Platform;
@@ -9,27 +10,33 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.animation.TranslateTransition;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.animation.ParallelTransition;
 import Messenger.Utils.easing.EasingMode;
 import Messenger.Utils.easing.ElasticInterpolator;
 import org.controlsfx.control.PopOver;
-import org.json.JSONException;
-import org.json.JSONObject;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,18 +63,17 @@ public class Controller {
     private Label lblNewMessage;
     private PopOver pop;
     private boolean readyToGo = false;
+    private ObservableList<HBox> chatListData;
+    private HBox chatInit = new HBox();
+    private AllMessageListener messageListener = new AllMessageListener();
+    private FileWriter writer;
+    private List<String> chatConversationIDs = new ArrayList<String>();
 
     public void initialize() {
-        ObservableList<String> data = FXCollections.observableArrayList();
-        data.add("init");
-        chatList.setItems(data);
-        chatList.setCellFactory(new Callback<ListView<String>,ListCell<String>>() {
-                                    @Override
-                                    public ListCell<String> call(ListView<String> list) {
-                                        return new ChatListCell();
-                                    }
-                                }
-        );
+        writer = new FileWriter();
+        chatListData = FXCollections.observableArrayList();
+        chatListData.add(chatInit);
+        chatList.setItems(chatListData);
         TorListener listener = new TorListener();
         TorClient tor = Main.torClient;
         if(tor != null) {
@@ -154,6 +160,8 @@ public class Controller {
             pop.setHideOnEscape(true);
         }
         readyToGo = true;
+        Main.retriever.start();
+
     }
 
     void setEmailTab1(){
@@ -295,7 +303,7 @@ public class Controller {
                 stage.setY(200);
                 stage.setScene(new Scene(addressUI, 582, 386));
                 stage.setResizable(false);
-                String file = Main.class.getResource("gui.css").toString();
+                String file = Main.class.getResource("addresses.css").toString();
                 stage.getScene().getStylesheets().add(file);
                 stage.show();
 
@@ -324,4 +332,62 @@ public class Controller {
             });
         }
     }
+
+    public AllMessageListener getListener(){
+        return this.messageListener;
+    }
+
+    private class AllMessageListener implements MessageListener {
+        @Override
+        public void onMessageSent(Message m) {
+
+            if (m.getMessageType() == Payload.MessageType.CHAT) {
+                if (!chatConversationIDs.contains(m.getFromAddress() + m.getToAddress().toString())) {
+                    chatListData.remove(chatInit);
+                    chatConversationIDs.add(m.getFromAddress() + m.getToAddress().toString());
+                    HBox h = new HBox();
+                    Label lblMessage = new Label(m.getDecryptedMessage());
+                    lblMessage.setMaxWidth(235);
+                    lblMessage.setStyle("-fx-text-fill: #a7ec21; -fx-font-size: 16;");
+                    lblMessage.setPadding(new Insets(0, 0, 3, 10));
+                    lblMessage.setAlignment(Pos.CENTER_LEFT);
+                    VBox v = new VBox();
+                    v.setAlignment(Pos.CENTER_LEFT);
+                    Label lblFromName = new Label(m.getSenderName());
+                    lblFromName.setWrapText(true);
+                    lblFromName.setStyle("-fx-text-fill: #f92672; -fx-font-size: 16;");
+                    lblFromName.setPadding(new Insets(10, 0, 0, 10));
+                    v.getChildren().addAll(lblFromName, lblMessage);
+                    ImageView imView = null;
+                    try {
+                        imView = Identicon.generate(m.getFromAddress(), Color.decode("#393939"));
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                    imView.setFitWidth(35);
+                    imView.setFitHeight(35);
+                    HBox imageHBox = new HBox();
+                    imageHBox.getChildren().add(imView);
+                    imageHBox.setPadding(new Insets(11, 0, 0, 0));
+                    h.getChildren().addAll(imageHBox, v);
+                    h.setAlignment(Pos.TOP_LEFT);
+                    h.setPrefWidth(235);
+                    h.setPadding(new Insets(0, 0, 0, 3));
+                    chatListData.add(h);
+                }
+            }
+        }
+
+        @Override
+        public void onMessageReceived(Message m) {
+
+        }
+
+        @Override
+        public void onDataReceived(int bytes) {
+
+        }
+    }
+
+
 }

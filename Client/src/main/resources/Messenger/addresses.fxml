@@ -16,7 +16,7 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <ListView fx:id="addressList" prefHeight="350.0" prefWidth="582.0" style="-fx-background-color: #393939;" />
+                              <ListView fx:id="addressList" prefHeight="350.0" prefWidth="582.0" style="-fx-background-color: #393939;"/>
                               <Button fx:id="btnAddAddress" layoutX="483.0" layoutY="268.0" mnemonicParsing="false" onAction="#newAddress" onMousePressed="#addButtonPress" onMouseReleased="#addButtonRelease" style="-fx-background-color: transparent; -fx-cursor: hand;">
                                  <graphic>
                                     <ImageView fitHeight="73.0" fitWidth="73.0" pickOnBounds="true" preserveRatio="true">

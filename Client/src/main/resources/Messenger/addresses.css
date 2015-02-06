@@ -60,7 +60,7 @@
 
 .list-cell {
     -fx-background-color: #3b3b3b;
-    -fx-cell-size: 75;
+    -fx-cell-size: 35;
 }
 
 .list-cell:even {
