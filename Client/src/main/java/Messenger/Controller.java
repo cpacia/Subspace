@@ -13,20 +13,24 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.animation.TranslateTransition;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import javafx.animation.ParallelTransition;
 import Messenger.Utils.easing.EasingMode;
@@ -59,7 +63,7 @@ public class Controller {
     @FXML
     Button btnAddress;
     @FXML
-    private Label lblNewMessage;
+    Label lblNewMessage;
     private PopOver pop;
     private boolean readyToGo = false;
     private ObservableList<HBox> chatListData;
@@ -67,6 +71,7 @@ public class Controller {
     private AllMessageListener messageListener = new AllMessageListener();
     private FileWriter writer;
     private List<String> chatConversationIDs = new ArrayList<String>();
+    private List<String> openChatWindows = new ArrayList<String>();
 
     public void initialize() {
         writer = new FileWriter();
@@ -102,10 +107,8 @@ public class Controller {
             }
         });
         chatList.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
             @Override
             public void handle(MouseEvent click) {
-
                 if (click.getClickCount() == 2) {
                     int index = chatList.getSelectionModel().getSelectedIndex();
                     Parent root;
@@ -132,7 +135,18 @@ public class Controller {
                 }
             }
         });
-
+        MenuItem delete = new MenuItem("Delete");
+        ContextMenu contextMenu = new ContextMenu(delete);
+        chatList.setCellFactory(ContextMenuListCell.forListView(contextMenu));
+        delete.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                if (chatList.getSelectionModel().getSelectedIndex()<= chatConversationIDs.size()-1) {
+                    String cID = chatConversationIDs.get(chatList.getSelectionModel().getSelectedIndex());
+                    writer.deleteConversation(cID);
+                    updateChatListView();
+                }
+            }
+        });
     }
 
     public void readyToGoAnimation() {
@@ -329,6 +343,14 @@ public class Controller {
         }
     }
 
+    public void addChatWindow(String cID){
+        this.openChatWindows.add(cID);
+    }
+
+    public void removeChatWindow(String cID){
+        this.openChatWindows.remove(cID);
+    }
+
     public class TorListener implements TorInitializationListener {
 
         @Override
@@ -398,9 +420,11 @@ public class Controller {
                 @Override
                 public void run() {
                     if (m.getMessageType() == Payload.MessageType.CHAT) {
-                        Notification info = new Notification("Subspace", "New chat message from " + m.getSenderName());
-                        Notification.Notifier.INSTANCE.notify(info);
                         String cID = m.getToAddress().toString() + m.getFromAddress();
+                        if (!openChatWindows.contains(cID)) {
+                            Notification info = new Notification("Subspace", "New chat message from " + m.getSenderName());
+                            Notification.Notifier.INSTANCE.notify(info);
+                        }
                         if (!writer.conversationExists(cID)) {
                             writer.newChatConversation(cID, m, m.getSenderName(),
                                     m.getFromAddress(), m.getToAddress().toString(), false);
@@ -471,5 +495,47 @@ public class Controller {
         h.setPrefWidth(235);
         h.setPadding(new Insets(0, 0, 0, 3));
         chatListData.add(h);
+    }
+
+    public static class ContextMenuListCell<T> extends ListCell<T> {
+
+        public static <T> Callback<ListView<T>,ListCell<T>> forListView(ContextMenu contextMenu) {
+            return forListView(contextMenu, null);
+        }
+
+        public static <T> Callback<ListView<T>,ListCell<T>> forListView(final ContextMenu contextMenu, final Callback<ListView<T>,ListCell<T>> cellFactory) {
+            return new Callback<ListView<T>,ListCell<T>>() {
+                @Override public ListCell<T> call(ListView<T> listView) {
+                    ListCell<T> cell = cellFactory == null ? new DefaultListCell<T>() : cellFactory.call(listView);
+                    cell.setContextMenu(contextMenu);
+                    return cell;
+                }
+            };
+        }
+
+        public ContextMenuListCell(ContextMenu contextMenu) {
+            setContextMenu(contextMenu);
+        }
+    }
+
+    public static class DefaultListCell<T> extends ListCell<T> {
+        @Override public void updateItem(T item, boolean empty) {
+            super.updateItem(item, empty);
+
+            if (empty) {
+                setText(null);
+                setGraphic(null);
+            } else if (item instanceof Node) {
+                setText(null);
+                Node currentNode = getGraphic();
+                Node newNode = (Node) item;
+                if (currentNode == null || ! currentNode.equals(newNode)) {
+                    setGraphic(newNode);
+                }
+            } else {
+                setText(item == null ? "null" : item.toString());
+                setGraphic(null);
+            }
+        }
     }
 }

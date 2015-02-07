@@ -28,7 +28,6 @@ import javafx.stage.Stage;
 import org.bitcoinj.core.AddressFormatException;
 
 import java.awt.*;
-import java.util.List;
 
 
 /**
@@ -68,6 +67,9 @@ public class ChatWindowController {
 
     public void setStage(Stage stage){
         this.stage = stage;
+        stage.setOnCloseRequest(event -> {
+            Main.controller.removeChatWindow(conversationID);
+        });
     }
 
     public void initialize(){
@@ -261,6 +263,7 @@ public class ChatWindowController {
         catch(AddressFormatException e){e.printStackTrace();}
         fromKey = fileWriter.getKeyFromAddress(fromAddress);
         conversationID = this.fromKey.getAddress() + txtAddress.getText().toString();
+        Main.controller.addChatWindow(conversationID);
         paneOne.setVisible(false);
         paneTwo.setVisible(true);
         lblTo.setText("  " + toAddress.toString());
@@ -282,7 +285,8 @@ public class ChatWindowController {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    if (m.getToAddress().toString().equals(fromKey.getAddress()) && m.getMessageType()== Payload.MessageType.CHAT) {
+                    String cID = m.getToAddress().toString() + m.getFromAddress();
+                    if (cID.equals(conversationID) && m.getMessageType()== Payload.MessageType.CHAT) {
                         showIncomingMessage(m.getDecryptedMessage(), m.getSenderName(), m.getFromAddress());
                     }
                 }

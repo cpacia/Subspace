@@ -158,7 +158,6 @@ public class FileWriter {
     }
 
     public void addChatMessage(String conversationID, Message m, boolean isSentFromMe){
-        System.out.println(m.getTimeStamp());
         History.ChatMessage chatMessage = History.ChatMessage.newBuilder()
                 .setContent(m.getDecryptedMessage())
                 .setName(m.getSenderName())
@@ -217,6 +216,19 @@ public class FileWriter {
             }
         }
         return null;
+    }
+
+    public void deleteConversation(String conversationID){
+        History.ChatConversationList.Builder builder = getMessageFileBuilder();
+        List<History.ChatConversation> conversations = builder.getConversationList();
+        for (History.ChatConversation convo: conversations){
+            if (convo.getConversationID().equals(conversationID)){
+                builder.removeConversation(conversations.indexOf(convo));
+                break;
+            }
+        }
+        try {writeMessageFile(builder);
+        } catch (IOException e) {e.printStackTrace();}
     }
 
     public List<History.ChatConversation> getSavedCoversations(){
