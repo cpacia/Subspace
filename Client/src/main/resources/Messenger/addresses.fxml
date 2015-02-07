@@ -57,9 +57,13 @@
                         <Font size="11.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtName" layoutX="38.0" layoutY="33.0" prefHeight="25.0" prefWidth="390.0" style="-fx-background-color: #4d5052; -fx-text-fill: #d8d9d7;" />
-                  <Button fx:id="btnAddressCancel" layoutX="114.0" layoutY="284.0" mnemonicParsing="false" onAction="#addressCancelClicked" onMousePressed="#cancelButtonPressed" onMouseReleased="#cancelButtonReleased" prefHeight="25.0" prefWidth="92.0" style="-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;" text="Cancel" />
-                  <Button fx:id="btnAddressDone" layoutX="259.0" layoutY="282.0" mnemonicParsing="false" onAction="#addressDoneClicked" prefHeight="25.0" prefWidth="92.0" onMousePressed="#doneButtonPressed" onMouseReleased="#doneButtonReleased" style="-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;" text="Done" />
+                   <HBox fx:id="addKeyHBox" layoutX="38.0" layoutY="33.0">
+                       <children>
+                            <TextField fx:id="txtName"  prefHeight="25.0" prefWidth="390.0" style="-fx-background-color: #4d5052; -fx-text-fill: #d8d9d7;" />
+                       </children>
+                   </HBox>
+                   <Button fx:id="btnAddressCancel" layoutX="114.0" layoutY="284.0" mnemonicParsing="false" onAction="#addressCancelClicked" onMousePressed="#cancelButtonPressed" onMouseReleased="#cancelButtonReleased" prefHeight="25.0" prefWidth="92.0" style="-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;" text="Cancel" />
+                  <Button fx:id="btnAddressDone" layoutX="259.0" layoutY="282.0" mnemonicParsing="false" onAction="#addressDoneClicked" prefHeight="25.0" prefWidth="92.0" onMousePressed="#doneButtonPressed" onMouseReleased="#doneButtonReleased" style="-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;" text="Done" disable="true"/>
                   <Slider fx:id="prefixSlider" blockIncrement="1.0" layoutX="37.0" layoutY="140.0" majorTickUnit="6.0" max="32.0" minorTickCount="6" prefHeight="15.0" prefWidth="390.0" showTickLabels="true" showTickMarks="true" />
                   <Label layoutX="36.0" layoutY="110.0" prefHeight="15.0" prefWidth="92.0" style="-fx-text-fill: #dc78dc;" text="Prefix Length:" />
                   <Label layoutX="38.0" layoutY="170.0" prefHeight="43.0" prefWidth="390.0" style="-fx-text-fill: #00d0d0;" text="Each additional bit in your prefix reduces your bandwidth usage by 50% while also reducing your anonymity set by 50%." wrapText="true">

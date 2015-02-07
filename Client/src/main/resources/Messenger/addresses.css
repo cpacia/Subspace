@@ -22,6 +22,15 @@
     -fx-text-fill: white;
 }
 .choice-box .context-menu {
+    -fx-background-color: #393939;
+    -fx-text-fill: #dc78dc;
+}
+
+.choice-box .menu-item .label {
+    -fx-text-fill: #dc78dc;
+}
+
+.choice-box .menu-item:focused {
     -fx-background-color: #4d5052;
 }
 
@@ -89,4 +98,17 @@
 .scroll-bar:vertical .thumb {
     -fx-background-color: #393939;
     -fx-background-radius: 0em;
+}
+
+.context-menu {
+    -fx-background-color: #393939;
+    -fx-text-fill: #dc78dc;
+}
+
+.menu-item .label {
+    -fx-text-fill: #dc78dc;
+}
+
+.menu-item:focused {
+    -fx-background-color: #4d5052;
 }

@@ -33,6 +33,7 @@
     <orderEntry type="library" name="Maven: org.bitcoinj:orchid:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.6" level="project" />
     <orderEntry type="library" name="Maven: org.controlsfx:controlsfx:8.0.6_20" level="project" />
+    <orderEntry type="library" name="Maven: org.controlsfx:openjfx-dialogs:1.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcpg-jdk15on:1.51" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.51" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:16.0.1" level="project" />

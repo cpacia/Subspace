@@ -333,6 +333,8 @@ public class Controller {
                 stage.setY(200);
                 stage.setScene(new Scene(addressUI, 582, 386));
                 stage.setResizable(false);
+                AddressWindowController controller = (AddressWindowController) loader.getController();
+                controller.setStage(stage);
                 String file = Main.class.getResource("addresses.css").toString();
                 stage.getScene().getStylesheets().add(file);
                 stage.show();

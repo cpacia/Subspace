@@ -73,6 +73,21 @@ public class FileWriter {
         } catch (IOException e) {e.printStackTrace();}
     }
 
+    public void deleteKey(String address){
+        KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
+        int index = 0;
+        List<KeyRing.Key> keys = b.getKeyList();
+        for (KeyRing.Key key : keys){
+            if (key.getAddress().equals(address)){
+                index = keys.indexOf(key);
+                break;
+            }
+        }
+        b.removeKey(index);
+        try { writeKeyFile(b);}
+        catch (IOException e) {e.printStackTrace();}
+    }
+
     public void updateGETtime(String address, String timestamp){
         KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
         int index = 0;
