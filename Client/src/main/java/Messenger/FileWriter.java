@@ -138,15 +138,19 @@ public class FileWriter {
         return null;
     }
 
-    public void newChatConversation(String conversationID, Message m){
+    public void newChatConversation(String conversationID, Message m, String theirName, String theirAddress,
+                                    String myAddress, boolean sentFromMe){
         History.ChatMessage chatMessage = History.ChatMessage.newBuilder()
                 .setContent(m.getDecryptedMessage())
                 .setName(m.getSenderName())
                 .setTimestamp(m.getTimeStamp())
-                .setSentFromMe(true).build();
+                .setSentFromMe(sentFromMe).build();
         History.ChatConversation conversation = History.ChatConversation.newBuilder()
                 .addChatMessage(chatMessage)
-                .setConversationID(conversationID).build();
+                .setConversationID(conversationID)
+                .setTheirAddress(theirAddress)
+                .setTheirName(theirName)
+                .setMyAddress(myAddress).build();
         History.ChatConversationList.Builder builder = getMessageFileBuilder();
         builder.addConversation(conversation);
         try {writeMessageFile(builder);
@@ -154,6 +158,7 @@ public class FileWriter {
     }
 
     public void addChatMessage(String conversationID, Message m, boolean isSentFromMe){
+        System.out.println(m.getTimeStamp());
         History.ChatMessage chatMessage = History.ChatMessage.newBuilder()
                 .setContent(m.getDecryptedMessage())
                 .setName(m.getSenderName())
@@ -171,13 +176,17 @@ public class FileWriter {
         History.ChatConversation.Builder convoBuilder = History.ChatConversation.newBuilder();
         convoBuilder.mergeFrom(builder.getConversation(index));
         convoBuilder.addChatMessage(chatMessage);
+        if (!isSentFromMe){
+            convoBuilder.setTheirName(m.getSenderName());
+            convoBuilder.setTheirAddress(m.getFromAddress());
+        }
         builder.removeConversation(index);
         builder.addConversation(index, convoBuilder);
         try {writeMessageFile(builder);
         } catch (IOException e) {e.printStackTrace();}
     }
 
-    public boolean conversationAlreadyExists(String conversationID){
+    public boolean conversationExists(String conversationID){
         History.ChatConversationList.Builder builder = getMessageFileBuilder();
         List<History.ChatConversation> conversations = builder.getConversationList();
         for (History.ChatConversation convo: conversations){
@@ -186,6 +195,33 @@ public class FileWriter {
             }
         }
         return false;
+    }
+
+    public String getNameFromConversation(String conversationID){
+        History.ChatConversationList.Builder builder = getMessageFileBuilder();
+        List<History.ChatConversation> conversations = builder.getConversationList();
+        for (History.ChatConversation convo: conversations){
+            if (convo.getConversationID().equals(conversationID)){
+                return convo.getTheirName();
+            }
+        }
+        return "";
+    }
+
+    public History.ChatConversation getConversation(String conversationID){
+        History.ChatConversationList.Builder builder = getMessageFileBuilder();
+        List<History.ChatConversation> conversations = builder.getConversationList();
+        for (History.ChatConversation convo: conversations){
+            if (convo.getConversationID().equals(conversationID)){
+                return convo;
+            }
+        }
+        return null;
+    }
+
+    public List<History.ChatConversation> getSavedCoversations(){
+        History.ChatConversationList.Builder builder = getMessageFileBuilder();
+        return builder.getConversationList();
     }
 
 }

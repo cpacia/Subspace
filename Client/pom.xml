@@ -73,6 +73,11 @@
             <version>4.3.6</version>
         </dependency>
         <dependency>
+            <groupId>eu.hansolo.enzo</groupId>
+            <artifactId>Enzo</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20080701</version>

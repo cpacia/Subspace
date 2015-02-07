@@ -3,6 +3,7 @@ package Messenger;
 import com.subgraph.orchid.TorClient;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -42,6 +43,8 @@ public class Main extends Application {
         primaryStage.show();
         primaryStage.setOnCloseRequest(event -> {
             torClient.stop();
+            retriever.stop();
+            Platform.exit();
         });
     }
 

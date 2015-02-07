@@ -133,7 +133,7 @@ For each message under the quota, the server blind signs a token and returns it 
 
 When sending a message, the client attaches an unblinded token.
 
-Server verifies its signature and inserts the message into the DHT.
+Server verifies its signature, saves the message locally, and inserts the message tag into the DHT.
 ```
 
 In this example the server can tell that the message was sent by someone who is under their quota, but it doesn’t know who.
@@ -146,16 +146,16 @@ The network of servers would be subject to classical denial of service attacks. 
 
 ###Summary
 
-1. The above protocol should satisfy all of ours goals.
+The above protocol should satisfy all of ours goals.
 
-2. All messages are encrypted with only the sender and recipient able to decrypt.
+1. All messages are encrypted with only the sender and recipient able to decrypt.
 
-3. The sender’s identity is not attached to the message at all and the only a user-defined number of bits from the recipient address is attached to the message. In other words, no meaningful data is available to passive observers.
+2. The sender’s identity is not attached to the message at all and the only a user-defined number of bits from the recipient address is attached to the message. In other words, no meaningful data is available to passive observers.
 
-4. By splitting the message load among servers (possibly with a financial incentive), the network can scale to handle a very large number of messages.
+3. By splitting the message load among servers (possibly with a financial incentive), the network can scale to handle a very large number of messages.
 
-5. Because the network is server based, servers can implement traditional anti-spam measures without harming user experience.
+4. Because the network is server based, servers can implement traditional anti-spam measures without harming user experience.
 
-6. The protocol supports lightweight queries allowing the user to make the anonymity set/bandwidth tradeoff.
+5. The protocol supports lightweight queries allowing the user to make the anonymity set/bandwidth tradeoff.
 
-7. The protocol supports market based rationing mechanisms where necessary.
+6. The protocol supports market based rationing mechanisms where necessary.

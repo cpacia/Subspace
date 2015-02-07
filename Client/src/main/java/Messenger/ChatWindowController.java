@@ -59,13 +59,12 @@ public class ChatWindowController {
     private VBox scrollVBox = new VBox();
     private boolean shift = false;
     private Address toAddress;
+    private String fromAddress;
     private KeyRing.Key fromKey;
     private Stage stage;
     private FileWriter fileWriter = new FileWriter();
-    private String toName;
-    private boolean iSentLastMessage=false;
     private boolean scrollToBottom = false;
-    private Label lblTo;
+    private Label lblTo = new Label();
 
     public void setStage(Stage stage){
         this.stage = stage;
@@ -202,54 +201,49 @@ public class ChatWindowController {
         });
     }
 
+    public void setConversation(String conversationID){
+        History.ChatConversation conversation = fileWriter.getConversation(conversationID);
+        txtAddress.setText(conversation.getTheirAddress());
+        fromAddress = conversation.getMyAddress();
+        setupPane2();
+        for (History.ChatMessage m : conversation.getChatMessageList()){
+            if (!m.getSentFromMe()){
+                showIncomingMessage(m.getContent(), m.getName(), conversation.getTheirAddress());
+            }
+            else {
+                showOutGoingMessage(m.getContent());
+            }
+        }
+    }
+
     @FXML
     void send(ActionEvent e){
         sendMessage();
     }
 
     void sendMessage(){
-        if (paneOne.isVisible()){setupPane2();}
-        else {
-            HBox h = new HBox();
-            Label lblMessage = new Label(txtArea2.getText());
-            lblMessage.setMaxWidth(400);
-            lblMessage.setWrapText(true);
-            lblMessage.setStyle("-fx-text-fill: #a7ec21; -fx-font-size: 16;");
-            lblMessage.setPadding(new Insets(0, 10, 10, 0));
-            lblMessage.setAlignment(Pos.CENTER_RIGHT);
-            VBox v = new VBox();
-            v.setAlignment(Pos.CENTER_RIGHT);
-            if (!iSentLastMessage) {
-                Label lblFromName = new Label(fromKey.getName());
-                lblFromName.setWrapText(true);
-                lblFromName.setStyle("-fx-text-fill: #f92672; -fx-font-size: 16;");
-                lblFromName.setPadding(new Insets(10, 10, 0, 0));
-                v.getChildren().addAll(lblFromName, lblMessage);
-                ImageView imView = null;
-                try {imView = Identicon.generate(fromKey.getAddress(), Color.decode("#393939"));
-                } catch (Exception e1) {e1.printStackTrace();}
-                imView.setFitWidth(35);
-                imView.setFitHeight(35);
-                HBox imageHBox = new HBox();
-                imageHBox.getChildren().add(imView);
-                imageHBox.setPadding(new Insets(11, 0, 0, 0));
-                h.getChildren().addAll(v, imageHBox);
-            } else {h.getChildren().add(lblMessage);}
-            h.setAlignment(Pos.TOP_RIGHT);
-            h.setPrefWidth(590);
-            scrollVBox.getChildren().add(h);
-            scrollPane.setVvalue(scrollPane.getVmax());
-            scrollToBottom = true;
-
-            Message m = new Message(toAddress, txtArea2.getText(), fromKey, Payload.MessageType.CHAT);
-            m.send();
-            MessageListener l = Main.controller.getListener();
-            fileWriter.addChatMessage(conversationID, m, true);
-            l.onMessageSent(m);
-            txtArea2.clear();
-            iSentLastMessage = true;
-
+        Message m;
+        if (paneOne.isVisible()){
+            this.fromAddress = cbAddrs.getValue().toString();
+            setupPane2();
+            m = new Message(toAddress, txtArea1.getText(), fromKey, Payload.MessageType.CHAT);
+            showOutGoingMessage(txtArea1.getText());
         }
+        else {
+            m = new Message(toAddress, txtArea2.getText(), fromKey, Payload.MessageType.CHAT);
+            showOutGoingMessage(txtArea2.getText());
+        }
+        m.send();
+        if (!fileWriter.conversationExists(conversationID)) {
+            fileWriter.newChatConversation(conversationID, m,
+                    "", m.getToAddress().toString(), m.getFromAddress(), true);
+        }
+        else {
+            fileWriter.addChatMessage(conversationID, m, true);
+        }
+        MessageListener l = Main.controller.getListener();
+        l.onMessageSent(m);
+        txtArea2.clear();
     }
 
     @FXML
@@ -265,44 +259,11 @@ public class ChatWindowController {
     void setupPane2(){
         try{toAddress = new Address(txtAddress.getText().toString());}
         catch(AddressFormatException e){e.printStackTrace();}
-        fromKey = fileWriter.getKeyFromAddress(cbAddrs.getValue().toString());
+        fromKey = fileWriter.getKeyFromAddress(fromAddress);
         conversationID = this.fromKey.getAddress() + txtAddress.getText().toString();
-        Message m = new Message(toAddress, txtArea1.getText(), fromKey, Payload.MessageType.CHAT);
-        m.send();
-        MessageListener l = Main.controller.getListener();
-        l.onMessageSent(m);
-        fileWriter.newChatConversation(conversationID, m);
-
-        iSentLastMessage = true;
         paneOne.setVisible(false);
         paneTwo.setVisible(true);
-        HBox h = new HBox();
-        VBox v = new VBox();
-        v.setAlignment(Pos.CENTER_RIGHT);
-        Label lblMessage = new Label(txtArea1.getText());
-        lblMessage.setMaxWidth(400);
-        lblMessage.setWrapText(true);
-        lblMessage.setStyle("-fx-text-fill: #a7ec21; -fx-font-size: 16;");
-        lblMessage.setPadding(new Insets(0, 10, 10, 0));
-        lblMessage.setAlignment(Pos.CENTER_RIGHT);
-        Label lblFromName = new Label(fromKey.getName());
-        lblFromName.setWrapText(true);
-        lblFromName.setStyle("-fx-text-fill: #f92672; -fx-font-size: 16;");
-        lblFromName.setPadding(new Insets(10, 10, 0, 0));
-        v.getChildren().addAll(lblFromName, lblMessage);
-        ImageView imView = null;
-        try {imView = Identicon.generate(fromKey.getAddress(), Color.decode("#393939"));
-        } catch (Exception e1) {e1.printStackTrace();}
-        imView.setFitWidth(35);
-        imView.setFitHeight(35);
-        HBox imageHBox = new HBox();
-        imageHBox.getChildren().add(imView);
-        imageHBox.setPadding(new Insets(11, 0, 0, 0));
-        h.getChildren().addAll(v, imageHBox);
-        h.setAlignment(Pos.CENTER_RIGHT);
-        h.setPrefWidth(590);
-        scrollVBox.getChildren().add(h);
-        lblTo = new Label("  " + toAddress.toString());
+        lblTo.setText("  " + toAddress.toString());
         lblTo.setStyle("-fx-text-fill: #dc78dc; -fx-font-size: 16");
         ImageView imView2 = null;
         try{imView2 = Identicon.generate(toAddress.toString(), Color.decode("#4d5052"));}
@@ -321,47 +282,8 @@ public class ChatWindowController {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    System.out.println(m.getToAddress().toString());
-                    System.out.println(fromKey.getAddress());
                     if (m.getToAddress().toString().equals(fromKey.getAddress()) && m.getMessageType()== Payload.MessageType.CHAT) {
-                        HBox h = new HBox();
-                        Label lblMessage = new Label(m.getDecryptedMessage());
-                        lblMessage.setMaxWidth(400);
-                        lblMessage.setWrapText(true);
-                        lblMessage.setStyle("-fx-text-fill: #a7ec21; -fx-font-size: 16;");
-                        lblMessage.setPadding(new Insets(0, 0, 10, 10));
-                        lblMessage.setAlignment(Pos.CENTER_LEFT);
-                        VBox v = new VBox();
-                        v.setAlignment(Pos.CENTER_LEFT);
-                        if (iSentLastMessage){
-                            Label lblFromName = new Label(m.getSenderName());
-                            lblFromName.setWrapText(true);
-                            lblFromName.setStyle("-fx-text-fill: #f92672; -fx-font-size: 16;");
-                            lblFromName.setPadding(new Insets(10, 0, 0, 10));
-                            v.getChildren().addAll(lblFromName, lblMessage);
-                            ImageView imView = null;
-                            try {
-                                imView = Identicon.generate(m.getFromAddress(), Color.decode("#393939"));
-                            } catch (Exception e1) {
-                                e1.printStackTrace();
-                            }
-                            imView.setFitWidth(35);
-                            imView.setFitHeight(35);
-                            HBox imageHBox = new HBox();
-                            imageHBox.getChildren().add(imView);
-                            imageHBox.setPadding(new Insets(11, 0, 0, 0));
-                            h.getChildren().addAll(imageHBox, v);
-                        } else {h.getChildren().add(lblMessage);}
-                        h.setAlignment(Pos.TOP_LEFT);
-                        h.setPrefWidth(590);
-                        h.setPadding(new Insets(0, 0, 0, 20));
-                        lblTo.setText("  " + m.getSenderName());
-                        scrollVBox.getChildren().add(h);
-                        stage.setTitle("Chat with " + m.getSenderName());
-                        iSentLastMessage = false;
-                        scrollPane.setVvalue(scrollPane.getVmax());
-                        scrollToBottom = true;
-                        fileWriter.addChatMessage(conversationID, m, false);
+                        showIncomingMessage(m.getDecryptedMessage(), m.getSenderName(), m.getFromAddress());
                     }
                 }
             });
@@ -370,5 +292,73 @@ public class ChatWindowController {
         public void onMessageSent(Message m) {}
 
         public void onDataReceived(int bytes) {}
+    }
+
+    private void showIncomingMessage(String content, String senderName, String senderAddr){
+        HBox h = new HBox();
+        Label lblMessage = new Label(content);
+        lblMessage.setMaxWidth(400);
+        lblMessage.setWrapText(true);
+        lblMessage.setStyle("-fx-text-fill: #00d0d0; -fx-font-size: 16;");
+        lblMessage.setPadding(new Insets(0, 0, 10, 10));
+        lblMessage.setAlignment(Pos.CENTER_LEFT);
+        VBox v = new VBox();
+        v.setAlignment(Pos.CENTER_LEFT);
+        Label lblFromName = new Label(senderName);
+        lblFromName.setWrapText(true);
+        lblFromName.setStyle("-fx-text-fill: #dc78dc; -fx-font-size: 16;");
+        lblFromName.setPadding(new Insets(10, 0, 0, 10));
+        v.getChildren().addAll(lblFromName, lblMessage);
+        ImageView imView = null;
+        try {
+            imView = Identicon.generate(senderAddr, Color.decode("#393939"));
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        imView.setFitWidth(35);
+        imView.setFitHeight(35);
+        HBox imageHBox = new HBox();
+        imageHBox.getChildren().add(imView);
+        imageHBox.setPadding(new Insets(11, 0, 0, 0));
+        h.getChildren().addAll(imageHBox, v);
+        h.setAlignment(Pos.TOP_LEFT);
+        h.setPrefWidth(590);
+        h.setPadding(new Insets(0, 0, 0, 20));
+        lblTo.setText("  " + senderName);
+        scrollVBox.getChildren().add(h);
+        stage.setTitle("Chat with " + senderName);
+        scrollPane.setVvalue(scrollPane.getVmax());
+        scrollToBottom = true;
+    }
+
+    private void showOutGoingMessage(String content){
+        HBox h = new HBox();
+        Label lblMessage = new Label(content);
+        lblMessage.setMaxWidth(400);
+        lblMessage.setWrapText(true);
+        lblMessage.setStyle("-fx-text-fill: #a7ec21; -fx-font-size: 16;");
+        lblMessage.setPadding(new Insets(0, 10, 10, 0));
+        lblMessage.setAlignment(Pos.CENTER_RIGHT);
+        VBox v = new VBox();
+        v.setAlignment(Pos.CENTER_RIGHT);
+        Label lblFromName = new Label(fromKey.getName());
+        lblFromName.setWrapText(true);
+        lblFromName.setStyle("-fx-text-fill: #f92672; -fx-font-size: 16;");
+        lblFromName.setPadding(new Insets(10, 10, 0, 0));
+        v.getChildren().addAll(lblFromName, lblMessage);
+        ImageView imView = null;
+        try {imView = Identicon.generate(fromKey.getAddress(), Color.decode("#393939"));
+        } catch (Exception e1) {e1.printStackTrace();}
+        imView.setFitWidth(35);
+        imView.setFitHeight(35);
+        HBox imageHBox = new HBox();
+        imageHBox.getChildren().add(imView);
+        imageHBox.setPadding(new Insets(11, 0, 0, 0));
+        h.getChildren().addAll(v, imageHBox);
+        h.setAlignment(Pos.TOP_RIGHT);
+        h.setPrefWidth(590);
+        scrollVBox.getChildren().add(h);
+        scrollPane.setVvalue(scrollPane.getVmax());
+        scrollToBottom = true;
     }
 }

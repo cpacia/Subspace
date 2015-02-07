@@ -3,7 +3,7 @@ Proof-of-Concept Client and Server
 
 Server Setup
 ---------------------
-Until we get a server up and running you'll need a server running on localhost to use the client. To do that you will need the following:
+A server is running on bitcoinauthenticator.org which you can use with the Client. Messages are set to expire after three mintues for now ― enough to test it. To run a server on localhost you will need the following:
 
 1. MongoDB. Follow the [installation instructions](http://docs.mongodb.org/manual/installation/) for your OS.
 2. Python [Twisted](https://pypi.python.org/pypi/Twisted).  You may need to install python-dev and some other packages to get it running.
@@ -31,10 +31,10 @@ Apologies for the lack of comments in the code. I will go back and add them in a
 
 TODO
 ---------------------
-* UI work for adding messages to the listviews (chat and email).
 * Create Email UI
 * Create Chatroom UI
-* Save messages to disk and load them when the user loads a chat/email/chat windows. 
+* Save email and chatroom messages to and load from disk. 
 * Get the server running on bitcoinauthenticator.org and integrate SSL. 
+* Hook up Tor for sending/receiving messages.
 
 

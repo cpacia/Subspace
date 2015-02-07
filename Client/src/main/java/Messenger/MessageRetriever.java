@@ -37,7 +37,7 @@ public class MessageRetriever {
                             ECKey.fromPrivOnly(key.getPrivateKey().toByteArray()));
                 } catch (InvalidPrefixLengthException e){e.printStackTrace();}
                 if (key.getUploadNode().equals("localhost")){GETfromLocalhost(addr);}
-                else {GETfromTOR();}
+                else {GETfromTOR(addr, key.getUploadNode());}
 
             };
             new Thread(task).start();
@@ -45,7 +45,7 @@ public class MessageRetriever {
     }
 
     private void GETfromLocalhost(Address addr){
-        while (true){
+        while (running){
             StringBuffer response = null;
             System.out.println("Getting messages after " + writer.getKeyFromAddress(addr.toString()).getTimeOfLastGET());
             try {
@@ -96,8 +96,56 @@ public class MessageRetriever {
         }
     }
 
-    private void GETfromTOR(){
-
+    private void GETfromTOR(Address addr, String hostname){
+        while (running){
+            StringBuffer response = null;
+            System.out.println("Getting messages after " + writer.getKeyFromAddress(addr.toString()).getTimeOfLastGET());
+            try {
+                URL obj = new URL("http://" + hostname + ":8080/" +
+                        addr.getPrefix() + "?timestamp=" +
+                        writer.getKeyFromAddress(addr.toString()).getTimeOfLastGET());
+                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                con.setRequestMethod("GET");
+                int responseCode = con.getResponseCode();
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(con.getInputStream()));
+                String inputLine;
+                response = new StringBuffer();
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println(addr.toString() + ": " + response.toString());
+            JSONObject resp = null;
+            String ts = "0";
+            try {
+                resp = new JSONObject(response.toString());
+                ts = resp.getString("timestamp");
+            } catch (JSONException e){e.printStackTrace();}
+            writer.updateGETtime(addr.toString(), ts);
+            Iterator<?> keys = resp.keys();
+            while (keys.hasNext()) {
+                String key = (String) keys.next();
+                if (!key.equals("timestamp")) {
+                    String payloadString = "";
+                    try{payloadString = resp.getString(key);}
+                    catch (JSONException e){e.printStackTrace();}
+                    byte[] cipherText = hexStringToByteArray(payloadString);
+                    byte[] privKey = writer.getKeyFromAddress(addr.toString()).getPrivateKey().toByteArray();
+                    ECKey decryptKey = ECKey.fromPrivOnly(privKey);
+                    Message m = new Message(cipherText, decryptKey.getPrivKey(), addr);
+                    if (m.isMessageForMe()) {
+                        for (MessageListener l : listeners){l.onMessageReceived(m);}
+                        System.out.println("Received a message from " + m.getSenderName() + ": " + m.getDecryptedMessage());
+                    }
+                }
+            }
+            try {Thread.sleep(500);}
+            catch (InterruptedException e) {e.printStackTrace();}
+        }
     }
 
     public void stop(){
@@ -119,6 +167,20 @@ public class MessageRetriever {
 
     public void addListener(MessageListener l){
         listeners.add(l);
+    }
+
+    public void addWatchKey(KeyRing.Key key){
+        Runnable task = () -> {
+            Address addr = null;
+            try{
+                addr = new Address(key.getPrefixLength(),
+                        ECKey.fromPrivOnly(key.getPrivateKey().toByteArray()));
+            } catch (InvalidPrefixLengthException e){e.printStackTrace();}
+            if (key.getUploadNode().equals("localhost")){GETfromLocalhost(addr);}
+            else {GETfromTOR(addr, key.getUploadNode());}
+
+        };
+        new Thread(task).start();
     }
 
 }

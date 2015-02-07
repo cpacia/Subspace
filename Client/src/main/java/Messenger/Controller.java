@@ -3,6 +3,7 @@ package Messenger;
 import Messenger.Utils.Identicon.Identicon;
 import com.subgraph.orchid.TorClient;
 import com.subgraph.orchid.TorInitializationListener;
+import eu.hansolo.enzo.notification.Notification;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,10 +36,8 @@ import org.controlsfx.control.PopOver;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class Controller {
@@ -71,9 +70,7 @@ public class Controller {
 
     public void initialize() {
         writer = new FileWriter();
-        chatListData = FXCollections.observableArrayList();
-        chatListData.add(chatInit);
-        chatList.setItems(chatListData);
+        loadChatConversations();
         TorListener listener = new TorListener();
         TorClient tor = Main.torClient;
         if(tor != null) {
@@ -104,27 +101,44 @@ public class Controller {
                 }
             }
         });
+        chatList.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
-    }
+            @Override
+            public void handle(MouseEvent click) {
 
-    static class ChatListCell extends ListCell<String> {
-        @Override
-        public void updateItem(String item, boolean empty) {
-            super.updateItem(item, empty);
-            Pane pane = new Pane();
-            pane.setPrefHeight(68);
-            if (item!=null && item.equals("init")){
+                if (click.getClickCount() == 2) {
+                    int index = chatList.getSelectionModel().getSelectedIndex();
+                    Parent root;
+                    try {
+                        URL location = getClass().getResource("chat.fxml");
+                        FXMLLoader loader = new FXMLLoader(location);
+                        AnchorPane addressUI = (AnchorPane) loader.load();
+                        Stage stage = new Stage();
+                        stage.setTitle("New chat message");
+                        stage.setX(700);
+                        stage.setY(200);
+                        stage.setScene(new Scene(addressUI, 642, 429));
+                        stage.setResizable(false);
+                        ChatWindowController controller = (ChatWindowController) loader.getController();
+                        controller.setStage(stage);
+                        controller.setConversation(chatConversationIDs.get(index));
+                        String file = Main.class.getResource("gui.css").toString();
+                        stage.getScene().getStylesheets().add(file);
+                        stage.show();
 
+                    } catch (IOException e2) {
+                        e2.printStackTrace();
+                    }
+                }
             }
-            else {setGraphic(pane);}
-        }
+        });
+
     }
 
     public void readyToGoAnimation() {
         TranslateTransition leave = new TranslateTransition(Duration.millis(1200), torProgressBar);
         leave.setByY(80.0);
         leave.play();
-        // Buttons slide in and clickable address appears simultaneously.
         TranslateTransition arrive = new TranslateTransition(Duration.millis(1200), torLabel);
         arrive.setInterpolator(new ElasticInterpolator(EasingMode.EASE_OUT, 1, 2));
         arrive.setToY(-30.0);
@@ -160,7 +174,9 @@ public class Controller {
             pop.setHideOnEscape(true);
         }
         readyToGo = true;
+        Main.retriever.addListener(messageListener);
         Main.retriever.start();
+
 
     }
 
@@ -333,6 +349,29 @@ public class Controller {
         }
     }
 
+    private void loadChatConversations(){
+        chatListData = FXCollections.observableArrayList();
+        if (writer.getSavedCoversations().size()==0){chatListData.add(chatInit);}
+        else {
+            Map<Long,History.ChatConversation> sortedMap = new TreeMap<Long, History.ChatConversation>(Collections.reverseOrder());
+            for (History.ChatConversation conversation : writer.getSavedCoversations()){
+                chatConversationIDs.add(conversation.getConversationID());
+                History.ChatMessage m = conversation.getChatMessage(conversation.getChatMessageCount()-1);
+                sortedMap.put(m.getTimestamp(), conversation);
+            }
+            this.chatConversationIDs.clear();
+            for (Map.Entry<Long, History.ChatConversation> entry : sortedMap.entrySet()) {
+                this.chatConversationIDs.add(entry.getValue().getConversationID());
+                History.ChatConversation conversation = entry.getValue();
+                History.ChatMessage m = conversation.getChatMessage(conversation.getChatMessageCount()-1);
+                addToChatListView(conversation.getConversationID(), conversation.getTheirAddress(),
+                        conversation.getTheirName(), m.getContent(), m.getSentFromMe());
+            }
+        }
+        chatList.setItems(chatListData);
+
+    }
+
     public AllMessageListener getListener(){
         return this.messageListener;
     }
@@ -342,45 +381,43 @@ public class Controller {
         public void onMessageSent(Message m) {
 
             if (m.getMessageType() == Payload.MessageType.CHAT) {
-                if (!chatConversationIDs.contains(m.getFromAddress() + m.getToAddress().toString())) {
+                String cID = m.getFromAddress() + m.getToAddress().toString();
+                if (!chatConversationIDs.contains(cID)) {
                     chatListData.remove(chatInit);
-                    chatConversationIDs.add(m.getFromAddress() + m.getToAddress().toString());
-                    HBox h = new HBox();
-                    Label lblMessage = new Label(m.getDecryptedMessage());
-                    lblMessage.setMaxWidth(235);
-                    lblMessage.setStyle("-fx-text-fill: #a7ec21; -fx-font-size: 16;");
-                    lblMessage.setPadding(new Insets(0, 0, 3, 10));
-                    lblMessage.setAlignment(Pos.CENTER_LEFT);
-                    VBox v = new VBox();
-                    v.setAlignment(Pos.CENTER_LEFT);
-                    Label lblFromName = new Label(m.getSenderName());
-                    lblFromName.setWrapText(true);
-                    lblFromName.setStyle("-fx-text-fill: #f92672; -fx-font-size: 16;");
-                    lblFromName.setPadding(new Insets(10, 0, 0, 10));
-                    v.getChildren().addAll(lblFromName, lblMessage);
-                    ImageView imView = null;
-                    try {
-                        imView = Identicon.generate(m.getFromAddress(), Color.decode("#393939"));
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
-                    imView.setFitWidth(35);
-                    imView.setFitHeight(35);
-                    HBox imageHBox = new HBox();
-                    imageHBox.getChildren().add(imView);
-                    imageHBox.setPadding(new Insets(11, 0, 0, 0));
-                    h.getChildren().addAll(imageHBox, v);
-                    h.setAlignment(Pos.TOP_LEFT);
-                    h.setPrefWidth(235);
-                    h.setPadding(new Insets(0, 0, 0, 3));
-                    chatListData.add(h);
-                }
+                    chatConversationIDs.add(cID);
+                    addToChatListView(cID, m.getToAddress().toString(),
+                            writer.getNameFromAddress(m.getFromAddress()), m.getDecryptedMessage(), true);
+                    updateChatListView();
+                } else {updateChatListView();}
             }
         }
 
         @Override
         public void onMessageReceived(Message m) {
-
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    if (m.getMessageType() == Payload.MessageType.CHAT) {
+                        Notification info = new Notification("Subspace", "New chat message from " + m.getSenderName());
+                        Notification.Notifier.INSTANCE.notify(info);
+                        String cID = m.getToAddress().toString() + m.getFromAddress();
+                        if (!writer.conversationExists(cID)) {
+                            writer.newChatConversation(cID, m, m.getSenderName(),
+                                    m.getFromAddress(), m.getToAddress().toString(), false);
+                        } else {
+                            writer.addChatMessage(cID, m, false);
+                        }
+                        if (!chatConversationIDs.contains(cID)) {
+                            chatConversationIDs.add(cID);
+                            addToChatListView(cID, m.getFromAddress(),
+                                    m.getSenderName(), m.getDecryptedMessage(), false);
+                            updateChatListView();
+                        } else {
+                            updateChatListView();
+                        }
+                    }
+                }
+            });
         }
 
         @Override
@@ -389,5 +426,50 @@ public class Controller {
         }
     }
 
+    private void updateChatListView(){
+        chatList.getItems().clear();
+        loadChatConversations();
+    }
 
+    private void addToChatListView(String conversationID, String theirAddress,
+                                   String theirName, String messageContent,
+                                   boolean isSentFromMe) {
+        chatListData.remove(chatInit);
+        HBox h = new HBox();
+        Label lblMessage = new Label(messageContent);
+        lblMessage.setMaxWidth(235);
+        lblMessage.setStyle("-fx-text-fill: #00d0d0; -fx-font-size: 16;");
+        lblMessage.setPadding(new Insets(0, 0, 3, 10));
+        lblMessage.setAlignment(Pos.CENTER_LEFT);
+        VBox v = new VBox();
+        v.setAlignment(Pos.CENTER_LEFT);
+        Label lblName;
+        if (isSentFromMe) {
+            String n = writer.getNameFromConversation(conversationID);
+            if (n.equals("")) {
+                lblName = new Label(theirAddress);
+            } else {
+                lblName = new Label(n);
+            }
+        } else {
+            lblName = new Label(theirName);
+        }
+        lblName.setWrapText(false);
+        lblName.setStyle("-fx-text-fill: #dc78dc; -fx-font-size: 16;");
+        lblName.setPadding(new Insets(11, 0, 0, 10));
+        v.getChildren().addAll(lblName, lblMessage);
+        ImageView imView = null;
+        try {imView = Identicon.generate(theirAddress, Color.decode("#393939"));}
+        catch (Exception e1) {e1.printStackTrace();}
+        imView.setFitWidth(35);
+        imView.setFitHeight(35);
+        HBox imageHBox = new HBox();
+        imageHBox.getChildren().add(imView);
+        imageHBox.setPadding(new Insets(15, 0, 0, 0));
+        h.getChildren().addAll(imageHBox, v);
+        h.setAlignment(Pos.TOP_LEFT);
+        h.setPrefWidth(235);
+        h.setPadding(new Insets(0, 0, 0, 3));
+        chatListData.add(h);
+    }
 }

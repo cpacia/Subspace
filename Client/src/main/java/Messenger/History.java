@@ -736,6 +736,51 @@ public final class History {
      */
     com.google.protobuf.ByteString
         getConversationIDBytes();
+
+    // required string theirName = 3;
+    /**
+     * <code>required string theirName = 3;</code>
+     */
+    boolean hasTheirName();
+    /**
+     * <code>required string theirName = 3;</code>
+     */
+    java.lang.String getTheirName();
+    /**
+     * <code>required string theirName = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getTheirNameBytes();
+
+    // required string theirAddress = 4;
+    /**
+     * <code>required string theirAddress = 4;</code>
+     */
+    boolean hasTheirAddress();
+    /**
+     * <code>required string theirAddress = 4;</code>
+     */
+    java.lang.String getTheirAddress();
+    /**
+     * <code>required string theirAddress = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getTheirAddressBytes();
+
+    // required string myAddress = 5;
+    /**
+     * <code>required string myAddress = 5;</code>
+     */
+    boolean hasMyAddress();
+    /**
+     * <code>required string myAddress = 5;</code>
+     */
+    java.lang.String getMyAddress();
+    /**
+     * <code>required string myAddress = 5;</code>
+     */
+    com.google.protobuf.ByteString
+        getMyAddressBytes();
   }
   /**
    * Protobuf type {@code ChatConversation}
@@ -799,6 +844,21 @@ public final class History {
             case 18: {
               bitField0_ |= 0x00000001;
               conversationID_ = input.readBytes();
+              break;
+            }
+            case 26: {
+              bitField0_ |= 0x00000002;
+              theirName_ = input.readBytes();
+              break;
+            }
+            case 34: {
+              bitField0_ |= 0x00000004;
+              theirAddress_ = input.readBytes();
+              break;
+            }
+            case 42: {
+              bitField0_ |= 0x00000008;
+              myAddress_ = input.readBytes();
               break;
             }
           }
@@ -923,9 +983,141 @@ public final class History {
       }
     }
 
+    // required string theirName = 3;
+    public static final int THEIRNAME_FIELD_NUMBER = 3;
+    private java.lang.Object theirName_;
+    /**
+     * <code>required string theirName = 3;</code>
+     */
+    public boolean hasTheirName() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required string theirName = 3;</code>
+     */
+    public java.lang.String getTheirName() {
+      java.lang.Object ref = theirName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          theirName_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string theirName = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getTheirNameBytes() {
+      java.lang.Object ref = theirName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        theirName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // required string theirAddress = 4;
+    public static final int THEIRADDRESS_FIELD_NUMBER = 4;
+    private java.lang.Object theirAddress_;
+    /**
+     * <code>required string theirAddress = 4;</code>
+     */
+    public boolean hasTheirAddress() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required string theirAddress = 4;</code>
+     */
+    public java.lang.String getTheirAddress() {
+      java.lang.Object ref = theirAddress_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          theirAddress_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string theirAddress = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getTheirAddressBytes() {
+      java.lang.Object ref = theirAddress_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        theirAddress_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // required string myAddress = 5;
+    public static final int MYADDRESS_FIELD_NUMBER = 5;
+    private java.lang.Object myAddress_;
+    /**
+     * <code>required string myAddress = 5;</code>
+     */
+    public boolean hasMyAddress() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>required string myAddress = 5;</code>
+     */
+    public java.lang.String getMyAddress() {
+      java.lang.Object ref = myAddress_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          myAddress_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string myAddress = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+        getMyAddressBytes() {
+      java.lang.Object ref = myAddress_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        myAddress_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       chatMessage_ = java.util.Collections.emptyList();
       conversationID_ = "";
+      theirName_ = "";
+      theirAddress_ = "";
+      myAddress_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -933,6 +1125,18 @@ public final class History {
       if (isInitialized != -1) return isInitialized == 1;
 
       if (!hasConversationID()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasTheirName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasTheirAddress()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasMyAddress()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -955,6 +1159,15 @@ public final class History {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeBytes(2, getConversationIDBytes());
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(3, getTheirNameBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(4, getTheirAddressBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(5, getMyAddressBytes());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -971,6 +1184,18 @@ public final class History {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(2, getConversationIDBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, getTheirNameBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, getTheirAddressBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(5, getMyAddressBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1097,6 +1322,12 @@ public final class History {
         }
         conversationID_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
+        theirName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
+        theirAddress_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
+        myAddress_ = "";
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -1138,6 +1369,18 @@ public final class History {
           to_bitField0_ |= 0x00000001;
         }
         result.conversationID_ = conversationID_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.theirName_ = theirName_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.theirAddress_ = theirAddress_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.myAddress_ = myAddress_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1185,12 +1428,39 @@ public final class History {
           conversationID_ = other.conversationID_;
           onChanged();
         }
+        if (other.hasTheirName()) {
+          bitField0_ |= 0x00000004;
+          theirName_ = other.theirName_;
+          onChanged();
+        }
+        if (other.hasTheirAddress()) {
+          bitField0_ |= 0x00000008;
+          theirAddress_ = other.theirAddress_;
+          onChanged();
+        }
+        if (other.hasMyAddress()) {
+          bitField0_ |= 0x00000010;
+          myAddress_ = other.myAddress_;
+          onChanged();
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (!hasConversationID()) {
+          
+          return false;
+        }
+        if (!hasTheirName()) {
+          
+          return false;
+        }
+        if (!hasTheirAddress()) {
+          
+          return false;
+        }
+        if (!hasMyAddress()) {
           
           return false;
         }
@@ -1532,6 +1802,228 @@ public final class History {
   }
   bitField0_ |= 0x00000002;
         conversationID_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required string theirName = 3;
+      private java.lang.Object theirName_ = "";
+      /**
+       * <code>required string theirName = 3;</code>
+       */
+      public boolean hasTheirName() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required string theirName = 3;</code>
+       */
+      public java.lang.String getTheirName() {
+        java.lang.Object ref = theirName_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          theirName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string theirName = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getTheirNameBytes() {
+        java.lang.Object ref = theirName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          theirName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string theirName = 3;</code>
+       */
+      public Builder setTheirName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        theirName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string theirName = 3;</code>
+       */
+      public Builder clearTheirName() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        theirName_ = getDefaultInstance().getTheirName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string theirName = 3;</code>
+       */
+      public Builder setTheirNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        theirName_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required string theirAddress = 4;
+      private java.lang.Object theirAddress_ = "";
+      /**
+       * <code>required string theirAddress = 4;</code>
+       */
+      public boolean hasTheirAddress() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>required string theirAddress = 4;</code>
+       */
+      public java.lang.String getTheirAddress() {
+        java.lang.Object ref = theirAddress_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          theirAddress_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string theirAddress = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getTheirAddressBytes() {
+        java.lang.Object ref = theirAddress_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          theirAddress_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string theirAddress = 4;</code>
+       */
+      public Builder setTheirAddress(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        theirAddress_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string theirAddress = 4;</code>
+       */
+      public Builder clearTheirAddress() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        theirAddress_ = getDefaultInstance().getTheirAddress();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string theirAddress = 4;</code>
+       */
+      public Builder setTheirAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        theirAddress_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required string myAddress = 5;
+      private java.lang.Object myAddress_ = "";
+      /**
+       * <code>required string myAddress = 5;</code>
+       */
+      public boolean hasMyAddress() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>required string myAddress = 5;</code>
+       */
+      public java.lang.String getMyAddress() {
+        java.lang.Object ref = myAddress_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          myAddress_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string myAddress = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+          getMyAddressBytes() {
+        java.lang.Object ref = myAddress_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          myAddress_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string myAddress = 5;</code>
+       */
+      public Builder setMyAddress(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        myAddress_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string myAddress = 5;</code>
+       */
+      public Builder clearMyAddress() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        myAddress_ = getDefaultInstance().getMyAddress();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string myAddress = 5;</code>
+       */
+      public Builder setMyAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        myAddress_ = value;
         onChanged();
         return this;
       }
@@ -6098,18 +6590,20 @@ public final class History {
     java.lang.String[] descriptorData = {
       "\n\rHistory.proto\"?\n\024ChatConversationList\022" +
       "\'\n\014conversation\030\001 \003(\0132\021.ChatConversation" +
-      "\"M\n\020ChatConversation\022!\n\013chatMessage\030\001 \003(" +
-      "\0132\014.ChatMessage\022\026\n\016conversationID\030\002 \002(\t\"" +
-      "S\n\013ChatMessage\022\022\n\nsentFromMe\030\001 \002(\010\022\014\n\004na" +
-      "me\030\002 \002(\t\022\017\n\007content\030\003 \002(\t\022\021\n\ttimestamp\030\004" +
-      " \002(\004\"0\n\tEmailList\022#\n\014emailMessage\030\001 \003(\0132" +
-      "\r.EmailMessage\"\016\n\014EmailMessage\")\n\rGroupC" +
-      "hatList\022\030\n\004chat\030\001 \003(\0132\n.GroupChat\"P\n\tGro" +
-      "upChat\022\033\n\010chatRoom\030\001 \002(\0132\t.ChatRoom\022&\n\020c",
-      "hatRoomMessages\030\002 \003(\0132\014.RoomMessage\"b\n\010C" +
-      "hatRoom\022\020\n\010roomName\030\001 \002(\t\022\026\n\016roomPrivate" +
-      "Key\030\002 \001(\014\022\025\n\rroomPublicKey\030\003 \001(\014\022\025\n\rtime" +
-      "OfLastGET\030\004 \002(\t\"\r\n\013RoomMessage"
+      "\"\211\001\n\020ChatConversation\022!\n\013chatMessage\030\001 \003" +
+      "(\0132\014.ChatMessage\022\026\n\016conversationID\030\002 \002(\t" +
+      "\022\021\n\ttheirName\030\003 \002(\t\022\024\n\014theirAddress\030\004 \002(" +
+      "\t\022\021\n\tmyAddress\030\005 \002(\t\"S\n\013ChatMessage\022\022\n\ns" +
+      "entFromMe\030\001 \002(\010\022\014\n\004name\030\002 \002(\t\022\017\n\007content" +
+      "\030\003 \002(\t\022\021\n\ttimestamp\030\004 \002(\004\"0\n\tEmailList\022#" +
+      "\n\014emailMessage\030\001 \003(\0132\r.EmailMessage\"\016\n\014E" +
+      "mailMessage\")\n\rGroupChatList\022\030\n\004chat\030\001 \003",
+      "(\0132\n.GroupChat\"P\n\tGroupChat\022\033\n\010chatRoom\030" +
+      "\001 \002(\0132\t.ChatRoom\022&\n\020chatRoomMessages\030\002 \003" +
+      "(\0132\014.RoomMessage\"b\n\010ChatRoom\022\020\n\010roomName" +
+      "\030\001 \002(\t\022\026\n\016roomPrivateKey\030\002 \001(\014\022\025\n\rroomPu" +
+      "blicKey\030\003 \001(\014\022\025\n\rtimeOfLastGET\030\004 \002(\t\"\r\n\013" +
+      "RoomMessage"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -6127,7 +6621,7 @@ public final class History {
           internal_static_ChatConversation_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ChatConversation_descriptor,
-              new java.lang.String[] { "ChatMessage", "ConversationID", });
+              new java.lang.String[] { "ChatMessage", "ConversationID", "TheirName", "TheirAddress", "MyAddress", });
           internal_static_ChatMessage_descriptor =
             getDescriptor().getMessageTypes().get(2);
           internal_static_ChatMessage_fieldAccessorTable = new

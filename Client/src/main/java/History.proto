@@ -4,7 +4,10 @@ message ChatConversationList {
 
 message ChatConversation {
     repeated ChatMessage chatMessage = 1;
-    required string conversationID = 2;
+    required string conversationID   = 2;
+    required string theirName        = 3;
+    required string theirAddress     = 4;
+    required string myAddress        = 5;
 }
 
 message ChatMessage {
