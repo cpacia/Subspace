@@ -16,7 +16,7 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <ListView fx:id="addressList" prefHeight="350.0" prefWidth="582.0" style="-fx-background-color: #393939;"/>
+                              <ListView fx:id="addressList" prefHeight="350.0" prefWidth="582.0" style="-fx-background-color: #393939;" />
                               <Button fx:id="btnAddAddress" layoutX="483.0" layoutY="268.0" mnemonicParsing="false" onAction="#newAddress" onMousePressed="#addButtonPress" onMouseReleased="#addButtonRelease" style="-fx-background-color: transparent; -fx-cursor: hand;">
                                  <graphic>
                                     <ImageView fitHeight="73.0" fitWidth="73.0" pickOnBounds="true" preserveRatio="true">
@@ -59,11 +59,11 @@
                   </Label>
                    <HBox fx:id="addKeyHBox" layoutX="38.0" layoutY="33.0">
                        <children>
-                            <TextField fx:id="txtName"  prefHeight="25.0" prefWidth="390.0" style="-fx-background-color: #4d5052; -fx-text-fill: #d8d9d7;" />
+                            <TextField fx:id="txtName" prefHeight="25.0" prefWidth="390.0" style="-fx-background-color: #4d5052; -fx-text-fill: #d8d9d7;" />
                        </children>
                    </HBox>
                    <Button fx:id="btnAddressCancel" layoutX="114.0" layoutY="284.0" mnemonicParsing="false" onAction="#addressCancelClicked" onMousePressed="#cancelButtonPressed" onMouseReleased="#cancelButtonReleased" prefHeight="25.0" prefWidth="92.0" style="-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;" text="Cancel" />
-                  <Button fx:id="btnAddressDone" layoutX="259.0" layoutY="282.0" mnemonicParsing="false" onAction="#addressDoneClicked" prefHeight="25.0" prefWidth="92.0" onMousePressed="#doneButtonPressed" onMouseReleased="#doneButtonReleased" style="-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;" text="Done" disable="true"/>
+                  <Button fx:id="btnAddressDone" disable="true" layoutX="259.0" layoutY="282.0" mnemonicParsing="false" onAction="#addressDoneClicked" onMousePressed="#doneButtonPressed" onMouseReleased="#doneButtonReleased" prefHeight="25.0" prefWidth="92.0" style="-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;" text="Done" />
                   <Slider fx:id="prefixSlider" blockIncrement="1.0" layoutX="37.0" layoutY="140.0" majorTickUnit="6.0" max="32.0" minorTickCount="6" prefHeight="15.0" prefWidth="390.0" showTickLabels="true" showTickMarks="true" />
                   <Label layoutX="36.0" layoutY="110.0" prefHeight="15.0" prefWidth="92.0" style="-fx-text-fill: #dc78dc;" text="Prefix Length:" />
                   <Label layoutX="38.0" layoutY="170.0" prefHeight="43.0" prefWidth="390.0" style="-fx-text-fill: #00d0d0;" text="Each additional bit in your prefix reduces your bandwidth usage by 50% while also reducing your anonymity set by 50%." wrapText="true">
@@ -71,9 +71,14 @@
                         <Font size="11.0" />
                      </font>
                   </Label>
-                  <Label layoutX="38.0" layoutY="12.0" style="-fx-text-fill: #dc78dc;" text="Enter a name or +Openname ID:" />
+                  <Label layoutX="38.0" layoutY="12.0" style="-fx-text-fill: #dc78dc;" text="Enter a name or +openname" />
                   <ChoiceBox fx:id="cbNode" layoutX="137.0" layoutY="235.0" prefHeight="25.0" prefWidth="230.0" style="-fx-background-color: #4d5052; -fx-text-fill: #d8d9d7;" />
                   <Label layoutX="38.0" layoutY="240.0" style="-fx-text-fill: #dc78dc;" text="Upload Node: " />
+               </children>
+            </Pane>
+            <Pane fx:id="spinner" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="215.0" prefWidth="250.0" style="-fx-background-color: transparent;" visible="false">
+               <children>
+                  <ProgressIndicator layoutX="41.0" layoutY="0.0" prefHeight="215.0" prefWidth="170.0" style="-fx-progress-color: #dc78dc;" />
                </children>
             </Pane>
          </children>

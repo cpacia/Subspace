@@ -174,7 +174,7 @@ public class TorLib {
      * @throws JSONException
      * @throws HttpException
      */
-    static JSONObject getJSON(String hostname, String resource) throws IOException, JSONException, HttpException {
+    public static JSONObject getJSON(String hostname, String resource) throws IOException, JSONException, HttpException {
         return getJSON(hostname, 443, resource);
     }
 
@@ -191,7 +191,7 @@ public class TorLib {
      * @throws IOException
      * @throws JSONException
      */
-    static JSONObject getJSON(String hostname, int port, String resource) throws IOException, JSONException, HttpException{
+    public static JSONObject getJSON(String hostname, int port, String resource) throws IOException, JSONException, HttpException{
 
         //Create a SSL socket using Tor
         Socket socket = TorSocket(hostname, port);
@@ -372,13 +372,4 @@ public class TorLib {
         return(retval);
 
     }
-
-    public abstract class TorSSLSocketFactory extends SSLSocketFactory {
-        @Override
-        public Socket createSocket(Socket s, String hostname, int port, boolean autoClose) throws IOException{
-            Socket socket = TorSocket(hostname, port);
-            return socket;
-        }
-    }
-
 }

@@ -206,8 +206,6 @@ public class Controller {
         readyToGo = true;
         Main.retriever.addListener(messageListener);
         Main.retriever.start();
-
-
     }
 
     void setEmailTab1(){
