@@ -74,6 +74,7 @@
 
 .list-cell:even {
     -fx-background-color: #393939;
+    -fx-cell-size: 55;
 }
 
 .scroll-bar:vertical .increment-button ,
@@ -111,4 +112,40 @@
 
 .menu-item:focused {
     -fx-background-color: #4d5052;
+}
+
+#newEmailPane .list-cell {
+    -fx-background-color: #393939;
+    -fx-cell-size: 10;
+    -fx-text-fill: #dc78dc;
+}
+
+.html-editor .grid .top-toolbar {
+    -fx-background-color: #4d5052;
+}
+
+.html-editor .grid .bottom-toolbar {
+    -fx-background-color: #4d5052;
+}
+
+.html-editor {
+    -fx-box-border: transparent;
+}
+.html-editor .grid .top-toolbar .html-editor-background, .html-editor-foreground,
+.html-editor-outdent, .html-editor-indent, .html-editor-bullets, .html-editor-numbers,
+.html-editor-align-center, .html-editor-align-right, .html-editor-align-left, .html-editor-align-justify,
+.html-editor-paste, .html-editor-cut, .html-editor-copy {
+    -fx-background-color: #393939;
+    -fx-border-color: #dc78dc;
+}
+
+.html-editor .grid .bottom-toolbar .html-editor-strike, .html-editor-hr,
+.html-editor-underline, .html-editor-italic, .html-editor-bold {
+    -fx-background-color: #393939;
+    -fx-border-color: #dc78dc;
+}
+
+#newEmailPane .combo-box .arrow-button {
+    -fx-background-color: #393939;
+    -fx-text-fill: #dc78dc;
 }

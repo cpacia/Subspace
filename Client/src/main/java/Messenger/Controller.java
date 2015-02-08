@@ -29,6 +29,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.HTMLEditor;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -37,12 +38,8 @@ import Messenger.Utils.easing.EasingMode;
 import Messenger.Utils.easing.ElasticInterpolator;
 import org.controlsfx.control.PopOver;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -76,9 +73,14 @@ public class Controller {
     Pane newEmailPane;
     @FXML
     Pane emailContentPane;
+    @FXML
+    HTMLEditor emailEditor;
+    @FXML
+    ListView emailList;
     private PopOver pop;
     private boolean readyToGo = false;
     private ObservableList<HBox> chatListData;
+    private ObservableList<HBox> emailListData = FXCollections.observableArrayList();
     private HBox chatInit = new HBox();
     private AllMessageListener messageListener = new AllMessageListener();
     private FileWriter writer;
@@ -86,6 +88,8 @@ public class Controller {
     private List<String> openChatWindows = new ArrayList<String>();
 
     public void initialize() {
+        emailListData.add(chatInit);
+        emailList.setItems(emailListData);
         writer = new FileWriter();
         loadChatConversations();
         TorListener listener = new TorListener();
@@ -207,7 +211,6 @@ public class Controller {
     }
 
     void setEmailTab1(){
-        emailPane.setVisible(false);
         Image imgEmail1 = new Image(getClass().getResourceAsStream("email-icon.png"));
         ImageView ivEmail1 = new ImageView(imgEmail1);
         btnEmail.setGraphic(ivEmail1);
@@ -222,8 +225,11 @@ public class Controller {
             public void run() {
                 Stage stage = Main.getStage();
                 if (stage.getWidth() > 252) {
-                    stage.setWidth(stage.getWidth() - 15);
+                    stage.setWidth(stage.getWidth() - 20);
                 } else {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {emailPane.setVisible(false);}});
                     this.cancel();
                 }
 
@@ -250,8 +256,8 @@ public class Controller {
             public void run() {
                 if (i < 55) {
                     Stage stage = Main.getStage();
-                    if (stage.getWidth()<980){
-                        stage.setWidth(stage.getWidth() + 15);
+                    if (stage.getWidth()<975){
+                        stage.setWidth(stage.getWidth() + 20);
                     }
                 } else {
                     this.cancel();
