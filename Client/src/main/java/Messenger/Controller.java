@@ -37,8 +37,12 @@ import Messenger.Utils.easing.EasingMode;
 import Messenger.Utils.easing.ElasticInterpolator;
 import org.controlsfx.control.PopOver;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -64,6 +68,14 @@ public class Controller {
     Button btnAddress;
     @FXML
     Label lblNewMessage;
+    @FXML
+    Pane emailPane;
+    @FXML
+    Pane chatPane;
+    @FXML
+    Pane newEmailPane;
+    @FXML
+    Pane emailContentPane;
     private PopOver pop;
     private boolean readyToGo = false;
     private ObservableList<HBox> chatListData;
@@ -195,6 +207,7 @@ public class Controller {
     }
 
     void setEmailTab1(){
+        emailPane.setVisible(false);
         Image imgEmail1 = new Image(getClass().getResourceAsStream("email-icon.png"));
         ImageView ivEmail1 = new ImageView(imgEmail1);
         btnEmail.setGraphic(ivEmail1);
@@ -220,6 +233,9 @@ public class Controller {
     }
 
     void setEmailTab2(){
+        emailPane.setVisible(true);
+        newEmailPane.setVisible(true);
+        emailContentPane.setVisible(false);
         Image imgEmail2 = new Image(getClass().getResourceAsStream("email-icon2.png"));
         ImageView ivEmail2 = new ImageView(imgEmail2);
         btnEmail.setGraphic(ivEmail2);
@@ -232,9 +248,11 @@ public class Controller {
 
             @Override
             public void run() {
-                if (i < 50) {
+                if (i < 55) {
                     Stage stage = Main.getStage();
-                    stage.setWidth(stage.getWidth() + 15);
+                    if (stage.getWidth()<980){
+                        stage.setWidth(stage.getWidth() + 15);
+                    }
                 } else {
                     this.cancel();
                 }
@@ -247,6 +265,7 @@ public class Controller {
     }
 
     void setChatTab1(){
+        chatPane.setVisible(false);
         Image imgChat1 = new Image(getClass().getResourceAsStream("chat-2-icon.png"));
         ImageView ivChat1 = new ImageView(imgChat1);
         btnChat.setGraphic(ivChat1);
@@ -255,6 +274,7 @@ public class Controller {
     }
 
     void setChatTab2(){
+        chatPane.setVisible(true);
         Image imgChat2 = new Image(getClass().getResourceAsStream("chat-2-icon2.png"));
         ImageView ivChat2 = new ImageView(imgChat2);
         btnChat.setGraphic(ivChat2);

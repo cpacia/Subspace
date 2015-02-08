@@ -164,6 +164,19 @@ public class TorLib {
         }
     }
 
+    /**
+     * Gets a JSON object from a Tor socket using port 443.
+     *
+     * @param hostname
+     * @param resource
+     * @return returns a JSON object
+     * @throws IOException
+     * @throws JSONException
+     * @throws HttpException
+     */
+    static JSONObject getJSON(String hostname, String resource) throws IOException, JSONException, HttpException {
+        return getJSON(hostname, 443, resource);
+    }
 
     /**
      * This method makes a http GET request for the specified resource to the specified hostname.
@@ -171,16 +184,17 @@ public class TorLib {
      * The DNS lookup is also done over Tor.
      * This method only uses port 443 for SSL.
      *
-     * @param hostname host name for target server.
+     * @param hostname hostname for target server.
+     * @param port port to connect to.
      * @param resource resource to lookup with GET request.
      * @return returns a JSON object.
      * @throws IOException
      * @throws JSONException
      */
-    static JSONObject getJSON(String hostname, String resource) throws IOException, JSONException, HttpException{
+    static JSONObject getJSON(String hostname, int port, String resource) throws IOException, JSONException, HttpException{
 
         //Create a SSL socket using Tor
-        Socket socket = TorSocket(hostname, 443);
+        Socket socket = TorSocket(hostname, port);
         SSLSocketFactory sslSf = (SSLSocketFactory)SSLSocketFactory.getDefault();
         SSLSocket sslSocket = (SSLSocket) sslSf.createSocket(socket, null,
                 socket.getPort(), false);
@@ -210,40 +224,31 @@ public class TorLib {
         return new JSONObject(output);
     }
 
-    static byte[] getImageBytes(String hostname, String resource) throws IOException, HttpException{
-
-        //Create a SSL socket using Tor
-        Socket socket = TorSocket(hostname, 443);
+    public static void postToURL(String hostname, int port, String postKey, String data) throws IOException{
+        Socket socket = TorSocket(hostname, port);
         SSLSocketFactory sslSf = (SSLSocketFactory)SSLSocketFactory.getDefault();
         SSLSocket sslSocket = (SSLSocket) sslSf.createSocket(socket, null,
                 socket.getPort(), false);
         sslSocket.setUseClientMode(true);
         sslSocket.startHandshake();
+        String path = "/" + postKey;
+        BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream(), "UTF8"));
+        wr.write("POST " + path + " HTTP/1.0\r\n");
+        wr.write("Content-Length: " + data.length() + "\r\n");
+        wr.write("Content-Type: application/x-www-form-urlencoded\r\n");
+        wr.write("\r\n");
 
-        //Create the HTTP GET request and push it over the outputstream
-        PrintWriter pw = new PrintWriter( new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream())));
-        pw.println("GET /" + resource + " HTTP/1.1");
-        pw.println("Host: " + hostname);
-        pw.println("");
-        pw.flush();
+        wr.write(data);
+        wr.flush();
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(sslSocket.getInputStream()));
-        String t;
-        boolean start = false;
-        String output = null;
-        while ((t = br.readLine()) != null && !start) {
-            if (t.equals("")){break;}
+        BufferedReader rd = new BufferedReader(new InputStreamReader(sslSocket.getInputStream()));
+        String line;
+        while ((line = rd.readLine()) != null) {
+            System.out.println(line);
         }
-
-        Files.copy(sslSocket.getInputStream(), Paths.get(Main.params.getApplicationDataFolder() + "/test.jpg"));
-
-        br.close();
-        pw.close();
-        sslSocket.close();
-
-        return output.getBytes(Charset.forName("UTF-8"));
+        wr.close();
+        rd.close();
     }
-
 
     /**
      *  This method Creates a socket, then sends the inital SOCKS request info

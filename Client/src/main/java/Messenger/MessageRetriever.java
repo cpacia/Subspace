@@ -1,8 +1,10 @@
 package Messenger;
 
+import org.apache.http.HttpException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.xml.ws.http.HTTPException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -22,6 +24,8 @@ public class MessageRetriever {
     private List<KeyRing.Key> keys;
     private boolean running = false;
     FileWriter writer = new FileWriter();
+    private List<Thread> threads = new ArrayList<>();
+    private List<HttpURLConnection> connections = new ArrayList<>();
 
     public MessageRetriever(List<KeyRing.Key> keys){
         this.keys = keys;
@@ -40,7 +44,9 @@ public class MessageRetriever {
                 else {GETfromTOR(addr, key.getUploadNode());}
 
             };
-            new Thread(task).start();
+            Thread t = new Thread(task);
+            t.start();
+            threads.add(t);
         }
     }
 
@@ -53,6 +59,7 @@ public class MessageRetriever {
                         addr.getPrefix() + "?timestamp=" +
                         writer.getKeyFromAddress(addr.toString()).getTimeOfLastGET());
                 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+                connections.add(con);
                 con.setRequestMethod("GET");
                 int responseCode = con.getResponseCode();
                 BufferedReader in = new BufferedReader(
@@ -63,6 +70,7 @@ public class MessageRetriever {
                     response.append(inputLine);
                 }
                 in.close();
+                connections.remove(con);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -98,31 +106,14 @@ public class MessageRetriever {
 
     private void GETfromTOR(Address addr, String hostname){
         while (running){
-            StringBuffer response = null;
             System.out.println("Getting messages after " + writer.getKeyFromAddress(addr.toString()).getTimeOfLastGET());
-            try {
-                URL obj = new URL("http://" + hostname + ":8080/" +
-                        addr.getPrefix() + "?timestamp=" +
-                        writer.getKeyFromAddress(addr.toString()).getTimeOfLastGET());
-                HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-                con.setRequestMethod("GET");
-                int responseCode = con.getResponseCode();
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(con.getInputStream()));
-                String inputLine;
-                response = new StringBuffer();
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.println(addr.toString() + ": " + response.toString());
             JSONObject resp = null;
+            try{
+                resp = TorLib.getJSON(hostname, 8335, addr.getPrefix() + "?timestamp=" +
+                        writer.getKeyFromAddress(addr.toString()).getTimeOfLastGET());
+            } catch (JSONException | IOException | HttpException e){e.printStackTrace();}
             String ts = "0";
             try {
-                resp = new JSONObject(response.toString());
                 ts = resp.getString("timestamp");
             } catch (JSONException e){e.printStackTrace();}
             writer.updateGETtime(addr.toString(), ts);
@@ -150,6 +141,12 @@ public class MessageRetriever {
 
     public void stop(){
         running = false;
+        for (HttpURLConnection con : connections){
+            con.disconnect();
+        }
+        for (Thread t : threads){
+            t.stop();
+        }
     }
 
     public static byte[] hexStringToByteArray(String s) {

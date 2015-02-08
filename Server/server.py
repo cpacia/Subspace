@@ -1,7 +1,7 @@
 from twisted.application import service, internet
 from twisted.python.log import ILogObserver
 from twisted.python import log
-from twisted.internet import reactor, task
+from twisted.internet import reactor, task, ssl
 from twisted.web import resource, server
 from twisted.web.resource import NoResource
 
@@ -15,9 +15,11 @@ import datetime
 from bson.objectid import ObjectId
 import json
 import calendar
+import params
 
 #start mongodb -> sudo service mongod start
 
+options = params.get_options()
 application = service.Application("kademlia")
 application.setComponent(ILogObserver, log.FileLogObserver(sys.stdout, log.INFO).emit)
 
@@ -33,7 +35,10 @@ udpserver.setServiceParent(application)
 
 db = MongoClient().message_database
 messages = db.messages
-messages.ensure_index("timestamp", expireAfterSeconds=3*60)
+if "ttl" in options:
+    messages.ensure_index("timestamp", expireAfterSeconds=options["ttl"])
+else:
+    messages.ensure_index("timestamp", expireAfterSeconds=604800)
 
 '''This function is used to go from UTC to unix time with two decimal precision.'''
 def unix_time(utc):
@@ -156,7 +161,11 @@ class WebResource(resource.Resource):
                     self.incoming_posts.remove(postkey)
 
 website = server.Site(WebResource(kserver))
-webserver = internet.TCPServer(8080, website)
+if "useSSL" in options:
+    webserver = internet.SSLServer(8335, website, ssl.DefaultOpenSSLContextFactory(
+            options["sslkey"], options["sslcert"]))
+else:
+    webserver = internet.TCPServer(8080, website)
 webserver.setServiceParent(application)
 
 

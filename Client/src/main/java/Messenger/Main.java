@@ -44,7 +44,7 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(event -> {
             torClient.stop();
             retriever.stop();
-            Platform.exit();
+            System.exit(0);
         });
     }
 

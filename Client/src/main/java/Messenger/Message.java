@@ -141,32 +141,20 @@ public class Message {
     }
 
     public void send(){
-        if (this.uploadHost.equals("localhost")){sendToLocalHost();}
-        else {sendToTor();}
+        Runnable task = () -> {
+            if (this.uploadHost.equals("localhost")) {
+                sendToLocalHost();
+            } else {
+                sendToTor();
+            }
+        };
+        new Thread(task).start();
     }
 
     public void sendToTor(){
-        try {
-            URL obj = new URL("http://" + uploadHost + ":8080/" + postKey);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-            String urlParameters = Hex.toHexString(this.encryptedPayload);
-            con.setDoOutput(true);
-            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-            wr.writeBytes(urlParameters);
-            wr.flush();
-            wr.close();
-            int responseCode = con.getResponseCode();
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-        } catch (IOException e){e.printStackTrace();}
+        String data = Hex.toHexString(this.encryptedPayload);
+        try{TorLib.postToURL(this.uploadHost, 8335, this.postKey, data);}
+        catch (IOException e){e.printStackTrace();}
     }
 
     public void sendToLocalHost(){

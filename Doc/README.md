@@ -17,7 +17,7 @@ sudo service mongod start
 
 Start the subspace server
 ```
-twistd -noy Server.py
+twistd -noy server.py
 ```
 
 Client Setup
@@ -33,8 +33,6 @@ TODO
 ---------------------
 * Create Email UI
 * Create Chatroom UI
-* Save email and chatroom messages to and load from disk. 
-* Get the server running on bitcoinauthenticator.org and integrate SSL. 
-* Hook up Tor for sending/receiving messages.
+* Save email and chatroom messages to and load from disk.
 
 
