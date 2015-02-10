@@ -636,32 +636,47 @@ public final class Payload {
      */
     long getTimeStamp();
 
-    // required string UnencryptedMessage = 4;
+    // optional string subject = 4;
     /**
-     * <code>required string UnencryptedMessage = 4;</code>
+     * <code>optional string subject = 4;</code>
+     */
+    boolean hasSubject();
+    /**
+     * <code>optional string subject = 4;</code>
+     */
+    java.lang.String getSubject();
+    /**
+     * <code>optional string subject = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getSubjectBytes();
+
+    // required string UnencryptedMessage = 5;
+    /**
+     * <code>required string UnencryptedMessage = 5;</code>
      */
     boolean hasUnencryptedMessage();
     /**
-     * <code>required string UnencryptedMessage = 4;</code>
+     * <code>required string UnencryptedMessage = 5;</code>
      */
     java.lang.String getUnencryptedMessage();
     /**
-     * <code>required string UnencryptedMessage = 4;</code>
+     * <code>required string UnencryptedMessage = 5;</code>
      */
     com.google.protobuf.ByteString
         getUnencryptedMessageBytes();
 
-    // required string name = 5;
+    // required string name = 6;
     /**
-     * <code>required string name = 5;</code>
+     * <code>required string name = 6;</code>
      */
     boolean hasName();
     /**
-     * <code>required string name = 5;</code>
+     * <code>required string name = 6;</code>
      */
     java.lang.String getName();
     /**
-     * <code>required string name = 5;</code>
+     * <code>required string name = 6;</code>
      */
     com.google.protobuf.ByteString
         getNameBytes();
@@ -740,11 +755,16 @@ public final class Payload {
             }
             case 34: {
               bitField0_ |= 0x00000008;
-              unencryptedMessage_ = input.readBytes();
+              subject_ = input.readBytes();
               break;
             }
             case 42: {
               bitField0_ |= 0x00000010;
+              unencryptedMessage_ = input.readBytes();
+              break;
+            }
+            case 50: {
+              bitField0_ |= 0x00000020;
               name_ = input.readBytes();
               break;
             }
@@ -863,17 +883,60 @@ public final class Payload {
       return timeStamp_;
     }
 
-    // required string UnencryptedMessage = 4;
-    public static final int UNENCRYPTEDMESSAGE_FIELD_NUMBER = 4;
-    private java.lang.Object unencryptedMessage_;
+    // optional string subject = 4;
+    public static final int SUBJECT_FIELD_NUMBER = 4;
+    private java.lang.Object subject_;
     /**
-     * <code>required string UnencryptedMessage = 4;</code>
+     * <code>optional string subject = 4;</code>
      */
-    public boolean hasUnencryptedMessage() {
+    public boolean hasSubject() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>required string UnencryptedMessage = 4;</code>
+     * <code>optional string subject = 4;</code>
+     */
+    public java.lang.String getSubject() {
+      java.lang.Object ref = subject_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          subject_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string subject = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getSubjectBytes() {
+      java.lang.Object ref = subject_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        subject_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // required string UnencryptedMessage = 5;
+    public static final int UNENCRYPTEDMESSAGE_FIELD_NUMBER = 5;
+    private java.lang.Object unencryptedMessage_;
+    /**
+     * <code>required string UnencryptedMessage = 5;</code>
+     */
+    public boolean hasUnencryptedMessage() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>required string UnencryptedMessage = 5;</code>
      */
     public java.lang.String getUnencryptedMessage() {
       java.lang.Object ref = unencryptedMessage_;
@@ -890,7 +953,7 @@ public final class Payload {
       }
     }
     /**
-     * <code>required string UnencryptedMessage = 4;</code>
+     * <code>required string UnencryptedMessage = 5;</code>
      */
     public com.google.protobuf.ByteString
         getUnencryptedMessageBytes() {
@@ -906,17 +969,17 @@ public final class Payload {
       }
     }
 
-    // required string name = 5;
-    public static final int NAME_FIELD_NUMBER = 5;
+    // required string name = 6;
+    public static final int NAME_FIELD_NUMBER = 6;
     private java.lang.Object name_;
     /**
-     * <code>required string name = 5;</code>
+     * <code>required string name = 6;</code>
      */
     public boolean hasName() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
+      return ((bitField0_ & 0x00000020) == 0x00000020);
     }
     /**
-     * <code>required string name = 5;</code>
+     * <code>required string name = 6;</code>
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -933,7 +996,7 @@ public final class Payload {
       }
     }
     /**
-     * <code>required string name = 5;</code>
+     * <code>required string name = 6;</code>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -953,6 +1016,7 @@ public final class Payload {
       senderAddress_ = "";
       messageType_ = Payload.MessageType.CHAT;
       timeStamp_ = 0L;
+      subject_ = "";
       unencryptedMessage_ = "";
       name_ = "";
     }
@@ -998,10 +1062,13 @@ public final class Payload {
         output.writeUInt64(3, timeStamp_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(4, getUnencryptedMessageBytes());
+        output.writeBytes(4, getSubjectBytes());
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeBytes(5, getNameBytes());
+        output.writeBytes(5, getUnencryptedMessageBytes());
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeBytes(6, getNameBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -1026,11 +1093,15 @@ public final class Payload {
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, getUnencryptedMessageBytes());
+          .computeBytesSize(4, getSubjectBytes());
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(5, getNameBytes());
+          .computeBytesSize(5, getUnencryptedMessageBytes());
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, getNameBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1154,10 +1225,12 @@ public final class Payload {
         bitField0_ = (bitField0_ & ~0x00000002);
         timeStamp_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000004);
-        unencryptedMessage_ = "";
+        subject_ = "";
         bitField0_ = (bitField0_ & ~0x00000008);
-        name_ = "";
+        unencryptedMessage_ = "";
         bitField0_ = (bitField0_ & ~0x00000010);
+        name_ = "";
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
 
@@ -1201,9 +1274,13 @@ public final class Payload {
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000008;
         }
-        result.unencryptedMessage_ = unencryptedMessage_;
+        result.subject_ = subject_;
         if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000010;
+        }
+        result.unencryptedMessage_ = unencryptedMessage_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
         }
         result.name_ = name_;
         result.bitField0_ = to_bitField0_;
@@ -1233,13 +1310,18 @@ public final class Payload {
         if (other.hasTimeStamp()) {
           setTimeStamp(other.getTimeStamp());
         }
-        if (other.hasUnencryptedMessage()) {
+        if (other.hasSubject()) {
           bitField0_ |= 0x00000008;
+          subject_ = other.subject_;
+          onChanged();
+        }
+        if (other.hasUnencryptedMessage()) {
+          bitField0_ |= 0x00000010;
           unencryptedMessage_ = other.unencryptedMessage_;
           onChanged();
         }
         if (other.hasName()) {
-          bitField0_ |= 0x00000010;
+          bitField0_ |= 0x00000020;
           name_ = other.name_;
           onChanged();
         }
@@ -1433,16 +1515,90 @@ public final class Payload {
         return this;
       }
 
-      // required string UnencryptedMessage = 4;
-      private java.lang.Object unencryptedMessage_ = "";
+      // optional string subject = 4;
+      private java.lang.Object subject_ = "";
       /**
-       * <code>required string UnencryptedMessage = 4;</code>
+       * <code>optional string subject = 4;</code>
        */
-      public boolean hasUnencryptedMessage() {
+      public boolean hasSubject() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>required string UnencryptedMessage = 4;</code>
+       * <code>optional string subject = 4;</code>
+       */
+      public java.lang.String getSubject() {
+        java.lang.Object ref = subject_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          subject_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string subject = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getSubjectBytes() {
+        java.lang.Object ref = subject_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          subject_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string subject = 4;</code>
+       */
+      public Builder setSubject(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        subject_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string subject = 4;</code>
+       */
+      public Builder clearSubject() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        subject_ = getDefaultInstance().getSubject();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string subject = 4;</code>
+       */
+      public Builder setSubjectBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        subject_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required string UnencryptedMessage = 5;
+      private java.lang.Object unencryptedMessage_ = "";
+      /**
+       * <code>required string UnencryptedMessage = 5;</code>
+       */
+      public boolean hasUnencryptedMessage() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>required string UnencryptedMessage = 5;</code>
        */
       public java.lang.String getUnencryptedMessage() {
         java.lang.Object ref = unencryptedMessage_;
@@ -1456,7 +1612,7 @@ public final class Payload {
         }
       }
       /**
-       * <code>required string UnencryptedMessage = 4;</code>
+       * <code>required string UnencryptedMessage = 5;</code>
        */
       public com.google.protobuf.ByteString
           getUnencryptedMessageBytes() {
@@ -1472,51 +1628,51 @@ public final class Payload {
         }
       }
       /**
-       * <code>required string UnencryptedMessage = 4;</code>
+       * <code>required string UnencryptedMessage = 5;</code>
        */
       public Builder setUnencryptedMessage(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
+  bitField0_ |= 0x00000010;
         unencryptedMessage_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string UnencryptedMessage = 4;</code>
+       * <code>required string UnencryptedMessage = 5;</code>
        */
       public Builder clearUnencryptedMessage() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000010);
         unencryptedMessage_ = getDefaultInstance().getUnencryptedMessage();
         onChanged();
         return this;
       }
       /**
-       * <code>required string UnencryptedMessage = 4;</code>
+       * <code>required string UnencryptedMessage = 5;</code>
        */
       public Builder setUnencryptedMessageBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
+  bitField0_ |= 0x00000010;
         unencryptedMessage_ = value;
         onChanged();
         return this;
       }
 
-      // required string name = 5;
+      // required string name = 6;
       private java.lang.Object name_ = "";
       /**
-       * <code>required string name = 5;</code>
+       * <code>required string name = 6;</code>
        */
       public boolean hasName() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
+        return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>required string name = 5;</code>
+       * <code>required string name = 6;</code>
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
@@ -1530,7 +1686,7 @@ public final class Payload {
         }
       }
       /**
-       * <code>required string name = 5;</code>
+       * <code>required string name = 6;</code>
        */
       public com.google.protobuf.ByteString
           getNameBytes() {
@@ -1546,36 +1702,36 @@ public final class Payload {
         }
       }
       /**
-       * <code>required string name = 5;</code>
+       * <code>required string name = 6;</code>
        */
       public Builder setName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  bitField0_ |= 0x00000020;
         name_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string name = 5;</code>
+       * <code>required string name = 6;</code>
        */
       public Builder clearName() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000020);
         name_ = getDefaultInstance().getName();
         onChanged();
         return this;
       }
       /**
-       * <code>required string name = 5;</code>
+       * <code>required string name = 6;</code>
        */
       public Builder setNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  bitField0_ |= 0x00000020;
         name_ = value;
         onChanged();
         return this;
@@ -1612,12 +1768,12 @@ public final class Payload {
   static {
     java.lang.String[] descriptorData = {
       "\n\rPayload.proto\"<\n\rSignedPayload\022\035\n\025seri" +
-      "alizedMessageData\030\001 \002(\014\022\014\n\004HMac\030\005 \002(\014\"\204\001" +
+      "alizedMessageData\030\001 \002(\014\022\014\n\004HMac\030\005 \002(\014\"\225\001" +
       "\n\013MessageData\022\025\n\rsenderAddress\030\001 \002(\t\022!\n\013" +
       "messageType\030\002 \002(\0162\014.MessageType\022\021\n\ttimeS" +
-      "tamp\030\003 \002(\004\022\032\n\022UnencryptedMessage\030\004 \002(\t\022\014" +
-      "\n\004name\030\005 \002(\t*0\n\013MessageType\022\010\n\004CHAT\020\001\022\t\n" +
-      "\005EMAIL\020\002\022\014\n\010CHATROOM\020\003"
+      "tamp\030\003 \002(\004\022\017\n\007subject\030\004 \001(\t\022\032\n\022Unencrypt" +
+      "edMessage\030\005 \002(\t\022\014\n\004name\030\006 \002(\t*0\n\013Message" +
+      "Type\022\010\n\004CHAT\020\001\022\t\n\005EMAIL\020\002\022\014\n\010CHATROOM\020\003"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1635,7 +1791,7 @@ public final class Payload {
           internal_static_MessageData_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_MessageData_descriptor,
-              new java.lang.String[] { "SenderAddress", "MessageType", "TimeStamp", "UnencryptedMessage", "Name", });
+              new java.lang.String[] { "SenderAddress", "MessageType", "TimeStamp", "Subject", "UnencryptedMessage", "Name", });
           return null;
         }
       };

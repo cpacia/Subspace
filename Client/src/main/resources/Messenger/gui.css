@@ -114,6 +114,10 @@
     -fx-background-color: #4d5052;
 }
 
+#emailPane .list-cell {
+    -fx-cell-size: 45;
+}
+
 #newEmailPane .list-cell {
     -fx-background-color: #393939;
     -fx-cell-size: 10;

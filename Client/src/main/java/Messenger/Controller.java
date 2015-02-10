@@ -7,6 +7,8 @@ import com.subgraph.orchid.TorClient;
 import com.subgraph.orchid.TorInitializationListener;
 import eu.hansolo.enzo.notification.Notification;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -23,6 +25,7 @@ import javafx.animation.TranslateTransition;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -38,7 +41,9 @@ import javafx.util.Duration;
 import javafx.animation.ParallelTransition;
 import Messenger.Utils.easing.EasingMode;
 import Messenger.Utils.easing.ElasticInterpolator;
+import org.bitcoinj.core.AddressFormatException;
 import org.controlsfx.control.PopOver;
+import org.controlsfx.dialog.Dialogs;
 
 import java.awt.*;
 import java.io.File;
@@ -80,6 +85,16 @@ public class Controller {
     HTMLEditor emailEditor;
     @FXML
     ListView emailList;
+    @FXML
+    Button btnEmailSend;
+    @FXML
+    Button btnEmailDelete;
+    @FXML
+    TextField emailToField;
+    @FXML
+    TextField emailSubjectField;
+    @FXML
+    ChoiceBox cbEmailFrom;
     private PopOver pop;
     private boolean readyToGo = false;
     private ObservableList<HBox> chatListData;
@@ -211,6 +226,34 @@ public class Controller {
         Main.retriever.start();
     }
 
+    @FXML
+    void emailPaneClear(ActionEvent e){
+        emailEditor.setHtmlText("<html><head></head><body text=\"#00d0d0\" bgcolor=\"#393939\" contenteditable=\"true\"></body></html>");
+        emailSubjectField.setText("");
+        emailToField.setText("");
+        cbEmailFrom.getSelectionModel().select(0);
+    }
+
+    @FXML
+    void emailSend(ActionEvent e){
+        Address addr = null;
+        try {addr = new Address(emailToField.getText());}
+        catch (AddressFormatException e1){e1.printStackTrace();}
+        Message m = new Message(addr, emailEditor.getHtmlText(),
+                writer.getKeyFromAddress(cbEmailFrom.getValue().toString()),
+                Payload.MessageType.EMAIL, emailSubjectField.getText());
+        m.send();
+        emailEditor.setHtmlText("<html><head></head><body text=\"#00d0d0\" bgcolor=\"#393939\" contenteditable=\"true\"></body></html>");
+        emailSubjectField.setText("");
+        emailToField.setText("");
+        cbEmailFrom.getSelectionModel().select(0);
+        String name = addr.toString();
+        if (writer.contactExists(name)){name = writer.getNameFromAddress(addr.toString());}
+        Notification info = new Notification("Subspace", "Sent email to: " + name);
+        Notification.Notifier.INSTANCE.notify(info);
+    }
+
+
     void setEmailTab1(){
         Image imgEmail1 = new Image(getClass().getResourceAsStream("email-icon.png"));
         ImageView ivEmail1 = new ImageView(imgEmail1);
@@ -240,6 +283,42 @@ public class Controller {
     }
 
     void setEmailTab2(){
+        ObservableList<String> cbData = FXCollections.observableArrayList("Select your from address");
+        FileWriter f = new FileWriter();
+        if (f.hasKeys()) {
+            for (KeyRing.Key key : f.getSavedKeys()) {
+                cbData.add(key.getAddress());
+            }
+        }
+        emailToField.focusedProperty().addListener(new ChangeListener<Boolean>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+            {
+                if (!newPropertyValue) {
+                    if(Address.validateAddress(emailToField.getText())){
+                        if (cbEmailFrom.getSelectionModel().getSelectedIndex()!=0){btnEmailSend.setDisable(false);}
+                        emailToField.setStyle("-fx-background-color: #393939; -fx-text-fill: #f92672; -fx-border-color: #00d0d0;");
+                    }
+                    else {
+                        btnEmailSend.setDisable(true);
+                        emailToField.setStyle("-fx-background-color: #393939; -fx-text-fill: #b4b5b1; -fx-border-color: #f92672;");
+                    }
+                }
+            }
+        });
+        cbEmailFrom.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+                if((Integer)number2 != 0){cbEmailFrom.setStyle("-fx-background-color: #393939;-fx-border-color: #00d0d0;");}
+                if((Integer)number2!=0 && Address.validateAddress(emailToField.getText())){
+                    btnEmailSend.setDisable(false);
+                }
+                else {btnEmailSend.setDisable(true);}
+            }
+        });
+        cbEmailFrom.setItems(cbData);
+        cbEmailFrom.getSelectionModel().selectFirst();
         emailPane.setVisible(true);
         newEmailPane.setVisible(true);
         emailContentPane.setVisible(false);
@@ -267,8 +346,26 @@ public class Controller {
                 i++;
             }
         }, 0, 25);
+    }
 
+    @FXML
+    void sendButtonPressed(MouseEvent e){
+        btnEmailSend.setStyle("-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
 
+    @FXML
+    void sendButtonReleased(MouseEvent e){
+        btnEmailSend.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
+
+    @FXML
+    void deleteButtonPressed(MouseEvent e){
+        btnEmailDelete.setStyle("-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
+
+    @FXML
+    void deleteButtonReleased(MouseEvent e){
+        btnEmailDelete.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
     }
 
     void setChatTab1(){
@@ -470,16 +567,6 @@ public class Controller {
                         if (!writer.conversationExists(cID)) {
                             writer.newChatConversation(cID, m, m.getSenderName(),
                                     m.getFromAddress(), m.getToAddress().toString(), false);
-                            if (writer.hasOpenname(m.getFromAddress())) {
-                                if (!writer.isContactFresh(m.getFromAddress())) {
-                                    OpennameDownloadListener l = new OpennameDownloadListener();
-                                    OpennameUtils.downloadAvatar(writer.getOpenname(m.getFromAddress()),
-                                            Main.params.getApplicationDataFolder().toString(), l, null);
-                                }
-                                else {
-                                    writer.updateContact(m.getFromAddress(), null, null);
-                                }
-                            }
                         } else {
                             writer.addChatMessage(cID, m, false);
                         }
@@ -491,6 +578,8 @@ public class Controller {
                         } else {
                             updateChatListView();
                         }
+                    } else if (m.getMessageType() == Payload.MessageType.EMAIL){
+                        addToEmailListView(m.getFromAddress(), m.getSenderName(), m.getSubject());
                     }
                 }
             });
@@ -565,6 +654,28 @@ public class Controller {
         h.setPrefWidth(235);
         h.setPadding(new Insets(0, 0, 0, 3));
         chatListData.add(h);
+    }
+
+    private void addToEmailListView(String theirAddress, String theirName, String subject) {
+        emailListData.remove(chatInit);
+        HBox h = new HBox();
+        Label lblSubject = new Label(subject);
+        lblSubject.setMaxWidth(235);
+        lblSubject.setStyle("-fx-text-fill: #00d0d0; -fx-font-size: 16;");
+        lblSubject.setPadding(new Insets(0, 0, 0, 4));
+        lblSubject.setAlignment(Pos.CENTER_LEFT);
+        VBox v = new VBox();
+        v.setAlignment(Pos.CENTER_LEFT);
+        Label lblName = new Label(theirName);
+        lblName.setWrapText(false);
+        lblName.setStyle("-fx-text-fill: #dc78dc; -fx-font-size: 16;");
+        lblName.setPadding(new Insets(0, 0, 0, 4));
+        v.getChildren().addAll(lblName, lblSubject);
+        h.getChildren().addAll(v);
+        h.setAlignment(Pos.TOP_LEFT);
+        h.setPrefWidth(235);
+        h.setPadding(new Insets(0, 0, 0, 0));
+        emailListData.add(h);
     }
 
     public static class ContextMenuListCell<T> extends ListCell<T> {

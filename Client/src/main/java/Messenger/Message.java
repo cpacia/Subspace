@@ -6,6 +6,7 @@ import org.bitcoinj.core.AddressFormatException;
 import org.bouncycastle.jce.interfaces.ECPrivateKey;
 import org.bouncycastle.util.encoders.Hex;
 
+import javax.annotation.Nullable;
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import javax.net.ssl.HttpsURLConnection;
@@ -35,11 +36,13 @@ public class Message {
     private String postKey;
     private boolean isForMe = false;
     private String message;
+    private String subject;
     private Payload.MessageType messageType;
 
-    public Message(Address toAddress, String message, KeyRing.Key fromKey, Payload.MessageType type){
+    public Message(Address toAddress, String message, KeyRing.Key fromKey, Payload.MessageType type, @Nullable String subject){
         this.messageType = type;
-        this.senderName = fromKey.getName();
+        if (fromKey.hasOpenname()){this.senderName="+"+fromKey.getOpenname();}
+        else{this.senderName = fromKey.getName();}
         this.message = message;
         this.sendingKey = ECKey.fromPrivOnly(fromKey.getPrivateKey().toByteArray());
         this.fromAddress = fromKey.getAddress();
@@ -47,15 +50,28 @@ public class Message {
         this.timeStamp = System.currentTimeMillis() / 1000L;
         this.toAddress = toAddress;
         this.prefix = toAddress.getPrefix();
+        this.subject = subject;
         createPostKey();
 
-        Payload.MessageData data = Payload.MessageData.newBuilder()
-                .setSenderAddress(this.fromAddress)
-                .setMessageType(type)
-                .setUnencryptedMessage(message)
-                .setTimeStamp(this.timeStamp)
-                .setName(this.senderName)
-                .build();
+        Payload.MessageData data = null;
+        if (this.messageType == Payload.MessageType.CHAT) {
+            data = Payload.MessageData.newBuilder()
+                    .setSenderAddress(this.fromAddress)
+                    .setMessageType(type)
+                    .setUnencryptedMessage(message)
+                    .setTimeStamp(this.timeStamp)
+                    .setName(this.senderName)
+                    .build();
+        } else if (this.messageType == Payload.MessageType.EMAIL) {
+            data = Payload.MessageData.newBuilder()
+                    .setSenderAddress(this.fromAddress)
+                    .setMessageType(type)
+                    .setUnencryptedMessage(message)
+                    .setSubject(subject)
+                    .setTimeStamp(this.timeStamp)
+                    .setName(this.senderName)
+                    .build();
+        }
         byte[] serializedMesssageData = data.toByteArray();
         byte[] sharedSecret = null;
         byte[] hMACBytes = null;
@@ -115,6 +131,9 @@ public class Message {
                 this.message = data.getUnencryptedMessage();
                 this.senderName = data.getName();
                 this.messageType = data.getMessageType();
+                if (this.messageType == Payload.MessageType.EMAIL){
+                    this.subject = data.getSubject();
+                }
             } catch (InvalidProtocolBufferException e){isForMe = false;}
 
             byte[] hmac = payload.getHMac().toByteArray();
@@ -222,6 +241,10 @@ public class Message {
 
     public Address getToAddress(){
         return toAddress;
+    }
+
+    public String getSubject(){
+        return this.subject;
     }
 
     public Payload.MessageType getMessageType(){

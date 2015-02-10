@@ -92,7 +92,13 @@ public class AddressWindowController {
         if (!f.hasKeys()) {data.add(init);}
         else {
             for (KeyRing.Key key : f.getSavedKeys()){
-                HBox node = getAddressListViewNode(key.getAddress(), key.getName());
+                HBox node;
+                if (key.hasOpenname()) {
+                    node = getAddressListViewNode(key.getAddress(), key.getOpenname());
+                }
+                else{
+                    node = getAddressListViewNode(key.getAddress(), key.getName());
+                }
                 data.add(node);
             }
         }
@@ -283,7 +289,7 @@ public class AddressWindowController {
                             addr.toString(), cbNode.getValue().toString(), txtName.getText().substring(1));
                     Main.retriever.addWatchKey(writer.getKeyFromAddress(addr.toString()));
                     data.remove(init);
-                    HBox hBox = getAddressListViewNode(addr.toString(), txtName.getText());
+                    HBox hBox = getAddressListViewNode(addr.toString(), txtName.getText().substring(1));
                     data.add(hBox);
                     blurIn(addAddressPane);
                     fadeOut(addAddressPane);
@@ -334,7 +340,7 @@ public class AddressWindowController {
         Label lblAddress = new Label(address);
         lblAddress.setStyle("-fx-text-fill: #dc78dc;");
         ImageView imView = null;
-        File file = new File(Main.params.getApplicationDataFolder()+"/avatars/"+name.substring(1)+".jpg");
+        File file = new File(Main.params.getApplicationDataFolder()+"/avatars/"+name+".jpg");
         if (file.exists()){
             Image image = new Image(file.toURI().toString());
             imView = new ImageView(image);

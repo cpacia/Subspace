@@ -133,7 +133,9 @@ public class MessageRetriever {
                             writer.addContact(m.getFromAddress(), m.getSenderName(), null);
                         }
                     }
-                    else {m.setSenderName(writer.getFormattedName(m.getSenderName().substring(1)));}
+                    else if (writer.hasOpenname(m.getFromAddress())) {
+                        m.setSenderName(writer.getFormattedName(m.getSenderName().substring(1)));
+                    }
 
                     for (MessageListener l : listeners){l.onMessageReceived(m);}
                     System.out.println("Received a message from " + m.getSenderName() + ": " + m.getDecryptedMessage());

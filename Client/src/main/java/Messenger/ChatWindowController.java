@@ -230,11 +230,11 @@ public class ChatWindowController {
         if (paneOne.isVisible()){
             this.fromAddress = cbAddrs.getValue().toString();
             setupPane2();
-            m = new Message(toAddress, txtArea1.getText(), fromKey, Payload.MessageType.CHAT);
+            m = new Message(toAddress, txtArea1.getText(), fromKey, Payload.MessageType.CHAT, null);
             showOutGoingMessage(txtArea1.getText());
         }
         else {
-            m = new Message(toAddress, txtArea2.getText(), fromKey, Payload.MessageType.CHAT);
+            m = new Message(toAddress, txtArea2.getText(), fromKey, Payload.MessageType.CHAT, null);
             showOutGoingMessage(txtArea2.getText());
         }
         m.send();
@@ -276,7 +276,7 @@ public class ChatWindowController {
             javafx.scene.image.Image image = new javafx.scene.image.Image(f.toURI().toString());
             imView2 = new ImageView(image);
         } else {
-            try {imView2 = Identicon.generate(toAddress.toString(), Color.decode("#393939"));}
+            try {imView2 = Identicon.generate(toAddress.toString(), Color.decode("#4d5052"));}
             catch (Exception e1) {e1.printStackTrace();}
         }
         imView2.setFitWidth(40);
