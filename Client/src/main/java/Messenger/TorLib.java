@@ -29,14 +29,11 @@ package Messenger;
         import org.json.JSONException;
         import org.json.JSONObject;
 
-        import javax.net.ssl.HttpsURLConnection;
         import javax.net.ssl.SSLSocket;
         import javax.net.ssl.SSLSocketFactory;
         import java.io.*;
-        import java.net.*;
-        import java.nio.charset.Charset;
-        import java.nio.file.Files;
-        import java.nio.file.Paths;
+        import java.net.InetAddress;
+        import java.net.Socket;
 
 /**
  * The Onion Router Java Library routines<br />
@@ -192,7 +189,6 @@ public class TorLib {
      * @throws JSONException
      */
     public static JSONObject getJSON(String hostname, int port, String resource) throws IOException, JSONException, HttpException{
-
         //Create a SSL socket using Tor
         Socket socket = TorSocket(hostname, port);
         SSLSocketFactory sslSf = (SSLSocketFactory)SSLSocketFactory.getDefault();
@@ -249,6 +245,7 @@ public class TorLib {
         wr.close();
         rd.close();
     }
+
 
     /**
      *  This method Creates a socket, then sends the inital SOCKS request info
@@ -372,4 +369,5 @@ public class TorLib {
         return(retval);
 
     }
+
 }

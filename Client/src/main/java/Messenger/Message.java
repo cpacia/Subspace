@@ -228,4 +228,8 @@ public class Message {
         return this.messageType;
     }
 
+    public void setSenderName(String name){
+        this.senderName = name;
+    }
+
 }

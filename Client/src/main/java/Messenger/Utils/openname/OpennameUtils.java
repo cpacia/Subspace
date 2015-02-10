@@ -17,6 +17,29 @@ import java.net.URL;
  */
 public class OpennameUtils {
 
+    public static String blockingOpennameDownload(String openname, String dataFolderPath){
+        System.getProperties().put( "proxySet", "true" );
+        System.getProperties().put( "socksProxyHost", "127.0.0.1" );
+        System.getProperties().put( "socksProxyPort", "9150" );
+        String formatted = "";
+        try {
+            JSONObject obj = getOneNameJSON(openname);
+            JSONObject avi = obj.getJSONObject("avatar");
+            JSONObject name = obj.getJSONObject("name");
+            formatted = name.getString("formatted");
+            String aviLocation = avi.getString("url");
+            URL url = new URL(aviLocation);
+            BufferedImage img = cropDownloadedAvatarImage(ImageIO.read(url));
+            File outputfile = new File(dataFolderPath + "/" + openname + ".jpg");
+            ImageIO.write(img, "jpg", outputfile);
+        } catch (JSONException | IOException | HttpException e) {
+            System.getProperties().put( "proxySet", "false" );
+            return null;
+        }
+        System.getProperties().put( "proxySet", "false" );
+        return formatted;
+    }
+
     public static void downloadAvatar(String openname, String dataFolderPath,
                                       OpennameListener listener, Address addr){
         System.getProperties().put( "proxySet", "true" );

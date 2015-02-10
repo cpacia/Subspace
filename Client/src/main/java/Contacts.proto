@@ -3,6 +3,7 @@ message ContactList {
 }
 
 message Contact {
-    optional string name    = 1;
-    required string address = 2;
+    optional string name     = 1;
+    optional string openname = 2;
+    required string address  = 3;
 }

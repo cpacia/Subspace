@@ -1,5 +1,6 @@
 package Messenger;
 
+import Messenger.Utils.openname.OpennameUtils;
 import org.apache.http.HttpException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,31 +77,10 @@ public class MessageRetriever {
             }
             System.out.println(addr.toString() + ": " + response.toString());
             JSONObject resp = null;
-            String ts = "0";
             try {
                 resp = new JSONObject(response.toString());
-                ts = resp.getString("timestamp");
             } catch (JSONException e){e.printStackTrace();}
-            writer.updateGETtime(addr.toString(), ts);
-            Iterator<?> keys = resp.keys();
-            while (keys.hasNext()) {
-                String key = (String) keys.next();
-                if (!key.equals("timestamp")) {
-                    String payloadString = "";
-                    try{payloadString = resp.getString(key);}
-                    catch (JSONException e){e.printStackTrace();}
-                    byte[] cipherText = hexStringToByteArray(payloadString);
-                    byte[] privKey = writer.getKeyFromAddress(addr.toString()).getPrivateKey().toByteArray();
-                    ECKey decryptKey = ECKey.fromPrivOnly(privKey);
-                    Message m = new Message(cipherText, decryptKey.getPrivKey(), addr);
-                    if (m.isMessageForMe()) {
-                        for (MessageListener l : listeners){l.onMessageReceived(m);}
-                        System.out.println("Received a message from " + m.getSenderName() + ": " + m.getDecryptedMessage());
-                    }
-                }
-            }
-            try {Thread.sleep(500);}
-            catch (InterruptedException e) {e.printStackTrace();}
+            testMessages(addr, resp);
         }
     }
 
@@ -112,31 +92,62 @@ public class MessageRetriever {
                 resp = TorLib.getJSON(hostname, 8335, addr.getPrefix() + "?timestamp=" +
                         writer.getKeyFromAddress(addr.toString()).getTimeOfLastGET());
             } catch (JSONException | IOException | HttpException e){e.printStackTrace();}
-            String ts = "0";
-            try {
-                ts = resp.getString("timestamp");
-            } catch (JSONException e){e.printStackTrace();}
-            writer.updateGETtime(addr.toString(), ts);
-            Iterator<?> keys = resp.keys();
-            while (keys.hasNext()) {
-                String key = (String) keys.next();
-                if (!key.equals("timestamp")) {
-                    String payloadString = "";
-                    try{payloadString = resp.getString(key);}
-                    catch (JSONException e){e.printStackTrace();}
-                    byte[] cipherText = hexStringToByteArray(payloadString);
-                    byte[] privKey = writer.getKeyFromAddress(addr.toString()).getPrivateKey().toByteArray();
-                    ECKey decryptKey = ECKey.fromPrivOnly(privKey);
-                    Message m = new Message(cipherText, decryptKey.getPrivKey(), addr);
-                    if (m.isMessageForMe()) {
-                        for (MessageListener l : listeners){l.onMessageReceived(m);}
-                        System.out.println("Received a message from " + m.getSenderName() + ": " + m.getDecryptedMessage());
+            testMessages(addr, resp);
+        }
+    }
+
+    private void testMessages(Address addr, JSONObject resp){
+        System.out.println("0");
+        String ts = "0";
+        try {
+            ts = resp.getString("timestamp");
+        } catch (JSONException e){e.printStackTrace();}
+        writer.updateGETtime(addr.toString(), ts);
+        Iterator<?> keys = resp.keys();
+        while (keys.hasNext()) {
+            String key = (String) keys.next();
+            if (!key.equals("timestamp")) {
+                String payloadString = "";
+                try{payloadString = resp.getString(key);}
+                catch (JSONException e){e.printStackTrace();}
+                byte[] cipherText = hexStringToByteArray(payloadString);
+                byte[] privKey = writer.getKeyFromAddress(addr.toString()).getPrivateKey().toByteArray();
+                ECKey decryptKey = ECKey.fromPrivOnly(privKey);
+                Message m = new Message(cipherText, decryptKey.getPrivKey(), addr);
+                if (m.isMessageForMe()) {
+                    System.out.println("1");
+                    String openname = null;
+                    if (m.getSenderName().substring(0,1).equals("+")){
+                        System.out.println("2");
+                        openname = m.getSenderName().substring(1);
+                        if (!writer.contactExists(m.getFromAddress()) ||
+                                !writer.hasOpenname(m.getFromAddress()) ||
+                                writer.hasOpennameChanged(m.getFromAddress(), m.getSenderName().substring(0,1))){
+                            System.out.println("3");
+                            String name = OpennameUtils.blockingOpennameDownload(m.getSenderName().substring(1),
+                                    Main.params.getApplicationDataFolder().toString());
+                            if (name!=null){m.setSenderName(name);}
+                        }
                     }
+                    if (!writer.contactExists(m.getFromAddress())) {
+                        System.out.println("4");
+                        if (openname!=null) {
+                            System.out.println("5");
+                            writer.addContact(m.getFromAddress(), m.getSenderName(), null);
+                        }
+                        else {
+                            System.out.println("6");
+                            writer.addContact(m.getFromAddress(), m.getSenderName(), openname);
+                        }
+                    }
+
+                    for (MessageListener l : listeners){l.onMessageReceived(m);}
+                    System.out.println("Received a message from " + m.getSenderName() + ": " + m.getDecryptedMessage());
                 }
             }
-            try {Thread.sleep(500);}
-            catch (InterruptedException e) {e.printStackTrace();}
         }
+        try {Thread.sleep(500);}
+        catch (InterruptedException e) {e.printStackTrace();}
     }
 
     public void stop(){

@@ -2,6 +2,7 @@ package Messenger;
 
 import com.google.protobuf.ByteString;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -17,6 +18,8 @@ public class FileWriter {
     String keyFilePath;
     File messageFile;
     String messageFilePath;
+    File contactsFile;
+    String contactsFilePath;
 
 
     public FileWriter() {
@@ -27,6 +30,10 @@ public class FileWriter {
         messageFilePath = Main.params.getApplicationDataFolder() + "/messages.dat";
         messageFile = new File(messageFilePath);
         try{if (!messageFile.exists()){messageFile.createNewFile();}}
+        catch (IOException e){e.printStackTrace();}
+        contactsFilePath = Main.params.getApplicationDataFolder() + "/contacts.dat";
+        contactsFile = new File(contactsFilePath);
+        try{if (!contactsFile.exists()){contactsFile.createNewFile();}}
         catch (IOException e){e.printStackTrace();}
     }
 
@@ -43,6 +50,19 @@ public class FileWriter {
         output.close();
     }
 
+    private synchronized Contacts.ContactList.Builder getContactsFileBuilder() {
+        Contacts.ContactList.Builder savedContacts = Contacts.ContactList.newBuilder();
+        try{savedContacts.mergeDelimitedFrom(new FileInputStream(contactsFilePath)); }
+        catch(Exception e){e.printStackTrace();}
+        return savedContacts;
+    }
+
+    private synchronized void writeContactsFile(Contacts.ContactList.Builder savedContacts) throws IOException{
+        FileOutputStream output = new FileOutputStream(contactsFilePath);
+        savedContacts.build().writeDelimitedTo(output);
+        output.close();
+    }
+
     private synchronized History.ChatConversationList.Builder getMessageFileBuilder() {
         History.ChatConversationList.Builder savedMessages = History.ChatConversationList.newBuilder();
         try{savedMessages.mergeDelimitedFrom(new FileInputStream(messageFilePath)); }
@@ -54,6 +74,89 @@ public class FileWriter {
         FileOutputStream output = new FileOutputStream(messageFilePath);
         savedMessages.build().writeDelimitedTo(output);
         output.close();
+    }
+
+    public List<Contacts.Contact> getContacts(){
+        Contacts.ContactList.Builder b = getContactsFileBuilder();
+        return b.getContactList();
+    }
+
+    public void addContact(String address, String name, @Nullable String openname){
+        Contacts.ContactList.Builder b = getContactsFileBuilder();
+        Contacts.Contact c = null;
+        if (openname==null) {
+            c = Contacts.Contact.newBuilder()
+                    .setAddress(address)
+                    .setName(name).build();
+        } else {
+            c = Contacts.Contact.newBuilder()
+                    .setAddress(address)
+                    .setName(name)
+                    .setOpenname(openname).build();
+        }
+        b.addContact(c);
+        try {writeContactsFile(b);
+        } catch (IOException e) {e.printStackTrace();}
+    }
+
+    public void updateContact(String address, @Nullable String name, @Nullable String openname){
+        Contacts.ContactList.Builder b = getContactsFileBuilder();
+        int index = 0;
+        for (Contacts.Contact c : getContacts()){
+            if (c.getAddress().equals(address)){
+                index = getContacts().indexOf(c);
+                break;
+            }
+        }
+        Contacts.Contact.Builder newContact = Contacts.Contact.newBuilder();
+        newContact.mergeFrom(b.getContact(index));
+        if (name!=null){newContact.setName(name);}
+        if (openname!=null){newContact.setOpenname(openname);}
+        b.removeContact(index);
+        b.addContact(index, newContact);
+        try { writeContactsFile(b);}
+        catch (IOException e) {e.printStackTrace();}
+    }
+
+    public void deleteContact(String address){
+        Contacts.ContactList.Builder b = getContactsFileBuilder();
+        int index = 0;
+        for (Contacts.Contact c : getContacts()){
+            if (c.getAddress().equals(address)){
+                index = getContacts().indexOf(c);
+                break;
+            }
+        }
+        b.removeContact(index);
+        try { writeContactsFile(b);}
+        catch (IOException e) {e.printStackTrace();}
+    }
+
+    public boolean contactExists(String address){
+        for (Contacts.Contact c : getContacts()){
+            if (c.getAddress().equals(address)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasOpenname(String address){
+        for (Contacts.Contact c : getContacts()){
+            if (c.getAddress().equals(address)){
+                if (c.hasOpenname()) return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasOpennameChanged(String address, String openname){
+        for (Contacts.Contact c : getContacts()){
+            if (c.getAddress().equals(address)){
+                if (c.getOpenname().equals(openname)) return false;
+            }
+        }
+        return true;
     }
 
     public void addKey(ECKey key, String name, int prefixLength, String address, String uploadHostName){
