@@ -17,7 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
+import javafx.scene.image.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -28,6 +28,8 @@ import javafx.stage.Stage;
 import org.bitcoinj.core.AddressFormatException;
 
 import java.awt.*;
+import java.awt.Image;
+import java.io.File;
 
 
 /**
@@ -269,8 +271,14 @@ public class ChatWindowController {
         lblTo.setText("  " + toAddress.toString());
         lblTo.setStyle("-fx-text-fill: #dc78dc; -fx-font-size: 16");
         ImageView imView2 = null;
-        try{imView2 = Identicon.generate(toAddress.toString(), Color.decode("#4d5052"));}
-        catch (Exception e1){e1.printStackTrace();}
+        if (fileWriter.contactExists(toAddress.toString()) && fileWriter.hasOpenname(toAddress.toString())){
+            File f = new File(Main.params.getApplicationDataFolder()+"/avatars/"+fileWriter.getOpenname(toAddress.toString())+".jpg");
+            javafx.scene.image.Image image = new javafx.scene.image.Image(f.toURI().toString());
+            imView2 = new ImageView(image);
+        } else {
+            try {imView2 = Identicon.generate(toAddress.toString(), Color.decode("#393939"));}
+            catch (Exception e1) {e1.printStackTrace();}
+        }
         imView2.setFitWidth(40);
         imView2.setFitHeight(40);
         hBox.getChildren().addAll(imView2, lblTo);
@@ -314,10 +322,13 @@ public class ChatWindowController {
         lblFromName.setPadding(new Insets(10, 0, 0, 10));
         v.getChildren().addAll(lblFromName, lblMessage);
         ImageView imView = null;
-        try {
-            imView = Identicon.generate(senderAddr, Color.decode("#393939"));
-        } catch (Exception e1) {
-            e1.printStackTrace();
+        if (fileWriter.contactExists(toAddress.toString()) && fileWriter.hasOpenname(toAddress.toString())){
+            File f = new File(Main.params.getApplicationDataFolder()+"/avatars/"+fileWriter.getOpenname(toAddress.toString())+".jpg");
+            javafx.scene.image.Image image = new javafx.scene.image.Image(f.toURI().toString());
+            imView = new ImageView(image);
+        } else {
+            try {imView = Identicon.generate(toAddress.toString(), Color.decode("#393939"));}
+            catch (Exception e1) {e1.printStackTrace();}
         }
         imView.setFitWidth(35);
         imView.setFitHeight(35);
@@ -351,8 +362,15 @@ public class ChatWindowController {
         lblFromName.setPadding(new Insets(10, 10, 0, 0));
         v.getChildren().addAll(lblFromName, lblMessage);
         ImageView imView = null;
-        try {imView = Identicon.generate(fromKey.getAddress(), Color.decode("#393939"));
-        } catch (Exception e1) {e1.printStackTrace();}
+        if (fromKey.hasOpenname()){
+            File f = new File(Main.params.getApplicationDataFolder()+"/avatars/"+fromKey.getOpenname()+".jpg");
+            javafx.scene.image.Image image = new javafx.scene.image.Image(f.toURI().toString());
+            imView = new ImageView(image);
+        }
+        else {
+            try {imView = Identicon.generate(fromKey.getAddress(), Color.decode("#393939"));}
+            catch (Exception e1) {e1.printStackTrace();}
+        }
         imView.setFitWidth(35);
         imView.setFitHeight(35);
         HBox imageHBox = new HBox();

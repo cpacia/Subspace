@@ -6,8 +6,9 @@ message Key {
 	required bytes privateKey           = 1;
 	optional bytes publicKey            = 2;
 	required string name                = 3;
-	required int32 prefixLength         = 4;
-	optional string address             = 5;
-	required string uploadNode          = 6;
-	required string timeOfLastGET       = 7 [default = "0"];
+	optional string openname            = 4;
+	required int32 prefixLength         = 5;
+	optional string address             = 6;
+	required string uploadNode          = 7;
+	required string timeOfLastGET       = 8 [default = "0"];
 }

@@ -97,7 +97,6 @@ public class MessageRetriever {
     }
 
     private void testMessages(Address addr, JSONObject resp){
-        System.out.println("0");
         String ts = "0";
         try {
             ts = resp.getString("timestamp");
@@ -115,31 +114,26 @@ public class MessageRetriever {
                 ECKey decryptKey = ECKey.fromPrivOnly(privKey);
                 Message m = new Message(cipherText, decryptKey.getPrivKey(), addr);
                 if (m.isMessageForMe()) {
-                    System.out.println("1");
                     String openname = null;
                     if (m.getSenderName().substring(0,1).equals("+")){
-                        System.out.println("2");
                         openname = m.getSenderName().substring(1);
                         if (!writer.contactExists(m.getFromAddress()) ||
                                 !writer.hasOpenname(m.getFromAddress()) ||
-                                writer.hasOpennameChanged(m.getFromAddress(), m.getSenderName().substring(0,1))){
-                            System.out.println("3");
+                                writer.hasOpennameChanged(m.getFromAddress(), m.getSenderName().substring(1))){
                             String name = OpennameUtils.blockingOpennameDownload(m.getSenderName().substring(1),
                                     Main.params.getApplicationDataFolder().toString());
                             if (name!=null){m.setSenderName(name);}
                         }
                     }
                     if (!writer.contactExists(m.getFromAddress())) {
-                        System.out.println("4");
                         if (openname!=null) {
-                            System.out.println("5");
-                            writer.addContact(m.getFromAddress(), m.getSenderName(), null);
-                        }
-                        else {
-                            System.out.println("6");
                             writer.addContact(m.getFromAddress(), m.getSenderName(), openname);
                         }
+                        else {
+                            writer.addContact(m.getFromAddress(), m.getSenderName(), null);
+                        }
                     }
+                    else {m.setSenderName(writer.getFormattedName(m.getSenderName().substring(1)));}
 
                     for (MessageListener l : listeners){l.onMessageReceived(m);}
                     System.out.println("Received a message from " + m.getSenderName() + ": " + m.getDecryptedMessage());

@@ -23,6 +23,7 @@ public class FileWriter {
 
 
     public FileWriter() {
+        boolean b = (new File(Main.params.getApplicationDataFolder()+"/avatars/")).mkdirs();
         keyFilePath = Main.params.getApplicationDataFolder() + "/keyring.dat";
         keyRingFile = new File(keyFilePath);
         try{if (!keyRingFile.exists()){keyRingFile.createNewFile();}}
@@ -81,16 +82,27 @@ public class FileWriter {
         return b.getContactList();
     }
 
+    public boolean isContactFresh(String address){
+        for (Contacts.Contact c : getContacts()){
+            if (c.getAddress().equals(address)){
+                return c.getIsFresh();
+            }
+        }
+        return false;
+    }
+
     public void addContact(String address, String name, @Nullable String openname){
         Contacts.ContactList.Builder b = getContactsFileBuilder();
         Contacts.Contact c = null;
         if (openname==null) {
             c = Contacts.Contact.newBuilder()
                     .setAddress(address)
+                    .setIsFresh(true)
                     .setName(name).build();
         } else {
             c = Contacts.Contact.newBuilder()
                     .setAddress(address)
+                    .setIsFresh(true)
                     .setName(name)
                     .setOpenname(openname).build();
         }
@@ -112,6 +124,7 @@ public class FileWriter {
         newContact.mergeFrom(b.getContact(index));
         if (name!=null){newContact.setName(name);}
         if (openname!=null){newContact.setOpenname(openname);}
+        newContact.setIsFresh(false);
         b.removeContact(index);
         b.addContact(index, newContact);
         try { writeContactsFile(b);}
@@ -150,6 +163,24 @@ public class FileWriter {
         return false;
     }
 
+    public String getOpenname(String address){
+        for (Contacts.Contact c : getContacts()){
+            if (c.getAddress().equals(address)){
+                   return c.getOpenname();
+                }
+        }
+        return null;
+    }
+
+    public String getFormattedName(String openname){
+        for (Contacts.Contact c : getContacts()){
+            if (c.getOpenname().equals(openname)){
+                return c.getName();
+            }
+        }
+        return null;
+    }
+
     public boolean hasOpennameChanged(String address, String openname){
         for (Contacts.Contact c : getContacts()){
             if (c.getAddress().equals(address)){
@@ -159,18 +190,33 @@ public class FileWriter {
         return true;
     }
 
-    public void addKey(ECKey key, String name, int prefixLength, String address, String uploadHostName){
+    public void addKey(ECKey key, String name, int prefixLength, String address,
+                       String uploadHostName, @Nullable String openname){
         KeyRing.SavedKeys.Builder builder = getKeyFileBuilder();
         ByteString priv = ByteString.copyFrom(key.getPrivKeyBtyes());
         ByteString pub = ByteString.copyFrom(key.getPubKeyBytes());
-        KeyRing.Key addKey = KeyRing.Key.newBuilder().setName(name)
-                                                    .setPrivateKey(priv)
-                                                    .setPublicKey(pub)
-                                                    .setPrefixLength(prefixLength)
-                                                    .setAddress(address)
-                                                    .setUploadNode(uploadHostName)
-                                                    .setTimeOfLastGET("0")
-                                                    .build();
+        KeyRing.Key addKey = null;
+        if (openname==null) {
+            addKey = KeyRing.Key.newBuilder().setName(name)
+                    .setPrivateKey(priv)
+                    .setPublicKey(pub)
+                    .setPrefixLength(prefixLength)
+                    .setAddress(address)
+                    .setUploadNode(uploadHostName)
+                    .setTimeOfLastGET("0")
+                    .build();
+        }
+        else {
+            addKey = KeyRing.Key.newBuilder().setName(name)
+                    .setPrivateKey(priv)
+                    .setPublicKey(pub)
+                    .setPrefixLength(prefixLength)
+                    .setAddress(address)
+                    .setUploadNode(uploadHostName)
+                    .setTimeOfLastGET("0")
+                    .setOpenname(openname)
+                    .build();
+        }
         builder.addKey(addKey);
         try {writeKeyFile(builder);
         } catch (IOException e) {e.printStackTrace();}

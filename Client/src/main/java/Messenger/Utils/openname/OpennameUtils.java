@@ -30,7 +30,7 @@ public class OpennameUtils {
             String aviLocation = avi.getString("url");
             URL url = new URL(aviLocation);
             BufferedImage img = cropDownloadedAvatarImage(ImageIO.read(url));
-            File outputfile = new File(dataFolderPath + "/" + openname + ".jpg");
+            File outputfile = new File(dataFolderPath + "/avatars/" + openname + ".jpg");
             ImageIO.write(img, "jpg", outputfile);
         } catch (JSONException | IOException | HttpException e) {
             System.getProperties().put( "proxySet", "false" );
@@ -49,17 +49,20 @@ public class OpennameUtils {
             try {
                 JSONObject obj = getOneNameJSON(openname);
                 JSONObject avi = obj.getJSONObject("avatar");
+                JSONObject name = obj.getJSONObject("name");
+                String formattedName = name.getString("formatted");
                 String aviLocation = avi.getString("url");
                 URL url = new URL(aviLocation);
                 BufferedImage img = cropDownloadedAvatarImage(ImageIO.read(url));
-                File outputfile = new File(dataFolderPath + "/" + openname + ".jpg");
+                File outputfile = new File(dataFolderPath + "/avatars/" + openname + ".jpg");
                 ImageIO.write(img, "jpg", outputfile);
-                listener.onDownloadComplete(addr);
+                listener.onDownloadComplete(addr, formattedName);
             } catch (JSONException | IOException | HttpException e) {
                 listener.onDownloadFailed();
             }
         };
-        new Thread(task).start();
+        Thread t = new Thread(task);
+        t.start();
         System.getProperties().put( "proxySet", "false" );
     }
 

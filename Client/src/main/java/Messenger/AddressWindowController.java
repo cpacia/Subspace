@@ -29,8 +29,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import org.apache.http.HttpException;
-import org.bitcoinj.core.DownloadListener;
 import org.bouncycastle.util.encoders.Hex;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
@@ -264,7 +262,7 @@ public class AddressWindowController {
         }
         else {
             FileWriter writer = new FileWriter();
-            writer.addKey(addr.getECKey(), txtName.getText(), (int) prefixSlider.getValue(), addr.toString(), cbNode.getValue().toString());
+            writer.addKey(addr.getECKey(), txtName.getText(), (int) prefixSlider.getValue(), addr.toString(), cbNode.getValue().toString(), null);
             Main.retriever.addWatchKey(writer.getKeyFromAddress(addr.toString()));
             data.remove(init);
             HBox hBox = getAddressListViewNode(addr.toString(), txtName.getText());
@@ -276,12 +274,13 @@ public class AddressWindowController {
     }
 
     private class DownloadListener implements OpennameListener {
-        public void onDownloadComplete(Address addr) {
+        public void onDownloadComplete(Address addr, String formatted) {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
                     FileWriter writer = new FileWriter();
-                    writer.addKey(addr.getECKey(), txtName.getText(), (int) prefixSlider.getValue(), addr.toString(), cbNode.getValue().toString());
+                    writer.addKey(addr.getECKey(), formatted, (int) prefixSlider.getValue(),
+                            addr.toString(), cbNode.getValue().toString(), txtName.getText().substring(1));
                     Main.retriever.addWatchKey(writer.getKeyFromAddress(addr.toString()));
                     data.remove(init);
                     HBox hBox = getAddressListViewNode(addr.toString(), txtName.getText());
@@ -335,7 +334,7 @@ public class AddressWindowController {
         Label lblAddress = new Label(address);
         lblAddress.setStyle("-fx-text-fill: #dc78dc;");
         ImageView imView = null;
-        File file = new File(Main.params.getApplicationDataFolder()+"/"+name.substring(1)+".jpg");
+        File file = new File(Main.params.getApplicationDataFolder()+"/avatars/"+name.substring(1)+".jpg");
         if (file.exists()){
             Image image = new Image(file.toURI().toString());
             imView = new ImageView(image);

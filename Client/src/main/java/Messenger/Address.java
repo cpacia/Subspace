@@ -17,7 +17,7 @@ import java.util.Arrays;
  */
 public class Address {
 
-    //Address format: base58encode(<version: 1><prefix_length: 1><public_key: 33><checksum: 4>)
+    //Address format:
 
     private ECKey key;
     public static int version = 0;

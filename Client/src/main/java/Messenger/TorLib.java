@@ -198,11 +198,11 @@ public class TorLib {
         sslSocket.startHandshake();
 
         //Create the HTTP GET request and push it over the outputstream
-        PrintWriter pw = new PrintWriter( new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream())));
-        pw.println("GET /" + resource + " HTTP/1.1");
-        pw.println("Host: " + hostname);
-        pw.println("");
-        pw.flush();
+        BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream(), "UTF8"));
+        wr.write("GET /" + resource + " HTTP/1.0\r\n");
+        wr.write("Host: " + hostname + "\r\n");
+        wr.write("\r\n");
+        wr.flush();
 
         //Listen for a response on the inputstream
         BufferedReader br = new BufferedReader(new InputStreamReader(sslSocket.getInputStream()));
@@ -214,7 +214,7 @@ public class TorLib {
             if (start){output=output+t;}
         }
         br.close();
-        pw.close();
+        wr.close();
         sslSocket.close();
         System.out.println(output);
         return new JSONObject(output);

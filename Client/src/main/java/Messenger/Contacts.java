@@ -741,6 +741,16 @@ public final class Contacts {
      */
     com.google.protobuf.ByteString
         getAddressBytes();
+
+    // required bool isFresh = 4;
+    /**
+     * <code>required bool isFresh = 4;</code>
+     */
+    boolean hasIsFresh();
+    /**
+     * <code>required bool isFresh = 4;</code>
+     */
+    boolean getIsFresh();
   }
   /**
    * Protobuf type {@code Contact}
@@ -806,6 +816,11 @@ public final class Contacts {
             case 26: {
               bitField0_ |= 0x00000004;
               address_ = input.readBytes();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              isFresh_ = input.readBool();
               break;
             }
           }
@@ -977,10 +992,27 @@ public final class Contacts {
       }
     }
 
+    // required bool isFresh = 4;
+    public static final int ISFRESH_FIELD_NUMBER = 4;
+    private boolean isFresh_;
+    /**
+     * <code>required bool isFresh = 4;</code>
+     */
+    public boolean hasIsFresh() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>required bool isFresh = 4;</code>
+     */
+    public boolean getIsFresh() {
+      return isFresh_;
+    }
+
     private void initFields() {
       name_ = "";
       openname_ = "";
       address_ = "";
+      isFresh_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -988,6 +1020,10 @@ public final class Contacts {
       if (isInitialized != -1) return isInitialized == 1;
 
       if (!hasAddress()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasIsFresh()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -1006,6 +1042,9 @@ public final class Contacts {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeBytes(3, getAddressBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBool(4, isFresh_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1027,6 +1066,10 @@ public final class Contacts {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(3, getAddressBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(4, isFresh_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1150,6 +1193,8 @@ public final class Contacts {
         bitField0_ = (bitField0_ & ~0x00000002);
         address_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
+        isFresh_ = false;
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -1190,6 +1235,10 @@ public final class Contacts {
           to_bitField0_ |= 0x00000004;
         }
         result.address_ = address_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.isFresh_ = isFresh_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1221,12 +1270,19 @@ public final class Contacts {
           address_ = other.address_;
           onChanged();
         }
+        if (other.hasIsFresh()) {
+          setIsFresh(other.getIsFresh());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (!hasAddress()) {
+          
+          return false;
+        }
+        if (!hasIsFresh()) {
           
           return false;
         }
@@ -1474,6 +1530,39 @@ public final class Contacts {
         return this;
       }
 
+      // required bool isFresh = 4;
+      private boolean isFresh_ ;
+      /**
+       * <code>required bool isFresh = 4;</code>
+       */
+      public boolean hasIsFresh() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>required bool isFresh = 4;</code>
+       */
+      public boolean getIsFresh() {
+        return isFresh_;
+      }
+      /**
+       * <code>required bool isFresh = 4;</code>
+       */
+      public Builder setIsFresh(boolean value) {
+        bitField0_ |= 0x00000008;
+        isFresh_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bool isFresh = 4;</code>
+       */
+      public Builder clearIsFresh() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        isFresh_ = false;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:Contact)
     }
 
@@ -1505,8 +1594,9 @@ public final class Contacts {
   static {
     java.lang.String[] descriptorData = {
       "\n\016Contacts.proto\"(\n\013ContactList\022\031\n\007conta" +
-      "ct\030\001 \003(\0132\010.Contact\":\n\007Contact\022\014\n\004name\030\001 " +
-      "\001(\t\022\020\n\010openname\030\002 \001(\t\022\017\n\007address\030\003 \002(\t"
+      "ct\030\001 \003(\0132\010.Contact\"K\n\007Contact\022\014\n\004name\030\001 " +
+      "\001(\t\022\020\n\010openname\030\002 \001(\t\022\017\n\007address\030\003 \002(\t\022\017" +
+      "\n\007isFresh\030\004 \002(\010"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1524,7 +1614,7 @@ public final class Contacts {
           internal_static_Contact_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Contact_descriptor,
-              new java.lang.String[] { "Name", "Openname", "Address", });
+              new java.lang.String[] { "Name", "Openname", "Address", "IsFresh", });
           return null;
         }
       };

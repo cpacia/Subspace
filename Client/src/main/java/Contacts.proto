@@ -6,4 +6,5 @@ message Contact {
     optional string name     = 1;
     optional string openname = 2;
     required string address  = 3;
+    required bool isFresh    = 4;
 }

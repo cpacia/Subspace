@@ -1,6 +1,8 @@
 package Messenger;
 
 import Messenger.Utils.Identicon.Identicon;
+import Messenger.Utils.openname.OpennameListener;
+import Messenger.Utils.openname.OpennameUtils;
 import com.subgraph.orchid.TorClient;
 import com.subgraph.orchid.TorInitializationListener;
 import eu.hansolo.enzo.notification.Notification;
@@ -39,6 +41,7 @@ import Messenger.Utils.easing.ElasticInterpolator;
 import org.controlsfx.control.PopOver;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -448,12 +451,35 @@ public class Controller {
                     if (m.getMessageType() == Payload.MessageType.CHAT) {
                         String cID = m.getToAddress().toString() + m.getFromAddress();
                         if (!openChatWindows.contains(cID)) {
-                            Notification info = new Notification("Subspace", "New chat message from " + m.getSenderName());
+                            Image image = null;
+                            if (writer.getOpenname(m.getFromAddress())!=null) {
+                                File file = new File(Main.params.getApplicationDataFolder()+"/avatars/"+
+                                        writer.getOpenname(m.getFromAddress())+".jpg");
+                                image = new Image(file.toURI().toString());
+                            }
+                            else {
+                                //Put subspace logo here
+                                ImageView imView = null;
+                                try{imView = Identicon.generate(m.getFromAddress(), Color.decode("#393939"));}
+                                catch (Exception e){e.printStackTrace();}
+                                image = imView.getImage();
+                            }
+                            Notification info = new Notification("Subspace", m.getSenderName()+": " + m.getDecryptedMessage(), image);
                             Notification.Notifier.INSTANCE.notify(info);
                         }
                         if (!writer.conversationExists(cID)) {
                             writer.newChatConversation(cID, m, m.getSenderName(),
                                     m.getFromAddress(), m.getToAddress().toString(), false);
+                            if (writer.hasOpenname(m.getFromAddress())) {
+                                if (!writer.isContactFresh(m.getFromAddress())) {
+                                    OpennameDownloadListener l = new OpennameDownloadListener();
+                                    OpennameUtils.downloadAvatar(writer.getOpenname(m.getFromAddress()),
+                                            Main.params.getApplicationDataFolder().toString(), l, null);
+                                }
+                                else {
+                                    writer.updateContact(m.getFromAddress(), null, null);
+                                }
+                            }
                         } else {
                             writer.addChatMessage(cID, m, false);
                         }
@@ -472,6 +498,18 @@ public class Controller {
 
         @Override
         public void onDataReceived(int bytes) {
+
+        }
+    }
+
+    private class OpennameDownloadListener implements OpennameListener{
+        @Override
+        public void onDownloadComplete(Address addr, String formattedName) {
+
+        }
+
+        @Override
+        public void onDownloadFailed() {
 
         }
     }
@@ -509,8 +547,14 @@ public class Controller {
         lblName.setPadding(new Insets(11, 0, 0, 10));
         v.getChildren().addAll(lblName, lblMessage);
         ImageView imView = null;
-        try {imView = Identicon.generate(theirAddress, Color.decode("#393939"));}
-        catch (Exception e1) {e1.printStackTrace();}
+        if (writer.contactExists(theirAddress) && writer.hasOpenname(theirAddress)){
+            File f = new File(Main.params.getApplicationDataFolder()+"/avatars/"+writer.getOpenname(theirAddress)+".jpg");
+            Image image = new Image(f.toURI().toString());
+            imView = new ImageView(image);
+        } else {
+            try {imView = Identicon.generate(theirAddress, Color.decode("#393939"));}
+            catch (Exception e1) {e1.printStackTrace();}
+        }
         imView.setFitWidth(35);
         imView.setFitHeight(35);
         HBox imageHBox = new HBox();

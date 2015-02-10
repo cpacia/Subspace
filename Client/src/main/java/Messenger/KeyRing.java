@@ -732,57 +732,72 @@ public final class KeyRing {
     com.google.protobuf.ByteString
         getNameBytes();
 
-    // required int32 prefixLength = 4;
+    // optional string openname = 4;
     /**
-     * <code>required int32 prefixLength = 4;</code>
+     * <code>optional string openname = 4;</code>
+     */
+    boolean hasOpenname();
+    /**
+     * <code>optional string openname = 4;</code>
+     */
+    java.lang.String getOpenname();
+    /**
+     * <code>optional string openname = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getOpennameBytes();
+
+    // required int32 prefixLength = 5;
+    /**
+     * <code>required int32 prefixLength = 5;</code>
      */
     boolean hasPrefixLength();
     /**
-     * <code>required int32 prefixLength = 4;</code>
+     * <code>required int32 prefixLength = 5;</code>
      */
     int getPrefixLength();
 
-    // optional string address = 5;
+    // optional string address = 6;
     /**
-     * <code>optional string address = 5;</code>
+     * <code>optional string address = 6;</code>
      */
     boolean hasAddress();
     /**
-     * <code>optional string address = 5;</code>
+     * <code>optional string address = 6;</code>
      */
     java.lang.String getAddress();
     /**
-     * <code>optional string address = 5;</code>
+     * <code>optional string address = 6;</code>
      */
     com.google.protobuf.ByteString
         getAddressBytes();
 
-    // required string uploadNode = 6;
+    // required string uploadNode = 7;
     /**
-     * <code>required string uploadNode = 6;</code>
+     * <code>required string uploadNode = 7;</code>
      */
     boolean hasUploadNode();
     /**
-     * <code>required string uploadNode = 6;</code>
+     * <code>required string uploadNode = 7;</code>
      */
     java.lang.String getUploadNode();
     /**
-     * <code>required string uploadNode = 6;</code>
+     * <code>required string uploadNode = 7;</code>
      */
     com.google.protobuf.ByteString
         getUploadNodeBytes();
 
-    // required string timeOfLastGET = 7 [default = "0"];
+    // required string timeOfLastGET = 8 [default = "0"];
     /**
-     * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+     * <code>required string timeOfLastGET = 8 [default = "0"];</code>
      */
     boolean hasTimeOfLastGET();
     /**
-     * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+     * <code>required string timeOfLastGET = 8 [default = "0"];</code>
      */
     java.lang.String getTimeOfLastGET();
     /**
-     * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+     * <code>required string timeOfLastGET = 8 [default = "0"];</code>
      */
     com.google.protobuf.ByteString
         getTimeOfLastGETBytes();
@@ -853,23 +868,28 @@ public final class KeyRing {
               name_ = input.readBytes();
               break;
             }
-            case 32: {
+            case 34: {
               bitField0_ |= 0x00000008;
-              prefixLength_ = input.readInt32();
+              openname_ = input.readBytes();
               break;
             }
-            case 42: {
+            case 40: {
               bitField0_ |= 0x00000010;
-              address_ = input.readBytes();
+              prefixLength_ = input.readInt32();
               break;
             }
             case 50: {
               bitField0_ |= 0x00000020;
-              uploadNode_ = input.readBytes();
+              address_ = input.readBytes();
               break;
             }
             case 58: {
               bitField0_ |= 0x00000040;
+              uploadNode_ = input.readBytes();
+              break;
+            }
+            case 66: {
+              bitField0_ |= 0x00000080;
               timeOfLastGET_ = input.readBytes();
               break;
             }
@@ -988,33 +1008,76 @@ public final class KeyRing {
       }
     }
 
-    // required int32 prefixLength = 4;
-    public static final int PREFIXLENGTH_FIELD_NUMBER = 4;
-    private int prefixLength_;
+    // optional string openname = 4;
+    public static final int OPENNAME_FIELD_NUMBER = 4;
+    private java.lang.Object openname_;
     /**
-     * <code>required int32 prefixLength = 4;</code>
+     * <code>optional string openname = 4;</code>
      */
-    public boolean hasPrefixLength() {
+    public boolean hasOpenname() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>required int32 prefixLength = 4;</code>
+     * <code>optional string openname = 4;</code>
+     */
+    public java.lang.String getOpenname() {
+      java.lang.Object ref = openname_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          openname_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string openname = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getOpennameBytes() {
+      java.lang.Object ref = openname_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        openname_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // required int32 prefixLength = 5;
+    public static final int PREFIXLENGTH_FIELD_NUMBER = 5;
+    private int prefixLength_;
+    /**
+     * <code>required int32 prefixLength = 5;</code>
+     */
+    public boolean hasPrefixLength() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>required int32 prefixLength = 5;</code>
      */
     public int getPrefixLength() {
       return prefixLength_;
     }
 
-    // optional string address = 5;
-    public static final int ADDRESS_FIELD_NUMBER = 5;
+    // optional string address = 6;
+    public static final int ADDRESS_FIELD_NUMBER = 6;
     private java.lang.Object address_;
     /**
-     * <code>optional string address = 5;</code>
+     * <code>optional string address = 6;</code>
      */
     public boolean hasAddress() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
+      return ((bitField0_ & 0x00000020) == 0x00000020);
     }
     /**
-     * <code>optional string address = 5;</code>
+     * <code>optional string address = 6;</code>
      */
     public java.lang.String getAddress() {
       java.lang.Object ref = address_;
@@ -1031,7 +1094,7 @@ public final class KeyRing {
       }
     }
     /**
-     * <code>optional string address = 5;</code>
+     * <code>optional string address = 6;</code>
      */
     public com.google.protobuf.ByteString
         getAddressBytes() {
@@ -1047,17 +1110,17 @@ public final class KeyRing {
       }
     }
 
-    // required string uploadNode = 6;
-    public static final int UPLOADNODE_FIELD_NUMBER = 6;
+    // required string uploadNode = 7;
+    public static final int UPLOADNODE_FIELD_NUMBER = 7;
     private java.lang.Object uploadNode_;
     /**
-     * <code>required string uploadNode = 6;</code>
+     * <code>required string uploadNode = 7;</code>
      */
     public boolean hasUploadNode() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
+      return ((bitField0_ & 0x00000040) == 0x00000040);
     }
     /**
-     * <code>required string uploadNode = 6;</code>
+     * <code>required string uploadNode = 7;</code>
      */
     public java.lang.String getUploadNode() {
       java.lang.Object ref = uploadNode_;
@@ -1074,7 +1137,7 @@ public final class KeyRing {
       }
     }
     /**
-     * <code>required string uploadNode = 6;</code>
+     * <code>required string uploadNode = 7;</code>
      */
     public com.google.protobuf.ByteString
         getUploadNodeBytes() {
@@ -1090,17 +1153,17 @@ public final class KeyRing {
       }
     }
 
-    // required string timeOfLastGET = 7 [default = "0"];
-    public static final int TIMEOFLASTGET_FIELD_NUMBER = 7;
+    // required string timeOfLastGET = 8 [default = "0"];
+    public static final int TIMEOFLASTGET_FIELD_NUMBER = 8;
     private java.lang.Object timeOfLastGET_;
     /**
-     * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+     * <code>required string timeOfLastGET = 8 [default = "0"];</code>
      */
     public boolean hasTimeOfLastGET() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
+      return ((bitField0_ & 0x00000080) == 0x00000080);
     }
     /**
-     * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+     * <code>required string timeOfLastGET = 8 [default = "0"];</code>
      */
     public java.lang.String getTimeOfLastGET() {
       java.lang.Object ref = timeOfLastGET_;
@@ -1117,7 +1180,7 @@ public final class KeyRing {
       }
     }
     /**
-     * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+     * <code>required string timeOfLastGET = 8 [default = "0"];</code>
      */
     public com.google.protobuf.ByteString
         getTimeOfLastGETBytes() {
@@ -1137,6 +1200,7 @@ public final class KeyRing {
       privateKey_ = com.google.protobuf.ByteString.EMPTY;
       publicKey_ = com.google.protobuf.ByteString.EMPTY;
       name_ = "";
+      openname_ = "";
       prefixLength_ = 0;
       address_ = "";
       uploadNode_ = "";
@@ -1184,16 +1248,19 @@ public final class KeyRing {
         output.writeBytes(3, getNameBytes());
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeInt32(4, prefixLength_);
+        output.writeBytes(4, getOpennameBytes());
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeBytes(5, getAddressBytes());
+        output.writeInt32(5, prefixLength_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeBytes(6, getUploadNodeBytes());
+        output.writeBytes(6, getAddressBytes());
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        output.writeBytes(7, getTimeOfLastGETBytes());
+        output.writeBytes(7, getUploadNodeBytes());
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        output.writeBytes(8, getTimeOfLastGETBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -1218,19 +1285,23 @@ public final class KeyRing {
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, prefixLength_);
+          .computeBytesSize(4, getOpennameBytes());
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(5, getAddressBytes());
+          .computeInt32Size(5, prefixLength_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(6, getUploadNodeBytes());
+          .computeBytesSize(6, getAddressBytes());
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(7, getTimeOfLastGETBytes());
+          .computeBytesSize(7, getUploadNodeBytes());
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(8, getTimeOfLastGETBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1354,14 +1425,16 @@ public final class KeyRing {
         bitField0_ = (bitField0_ & ~0x00000002);
         name_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
-        prefixLength_ = 0;
+        openname_ = "";
         bitField0_ = (bitField0_ & ~0x00000008);
-        address_ = "";
+        prefixLength_ = 0;
         bitField0_ = (bitField0_ & ~0x00000010);
-        uploadNode_ = "";
+        address_ = "";
         bitField0_ = (bitField0_ & ~0x00000020);
-        timeOfLastGET_ = "0";
+        uploadNode_ = "";
         bitField0_ = (bitField0_ & ~0x00000040);
+        timeOfLastGET_ = "0";
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
 
@@ -1405,17 +1478,21 @@ public final class KeyRing {
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000008;
         }
-        result.prefixLength_ = prefixLength_;
+        result.openname_ = openname_;
         if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000010;
         }
-        result.address_ = address_;
+        result.prefixLength_ = prefixLength_;
         if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
           to_bitField0_ |= 0x00000020;
         }
-        result.uploadNode_ = uploadNode_;
+        result.address_ = address_;
         if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
           to_bitField0_ |= 0x00000040;
+        }
+        result.uploadNode_ = uploadNode_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000080;
         }
         result.timeOfLastGET_ = timeOfLastGET_;
         result.bitField0_ = to_bitField0_;
@@ -1445,21 +1522,26 @@ public final class KeyRing {
           name_ = other.name_;
           onChanged();
         }
+        if (other.hasOpenname()) {
+          bitField0_ |= 0x00000008;
+          openname_ = other.openname_;
+          onChanged();
+        }
         if (other.hasPrefixLength()) {
           setPrefixLength(other.getPrefixLength());
         }
         if (other.hasAddress()) {
-          bitField0_ |= 0x00000010;
+          bitField0_ |= 0x00000020;
           address_ = other.address_;
           onChanged();
         }
         if (other.hasUploadNode()) {
-          bitField0_ |= 0x00000020;
+          bitField0_ |= 0x00000040;
           uploadNode_ = other.uploadNode_;
           onChanged();
         }
         if (other.hasTimeOfLastGET()) {
-          bitField0_ |= 0x00000040;
+          bitField0_ |= 0x00000080;
           timeOfLastGET_ = other.timeOfLastGET_;
           onChanged();
         }
@@ -1656,49 +1738,123 @@ public final class KeyRing {
         return this;
       }
 
-      // required int32 prefixLength = 4;
-      private int prefixLength_ ;
+      // optional string openname = 4;
+      private java.lang.Object openname_ = "";
       /**
-       * <code>required int32 prefixLength = 4;</code>
+       * <code>optional string openname = 4;</code>
        */
-      public boolean hasPrefixLength() {
+      public boolean hasOpenname() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>required int32 prefixLength = 4;</code>
+       * <code>optional string openname = 4;</code>
+       */
+      public java.lang.String getOpenname() {
+        java.lang.Object ref = openname_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          openname_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string openname = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getOpennameBytes() {
+        java.lang.Object ref = openname_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          openname_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string openname = 4;</code>
+       */
+      public Builder setOpenname(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        openname_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string openname = 4;</code>
+       */
+      public Builder clearOpenname() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        openname_ = getDefaultInstance().getOpenname();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string openname = 4;</code>
+       */
+      public Builder setOpennameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        openname_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required int32 prefixLength = 5;
+      private int prefixLength_ ;
+      /**
+       * <code>required int32 prefixLength = 5;</code>
+       */
+      public boolean hasPrefixLength() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>required int32 prefixLength = 5;</code>
        */
       public int getPrefixLength() {
         return prefixLength_;
       }
       /**
-       * <code>required int32 prefixLength = 4;</code>
+       * <code>required int32 prefixLength = 5;</code>
        */
       public Builder setPrefixLength(int value) {
-        bitField0_ |= 0x00000008;
+        bitField0_ |= 0x00000010;
         prefixLength_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required int32 prefixLength = 4;</code>
+       * <code>required int32 prefixLength = 5;</code>
        */
       public Builder clearPrefixLength() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000010);
         prefixLength_ = 0;
         onChanged();
         return this;
       }
 
-      // optional string address = 5;
+      // optional string address = 6;
       private java.lang.Object address_ = "";
       /**
-       * <code>optional string address = 5;</code>
+       * <code>optional string address = 6;</code>
        */
       public boolean hasAddress() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
+        return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>optional string address = 5;</code>
+       * <code>optional string address = 6;</code>
        */
       public java.lang.String getAddress() {
         java.lang.Object ref = address_;
@@ -1712,7 +1868,7 @@ public final class KeyRing {
         }
       }
       /**
-       * <code>optional string address = 5;</code>
+       * <code>optional string address = 6;</code>
        */
       public com.google.protobuf.ByteString
           getAddressBytes() {
@@ -1728,51 +1884,51 @@ public final class KeyRing {
         }
       }
       /**
-       * <code>optional string address = 5;</code>
+       * <code>optional string address = 6;</code>
        */
       public Builder setAddress(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  bitField0_ |= 0x00000020;
         address_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string address = 5;</code>
+       * <code>optional string address = 6;</code>
        */
       public Builder clearAddress() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000020);
         address_ = getDefaultInstance().getAddress();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string address = 5;</code>
+       * <code>optional string address = 6;</code>
        */
       public Builder setAddressBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  bitField0_ |= 0x00000020;
         address_ = value;
         onChanged();
         return this;
       }
 
-      // required string uploadNode = 6;
+      // required string uploadNode = 7;
       private java.lang.Object uploadNode_ = "";
       /**
-       * <code>required string uploadNode = 6;</code>
+       * <code>required string uploadNode = 7;</code>
        */
       public boolean hasUploadNode() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
+        return ((bitField0_ & 0x00000040) == 0x00000040);
       }
       /**
-       * <code>required string uploadNode = 6;</code>
+       * <code>required string uploadNode = 7;</code>
        */
       public java.lang.String getUploadNode() {
         java.lang.Object ref = uploadNode_;
@@ -1786,7 +1942,7 @@ public final class KeyRing {
         }
       }
       /**
-       * <code>required string uploadNode = 6;</code>
+       * <code>required string uploadNode = 7;</code>
        */
       public com.google.protobuf.ByteString
           getUploadNodeBytes() {
@@ -1802,51 +1958,51 @@ public final class KeyRing {
         }
       }
       /**
-       * <code>required string uploadNode = 6;</code>
+       * <code>required string uploadNode = 7;</code>
        */
       public Builder setUploadNode(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000020;
+  bitField0_ |= 0x00000040;
         uploadNode_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string uploadNode = 6;</code>
+       * <code>required string uploadNode = 7;</code>
        */
       public Builder clearUploadNode() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000040);
         uploadNode_ = getDefaultInstance().getUploadNode();
         onChanged();
         return this;
       }
       /**
-       * <code>required string uploadNode = 6;</code>
+       * <code>required string uploadNode = 7;</code>
        */
       public Builder setUploadNodeBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000020;
+  bitField0_ |= 0x00000040;
         uploadNode_ = value;
         onChanged();
         return this;
       }
 
-      // required string timeOfLastGET = 7 [default = "0"];
+      // required string timeOfLastGET = 8 [default = "0"];
       private java.lang.Object timeOfLastGET_ = "0";
       /**
-       * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+       * <code>required string timeOfLastGET = 8 [default = "0"];</code>
        */
       public boolean hasTimeOfLastGET() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
+        return ((bitField0_ & 0x00000080) == 0x00000080);
       }
       /**
-       * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+       * <code>required string timeOfLastGET = 8 [default = "0"];</code>
        */
       public java.lang.String getTimeOfLastGET() {
         java.lang.Object ref = timeOfLastGET_;
@@ -1860,7 +2016,7 @@ public final class KeyRing {
         }
       }
       /**
-       * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+       * <code>required string timeOfLastGET = 8 [default = "0"];</code>
        */
       public com.google.protobuf.ByteString
           getTimeOfLastGETBytes() {
@@ -1876,36 +2032,36 @@ public final class KeyRing {
         }
       }
       /**
-       * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+       * <code>required string timeOfLastGET = 8 [default = "0"];</code>
        */
       public Builder setTimeOfLastGET(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000040;
+  bitField0_ |= 0x00000080;
         timeOfLastGET_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+       * <code>required string timeOfLastGET = 8 [default = "0"];</code>
        */
       public Builder clearTimeOfLastGET() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000080);
         timeOfLastGET_ = getDefaultInstance().getTimeOfLastGET();
         onChanged();
         return this;
       }
       /**
-       * <code>required string timeOfLastGET = 7 [default = "0"];</code>
+       * <code>required string timeOfLastGET = 8 [default = "0"];</code>
        */
       public Builder setTimeOfLastGETBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000040;
+  bitField0_ |= 0x00000080;
         timeOfLastGET_ = value;
         onChanged();
         return this;
@@ -1942,10 +2098,11 @@ public final class KeyRing {
   static {
     java.lang.String[] descriptorData = {
       "\n\rKeyRing.proto\"\036\n\tSavedKeys\022\021\n\003key\030\001 \003(" +
-      "\0132\004.Key\"\217\001\n\003Key\022\022\n\nprivateKey\030\001 \002(\014\022\021\n\tp" +
-      "ublicKey\030\002 \001(\014\022\014\n\004name\030\003 \002(\t\022\024\n\014prefixLe" +
-      "ngth\030\004 \002(\005\022\017\n\007address\030\005 \001(\t\022\022\n\nuploadNod" +
-      "e\030\006 \002(\t\022\030\n\rtimeOfLastGET\030\007 \002(\t:\0010"
+      "\0132\004.Key\"\241\001\n\003Key\022\022\n\nprivateKey\030\001 \002(\014\022\021\n\tp" +
+      "ublicKey\030\002 \001(\014\022\014\n\004name\030\003 \002(\t\022\020\n\010openname" +
+      "\030\004 \001(\t\022\024\n\014prefixLength\030\005 \002(\005\022\017\n\007address\030" +
+      "\006 \001(\t\022\022\n\nuploadNode\030\007 \002(\t\022\030\n\rtimeOfLastG" +
+      "ET\030\010 \002(\t:\0010"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1963,7 +2120,7 @@ public final class KeyRing {
           internal_static_Key_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Key_descriptor,
-              new java.lang.String[] { "PrivateKey", "PublicKey", "Name", "PrefixLength", "Address", "UploadNode", "TimeOfLastGET", });
+              new java.lang.String[] { "PrivateKey", "PublicKey", "Name", "Openname", "PrefixLength", "Address", "UploadNode", "TimeOfLastGET", });
           return null;
         }
       };
