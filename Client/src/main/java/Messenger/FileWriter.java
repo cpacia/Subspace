@@ -450,4 +450,12 @@ public class FileWriter {
         return b.getEmailMessageList();
     }
 
+    public void deleteEmail(History.EmailMessage email){
+        History.EmailList.Builder b = getEmailFileBuilder();
+        int index = b.getEmailMessageList().indexOf(email);
+        b.removeEmailMessage(index);
+        try {writeEmailsToFile(b);}
+        catch (IOException e){e.printStackTrace();}
+    }
+
 }

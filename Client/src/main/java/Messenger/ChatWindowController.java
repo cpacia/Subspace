@@ -81,7 +81,8 @@ public class ChatWindowController {
         FileWriter f = new FileWriter();
         if (f.hasKeys()) {
             for (KeyRing.Key key : f.getSavedKeys()) {
-                cbData.add(key.getAddress());
+                String content = key.getName() + " <" + key.getAddress() + ">";
+                cbData.add(content);
             }
         }
         cbAddrs.setItems(cbData);
@@ -228,7 +229,10 @@ public class ChatWindowController {
     void sendMessage(){
         Message m;
         if (paneOne.isVisible()){
-            this.fromAddress = cbAddrs.getValue().toString();
+            String fromaddr = cbAddrs.getValue().toString().substring(
+                    cbAddrs.getValue().toString().indexOf("<")+1,
+                    cbAddrs.getValue().toString().length()-1);
+            this.fromAddress = fromaddr;
             setupPane2();
             m = new Message(toAddress, txtArea1.getText(), fromKey, Payload.MessageType.CHAT, null);
             showOutGoingMessage(txtArea1.getText());

@@ -35,6 +35,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.HTMLEditor;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -95,6 +96,8 @@ public class Controller {
     TextField emailSubjectField;
     @FXML
     ChoiceBox cbEmailFrom;
+    @FXML
+    WebView wvEmailBody;
     private PopOver pop;
     private boolean readyToGo = false;
     private ObservableList<HBox> chatListData;
@@ -104,6 +107,7 @@ public class Controller {
     private FileWriter writer;
     private List<String> chatConversationIDs = new ArrayList<String>();
     private List<String> openChatWindows = new ArrayList<String>();
+    private List<History.EmailMessage> sortedEmailList = new ArrayList<History.EmailMessage>();
 
     public void initialize() {
         emailListData.add(chatInit);
@@ -182,6 +186,30 @@ public class Controller {
                 }
             }
         });
+        MenuItem deleteEmail = new MenuItem("Delete");
+        ContextMenu contextMenuEmail = new ContextMenu(deleteEmail);
+        emailList.setCellFactory(ContextMenuListCell.forListView(contextMenuEmail));
+        deleteEmail.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                if (emailList.getSelectionModel().getSelectedIndex()<= sortedEmailList.size()-1) {
+                    History.EmailMessage m = sortedEmailList.get(emailList.getSelectionModel().getSelectedIndex());
+                    writer.deleteEmail(m);
+                    updateEmailListView();
+                    newEmailPane.setVisible(true);
+                    emailContentPane.setVisible(false);
+                }
+            }
+        });
+        emailList.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent click) {
+                if (click.getButton() != MouseButton.SECONDARY) {
+                    emailContentPane.setVisible(true);
+                    newEmailPane.setVisible(false);
+                    setEmailContent(emailList.getSelectionModel().getSelectedIndex());
+                }
+            }
+        });
     }
 
     public void readyToGoAnimation() {
@@ -236,12 +264,30 @@ public class Controller {
     }
 
     @FXML
+    void showNewEmailPane(MouseEvent e){
+        emailContentPane.setVisible(false);
+        newEmailPane.setVisible(true);
+    }
+
+    private void setEmailContent(int index){
+        History.EmailMessage m = sortedEmailList.get(index);
+        String emailBody = m.getBody();
+        if (emailBody.contains("contenteditable=\"true\"")) {
+            emailBody = emailBody.replace("contenteditable=\"true\"", "contenteditable=\"false\"");
+        }
+        wvEmailBody.getEngine().loadContent(emailBody);
+    }
+
+    @FXML
     void emailSend(ActionEvent e){
         Address addr = null;
         try {addr = new Address(emailToField.getText());}
         catch (AddressFormatException e1){e1.printStackTrace();}
+        String fromAddress = cbEmailFrom.getValue().toString().substring(
+                cbEmailFrom.getValue().toString().indexOf("<")+1,
+                cbEmailFrom.getValue().toString().length()-1);
         Message m = new Message(addr, emailEditor.getHtmlText(),
-                writer.getKeyFromAddress(cbEmailFrom.getValue().toString()),
+                writer.getKeyFromAddress(fromAddress),
                 Payload.MessageType.EMAIL, emailSubjectField.getText());
         m.send();
         emailEditor.setHtmlText("<html><head></head><body text=\"#00d0d0\" bgcolor=\"#393939\" contenteditable=\"true\"></body></html>");
@@ -274,7 +320,10 @@ public class Controller {
                 } else {
                     Platform.runLater(new Runnable() {
                         @Override
-                        public void run() {emailPane.setVisible(false);}});
+                        public void run() {
+                            emailPane.setVisible(false);
+                        }
+                    });
                     this.cancel();
                 }
 
@@ -288,20 +337,20 @@ public class Controller {
         FileWriter f = new FileWriter();
         if (f.hasKeys()) {
             for (KeyRing.Key key : f.getSavedKeys()) {
-                cbData.add(key.getAddress());
+                String content = key.getName() + " <" + key.getAddress() + ">";
+                cbData.add(content);
             }
         }
-        emailToField.focusedProperty().addListener(new ChangeListener<Boolean>()
-        {
+        emailToField.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
-            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
-            {
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue) {
                 if (!newPropertyValue) {
-                    if(Address.validateAddress(emailToField.getText())){
-                        if (cbEmailFrom.getSelectionModel().getSelectedIndex()!=0){btnEmailSend.setDisable(false);}
+                    if (Address.validateAddress(emailToField.getText())) {
+                        if (cbEmailFrom.getSelectionModel().getSelectedIndex() != 0) {
+                            btnEmailSend.setDisable(false);
+                        }
                         emailToField.setStyle("-fx-background-color: #393939; -fx-text-fill: #f92672; -fx-border-color: #00d0d0;");
-                    }
-                    else {
+                    } else {
                         btnEmailSend.setDisable(true);
                         emailToField.setStyle("-fx-background-color: #393939; -fx-text-fill: #b4b5b1; -fx-border-color: #f92672;");
                     }
@@ -311,11 +360,14 @@ public class Controller {
         cbEmailFrom.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-                if((Integer)number2 != 0){cbEmailFrom.setStyle("-fx-background-color: #393939;-fx-border-color: #00d0d0;");}
-                if((Integer)number2!=0 && Address.validateAddress(emailToField.getText())){
-                    btnEmailSend.setDisable(false);
+                if ((Integer) number2 != 0) {
+                    cbEmailFrom.setStyle("-fx-background-color: #393939;-fx-border-color: #00d0d0;");
                 }
-                else {btnEmailSend.setDisable(true);}
+                if ((Integer) number2 != 0 && Address.validateAddress(emailToField.getText())) {
+                    btnEmailSend.setDisable(false);
+                } else {
+                    btnEmailSend.setDisable(true);
+                }
             }
         });
         cbEmailFrom.setItems(cbData);
@@ -337,7 +389,7 @@ public class Controller {
             public void run() {
                 if (i < 55) {
                     Stage stage = Main.getStage();
-                    if (stage.getWidth()<975){
+                    if (stage.getWidth() < 975) {
                         stage.setWidth(stage.getWidth() + 20);
                     }
                 } else {
@@ -524,14 +576,16 @@ public class Controller {
         emailListData = FXCollections.observableArrayList();
         if (writer.getSavedEmails().size()==0){emailListData.add(chatInit);}
         else {
-            Map<Long,History.EmailMessage> sortedMap = new TreeMap<Long, History.EmailMessage>(Collections.reverseOrder());
+            Map<Long,History.EmailMessage> sortedEmails = new TreeMap<Long, History.EmailMessage>(Collections.reverseOrder());
             for (History.EmailMessage email : writer.getSavedEmails()){
-                sortedMap.put(email.getTimestamp(), email);
+                sortedEmails.put(email.getTimestamp(), email);
             }
-            for (Map.Entry<Long, History.EmailMessage> entry : sortedMap.entrySet()) {
+            sortedEmailList.clear();
+            for (Map.Entry<Long, History.EmailMessage> entry : sortedEmails.entrySet()) {
                 History.EmailMessage m = entry.getValue();
                 if (!m.getSentFromMe()) {
                     addToEmailListView(m.getFromAddress(), m.getSenderName(), m.getSubject());
+                    sortedEmailList.add(m);
                 }
             }
         }

@@ -36,6 +36,7 @@ import org.controlsfx.dialog.Dialogs;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.*;
 import java.util.List;
@@ -78,6 +79,7 @@ public class AddressWindowController {
     @FXML
     Pane spinner;
     ObservableList<HBox> data;
+    ObservableList<HBox> contacts;
     HBox init = new HBox();
     Stage stage;
     String importedPrivKey = "";
@@ -103,6 +105,21 @@ public class AddressWindowController {
             }
         }
         addressList.setItems(data);
+        contacts = FXCollections.observableArrayList();
+        if (f.getContacts().size()==0) {contacts.add(init);}
+        else {
+            for (Contacts.Contact c : f.getContacts()){
+                HBox node;
+                if (c.hasOpenname()) {
+                    node = getContactListViewNode(c.getAddress(), c.getName(), c.getOpenname());
+                }
+                else{
+                    node = getContactListViewNode(c.getAddress(), c.getName(), null);
+                }
+                contacts.add(node);
+            }
+        }
+        contactList.setItems(contacts);
         MenuItem copyPrivKey = new MenuItem("Copy private key to clipboard");
         MenuItem delete = new MenuItem("Delete");
         ContextMenu contextMenu = new ContextMenu(copyPrivKey, delete);
@@ -143,8 +160,52 @@ public class AddressWindowController {
                             data.add(init);
                         } else {
                             for (KeyRing.Key key : f.getSavedKeys()) {
-                                HBox node = getAddressListViewNode(key.getAddress(), key.getName());
+                                HBox node;
+                                if (key.hasOpenname()) {
+                                    node = getAddressListViewNode(key.getAddress(), key.getOpenname());
+                                }
+                                else{
+                                    node = getAddressListViewNode(key.getAddress(), key.getName());
+                                }
                                 data.add(node);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        MenuItem deleteContact = new MenuItem("Delete");
+        ContextMenu contextMenuContacts = new ContextMenu(deleteContact);
+        contactList.setCellFactory(ContextMenuListCell.forListView(contextMenuContacts));
+        deleteContact.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                List<Contacts.Contact> cl = f.getContacts();
+                if (contactList.getSelectionModel().getSelectedIndex()<= cl.size()-1) {
+                    Action response = Dialogs.create()
+                            .owner(stage)
+                            .title("Delete Contact")
+                            .masthead("You are about to a contact.")
+                            .message("Are you ok with this?")
+                            .actions(Dialog.Actions.YES, Dialog.Actions.CANCEL)
+                            .showConfirm();
+
+                    if (response == Dialog.Actions.YES) {
+                        Contacts.Contact contactToRemove = cl.get(contactList.getSelectionModel().getSelectedIndex());
+                        f.deleteContact(contactToRemove.getAddress());
+                        contactList.getItems().clear();
+                        if (f.getContacts().size()==0) {
+                            data.add(init);
+                        } else {
+                            for (Contacts.Contact c : f.getContacts()) {
+                                HBox node;
+                                if (c.hasOpenname()) {
+                                    node = getContactListViewNode(c.getAddress(), c.getName(), c.getOpenname());
+                                }
+                                else{
+                                    node = getContactListViewNode(c.getAddress(), c.getName(), null);
+                                }
+                                contacts.add(node);
                             }
                         }
                     }
@@ -341,6 +402,66 @@ public class AddressWindowController {
         lblAddress.setStyle("-fx-text-fill: #dc78dc;");
         ImageView imView = null;
         File file = new File(Main.params.getApplicationDataFolder()+"/avatars/"+name+".jpg");
+        if (file.exists()){
+            Image image = new Image(file.toURI().toString());
+            imView = new ImageView(image);
+        }
+        else {
+            if ((data.size() + 1) % 2 == 0) {
+                try {
+                    imView = Identicon.generate(address, Color.decode("#3b3b3b"));
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            } else {
+                try {
+                    imView = Identicon.generate(address, Color.decode("#393939"));
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+        HBox hBox = new HBox();
+        imView.setFitWidth(25);
+        imView.setFitHeight(25);
+        GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
+        Button btnCopy = new Button("", fontAwesome.create("COPY").color(javafx.scene.paint.Color.CYAN));
+        Tooltip.install(btnCopy, new Tooltip("Copy address to clipboard"));
+        btnCopy.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;");
+        btnCopy.setPrefSize(10, 10);
+        btnCopy.setOnMousePressed(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent t) {
+                hBox.setMargin(btnCopy, new Insets(-1, 2, 0, 10));
+            }
+        });
+        btnCopy.setOnMouseReleased(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent t) {
+                hBox.setMargin(btnCopy, new Insets(-2, 0, 0, 10));
+            }
+        });
+        btnCopy.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                final Clipboard clipboard = Clipboard.getSystemClipboard();
+                final ClipboardContent content = new ClipboardContent();
+                content.putString(lblAddress.getText());
+                clipboard.setContent(content);
+            }
+        });
+
+        hBox.getChildren().addAll(imView, lblAddress, btnCopy);
+        hBox.setMargin(lblAddress, new Insets(4, 0, 0, 10));
+        hBox.setMargin(btnCopy, new Insets(-2, 0, 0, 10));
+        lblAddress.setPrefWidth(482);
+        return hBox;
+    }
+
+    HBox getContactListViewNode(String address, String name, @Nullable String openname){
+        Label lblAddress = new Label(name + " <" + address + ">");
+        lblAddress.setStyle("-fx-text-fill: #dc78dc;");
+        ImageView imView = null;
+        File file = new File(Main.params.getApplicationDataFolder()+"/avatars/"+openname+".jpg");
         if (file.exists()){
             Image image = new Image(file.toURI().toString());
             imView = new ImageView(image);
