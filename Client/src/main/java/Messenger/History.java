@@ -8,6 +8,933 @@ public final class History {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
+  public interface MessageListOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+
+    // optional .ChatConversationList chatList = 1;
+    /**
+     * <code>optional .ChatConversationList chatList = 1;</code>
+     */
+    boolean hasChatList();
+    /**
+     * <code>optional .ChatConversationList chatList = 1;</code>
+     */
+    History.ChatConversationList getChatList();
+    /**
+     * <code>optional .ChatConversationList chatList = 1;</code>
+     */
+    History.ChatConversationListOrBuilder getChatListOrBuilder();
+
+    // optional .EmailList emailList = 2;
+    /**
+     * <code>optional .EmailList emailList = 2;</code>
+     */
+    boolean hasEmailList();
+    /**
+     * <code>optional .EmailList emailList = 2;</code>
+     */
+    History.EmailList getEmailList();
+    /**
+     * <code>optional .EmailList emailList = 2;</code>
+     */
+    History.EmailListOrBuilder getEmailListOrBuilder();
+
+    // optional .GroupChatList groupList = 3;
+    /**
+     * <code>optional .GroupChatList groupList = 3;</code>
+     */
+    boolean hasGroupList();
+    /**
+     * <code>optional .GroupChatList groupList = 3;</code>
+     */
+    History.GroupChatList getGroupList();
+    /**
+     * <code>optional .GroupChatList groupList = 3;</code>
+     */
+    History.GroupChatListOrBuilder getGroupListOrBuilder();
+  }
+  /**
+   * Protobuf type {@code MessageList}
+   */
+  public static final class MessageList extends
+      com.google.protobuf.GeneratedMessage
+      implements MessageListOrBuilder {
+    // Use MessageList.newBuilder() to construct.
+    private MessageList(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private MessageList(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final MessageList defaultInstance;
+    public static MessageList getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public MessageList getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private MessageList(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              History.ChatConversationList.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = chatList_.toBuilder();
+              }
+              chatList_ = input.readMessage(History.ChatConversationList.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(chatList_);
+                chatList_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
+              break;
+            }
+            case 18: {
+              History.EmailList.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = emailList_.toBuilder();
+              }
+              emailList_ = input.readMessage(History.EmailList.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(emailList_);
+                emailList_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
+            case 26: {
+              History.GroupChatList.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000004) == 0x00000004)) {
+                subBuilder = groupList_.toBuilder();
+              }
+              groupList_ = input.readMessage(History.GroupChatList.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(groupList_);
+                groupList_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000004;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return History.internal_static_MessageList_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return History.internal_static_MessageList_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              History.MessageList.class, History.MessageList.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<MessageList> PARSER =
+        new com.google.protobuf.AbstractParser<MessageList>() {
+      public MessageList parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new MessageList(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<MessageList> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    // optional .ChatConversationList chatList = 1;
+    public static final int CHATLIST_FIELD_NUMBER = 1;
+    private History.ChatConversationList chatList_;
+    /**
+     * <code>optional .ChatConversationList chatList = 1;</code>
+     */
+    public boolean hasChatList() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional .ChatConversationList chatList = 1;</code>
+     */
+    public History.ChatConversationList getChatList() {
+      return chatList_;
+    }
+    /**
+     * <code>optional .ChatConversationList chatList = 1;</code>
+     */
+    public History.ChatConversationListOrBuilder getChatListOrBuilder() {
+      return chatList_;
+    }
+
+    // optional .EmailList emailList = 2;
+    public static final int EMAILLIST_FIELD_NUMBER = 2;
+    private History.EmailList emailList_;
+    /**
+     * <code>optional .EmailList emailList = 2;</code>
+     */
+    public boolean hasEmailList() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional .EmailList emailList = 2;</code>
+     */
+    public History.EmailList getEmailList() {
+      return emailList_;
+    }
+    /**
+     * <code>optional .EmailList emailList = 2;</code>
+     */
+    public History.EmailListOrBuilder getEmailListOrBuilder() {
+      return emailList_;
+    }
+
+    // optional .GroupChatList groupList = 3;
+    public static final int GROUPLIST_FIELD_NUMBER = 3;
+    private History.GroupChatList groupList_;
+    /**
+     * <code>optional .GroupChatList groupList = 3;</code>
+     */
+    public boolean hasGroupList() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional .GroupChatList groupList = 3;</code>
+     */
+    public History.GroupChatList getGroupList() {
+      return groupList_;
+    }
+    /**
+     * <code>optional .GroupChatList groupList = 3;</code>
+     */
+    public History.GroupChatListOrBuilder getGroupListOrBuilder() {
+      return groupList_;
+    }
+
+    private void initFields() {
+      chatList_ = History.ChatConversationList.getDefaultInstance();
+      emailList_ = History.EmailList.getDefaultInstance();
+      groupList_ = History.GroupChatList.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+
+      if (hasChatList()) {
+        if (!getChatList().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasEmailList()) {
+        if (!getEmailList().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasGroupList()) {
+        if (!getGroupList().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, chatList_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(2, emailList_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeMessage(3, groupList_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, chatList_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, emailList_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, groupList_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static History.MessageList parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static History.MessageList parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static History.MessageList parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static History.MessageList parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static History.MessageList parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static History.MessageList parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static History.MessageList parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static History.MessageList parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static History.MessageList parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static History.MessageList parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(History.MessageList prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code MessageList}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements History.MessageListOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return History.internal_static_MessageList_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return History.internal_static_MessageList_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                History.MessageList.class, History.MessageList.Builder.class);
+      }
+
+      // Construct using History.MessageList.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getChatListFieldBuilder();
+          getEmailListFieldBuilder();
+          getGroupListFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        if (chatListBuilder_ == null) {
+          chatList_ = History.ChatConversationList.getDefaultInstance();
+        } else {
+          chatListBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (emailListBuilder_ == null) {
+          emailList_ = History.EmailList.getDefaultInstance();
+        } else {
+          emailListBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        if (groupListBuilder_ == null) {
+          groupList_ = History.GroupChatList.getDefaultInstance();
+        } else {
+          groupListBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return History.internal_static_MessageList_descriptor;
+      }
+
+      public History.MessageList getDefaultInstanceForType() {
+        return History.MessageList.getDefaultInstance();
+      }
+
+      public History.MessageList build() {
+        History.MessageList result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public History.MessageList buildPartial() {
+        History.MessageList result = new History.MessageList(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (chatListBuilder_ == null) {
+          result.chatList_ = chatList_;
+        } else {
+          result.chatList_ = chatListBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (emailListBuilder_ == null) {
+          result.emailList_ = emailList_;
+        } else {
+          result.emailList_ = emailListBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        if (groupListBuilder_ == null) {
+          result.groupList_ = groupList_;
+        } else {
+          result.groupList_ = groupListBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof History.MessageList) {
+          return mergeFrom((History.MessageList)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(History.MessageList other) {
+        if (other == History.MessageList.getDefaultInstance()) return this;
+        if (other.hasChatList()) {
+          mergeChatList(other.getChatList());
+        }
+        if (other.hasEmailList()) {
+          mergeEmailList(other.getEmailList());
+        }
+        if (other.hasGroupList()) {
+          mergeGroupList(other.getGroupList());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (hasChatList()) {
+          if (!getChatList().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasEmailList()) {
+          if (!getEmailList().isInitialized()) {
+            
+            return false;
+          }
+        }
+        if (hasGroupList()) {
+          if (!getGroupList().isInitialized()) {
+            
+            return false;
+          }
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        History.MessageList parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (History.MessageList) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      // optional .ChatConversationList chatList = 1;
+      private History.ChatConversationList chatList_ = History.ChatConversationList.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          History.ChatConversationList, History.ChatConversationList.Builder, History.ChatConversationListOrBuilder> chatListBuilder_;
+      /**
+       * <code>optional .ChatConversationList chatList = 1;</code>
+       */
+      public boolean hasChatList() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional .ChatConversationList chatList = 1;</code>
+       */
+      public History.ChatConversationList getChatList() {
+        if (chatListBuilder_ == null) {
+          return chatList_;
+        } else {
+          return chatListBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .ChatConversationList chatList = 1;</code>
+       */
+      public Builder setChatList(History.ChatConversationList value) {
+        if (chatListBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          chatList_ = value;
+          onChanged();
+        } else {
+          chatListBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .ChatConversationList chatList = 1;</code>
+       */
+      public Builder setChatList(
+          History.ChatConversationList.Builder builderForValue) {
+        if (chatListBuilder_ == null) {
+          chatList_ = builderForValue.build();
+          onChanged();
+        } else {
+          chatListBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .ChatConversationList chatList = 1;</code>
+       */
+      public Builder mergeChatList(History.ChatConversationList value) {
+        if (chatListBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              chatList_ != History.ChatConversationList.getDefaultInstance()) {
+            chatList_ =
+              History.ChatConversationList.newBuilder(chatList_).mergeFrom(value).buildPartial();
+          } else {
+            chatList_ = value;
+          }
+          onChanged();
+        } else {
+          chatListBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .ChatConversationList chatList = 1;</code>
+       */
+      public Builder clearChatList() {
+        if (chatListBuilder_ == null) {
+          chatList_ = History.ChatConversationList.getDefaultInstance();
+          onChanged();
+        } else {
+          chatListBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      /**
+       * <code>optional .ChatConversationList chatList = 1;</code>
+       */
+      public History.ChatConversationList.Builder getChatListBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getChatListFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .ChatConversationList chatList = 1;</code>
+       */
+      public History.ChatConversationListOrBuilder getChatListOrBuilder() {
+        if (chatListBuilder_ != null) {
+          return chatListBuilder_.getMessageOrBuilder();
+        } else {
+          return chatList_;
+        }
+      }
+      /**
+       * <code>optional .ChatConversationList chatList = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          History.ChatConversationList, History.ChatConversationList.Builder, History.ChatConversationListOrBuilder> 
+          getChatListFieldBuilder() {
+        if (chatListBuilder_ == null) {
+          chatListBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              History.ChatConversationList, History.ChatConversationList.Builder, History.ChatConversationListOrBuilder>(
+                  chatList_,
+                  getParentForChildren(),
+                  isClean());
+          chatList_ = null;
+        }
+        return chatListBuilder_;
+      }
+
+      // optional .EmailList emailList = 2;
+      private History.EmailList emailList_ = History.EmailList.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          History.EmailList, History.EmailList.Builder, History.EmailListOrBuilder> emailListBuilder_;
+      /**
+       * <code>optional .EmailList emailList = 2;</code>
+       */
+      public boolean hasEmailList() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional .EmailList emailList = 2;</code>
+       */
+      public History.EmailList getEmailList() {
+        if (emailListBuilder_ == null) {
+          return emailList_;
+        } else {
+          return emailListBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .EmailList emailList = 2;</code>
+       */
+      public Builder setEmailList(History.EmailList value) {
+        if (emailListBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          emailList_ = value;
+          onChanged();
+        } else {
+          emailListBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .EmailList emailList = 2;</code>
+       */
+      public Builder setEmailList(
+          History.EmailList.Builder builderForValue) {
+        if (emailListBuilder_ == null) {
+          emailList_ = builderForValue.build();
+          onChanged();
+        } else {
+          emailListBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .EmailList emailList = 2;</code>
+       */
+      public Builder mergeEmailList(History.EmailList value) {
+        if (emailListBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              emailList_ != History.EmailList.getDefaultInstance()) {
+            emailList_ =
+              History.EmailList.newBuilder(emailList_).mergeFrom(value).buildPartial();
+          } else {
+            emailList_ = value;
+          }
+          onChanged();
+        } else {
+          emailListBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .EmailList emailList = 2;</code>
+       */
+      public Builder clearEmailList() {
+        if (emailListBuilder_ == null) {
+          emailList_ = History.EmailList.getDefaultInstance();
+          onChanged();
+        } else {
+          emailListBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      /**
+       * <code>optional .EmailList emailList = 2;</code>
+       */
+      public History.EmailList.Builder getEmailListBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getEmailListFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .EmailList emailList = 2;</code>
+       */
+      public History.EmailListOrBuilder getEmailListOrBuilder() {
+        if (emailListBuilder_ != null) {
+          return emailListBuilder_.getMessageOrBuilder();
+        } else {
+          return emailList_;
+        }
+      }
+      /**
+       * <code>optional .EmailList emailList = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          History.EmailList, History.EmailList.Builder, History.EmailListOrBuilder> 
+          getEmailListFieldBuilder() {
+        if (emailListBuilder_ == null) {
+          emailListBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              History.EmailList, History.EmailList.Builder, History.EmailListOrBuilder>(
+                  emailList_,
+                  getParentForChildren(),
+                  isClean());
+          emailList_ = null;
+        }
+        return emailListBuilder_;
+      }
+
+      // optional .GroupChatList groupList = 3;
+      private History.GroupChatList groupList_ = History.GroupChatList.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          History.GroupChatList, History.GroupChatList.Builder, History.GroupChatListOrBuilder> groupListBuilder_;
+      /**
+       * <code>optional .GroupChatList groupList = 3;</code>
+       */
+      public boolean hasGroupList() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional .GroupChatList groupList = 3;</code>
+       */
+      public History.GroupChatList getGroupList() {
+        if (groupListBuilder_ == null) {
+          return groupList_;
+        } else {
+          return groupListBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .GroupChatList groupList = 3;</code>
+       */
+      public Builder setGroupList(History.GroupChatList value) {
+        if (groupListBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          groupList_ = value;
+          onChanged();
+        } else {
+          groupListBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .GroupChatList groupList = 3;</code>
+       */
+      public Builder setGroupList(
+          History.GroupChatList.Builder builderForValue) {
+        if (groupListBuilder_ == null) {
+          groupList_ = builderForValue.build();
+          onChanged();
+        } else {
+          groupListBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .GroupChatList groupList = 3;</code>
+       */
+      public Builder mergeGroupList(History.GroupChatList value) {
+        if (groupListBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              groupList_ != History.GroupChatList.getDefaultInstance()) {
+            groupList_ =
+              History.GroupChatList.newBuilder(groupList_).mergeFrom(value).buildPartial();
+          } else {
+            groupList_ = value;
+          }
+          onChanged();
+        } else {
+          groupListBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .GroupChatList groupList = 3;</code>
+       */
+      public Builder clearGroupList() {
+        if (groupListBuilder_ == null) {
+          groupList_ = History.GroupChatList.getDefaultInstance();
+          onChanged();
+        } else {
+          groupListBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      /**
+       * <code>optional .GroupChatList groupList = 3;</code>
+       */
+      public History.GroupChatList.Builder getGroupListBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getGroupListFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .GroupChatList groupList = 3;</code>
+       */
+      public History.GroupChatListOrBuilder getGroupListOrBuilder() {
+        if (groupListBuilder_ != null) {
+          return groupListBuilder_.getMessageOrBuilder();
+        } else {
+          return groupList_;
+        }
+      }
+      /**
+       * <code>optional .GroupChatList groupList = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          History.GroupChatList, History.GroupChatList.Builder, History.GroupChatListOrBuilder> 
+          getGroupListFieldBuilder() {
+        if (groupListBuilder_ == null) {
+          groupListBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              History.GroupChatList, History.GroupChatList.Builder, History.GroupChatListOrBuilder>(
+                  groupList_,
+                  getParentForChildren(),
+                  isClean());
+          groupList_ = null;
+        }
+        return groupListBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:MessageList)
+    }
+
+    static {
+      defaultInstance = new MessageList(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:MessageList)
+  }
+
   public interface ChatConversationListOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
@@ -3033,6 +3960,12 @@ public final class History {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
+      for (int i = 0; i < getEmailMessageCount(); i++) {
+        if (!getEmailMessage(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -3261,6 +4194,12 @@ public final class History {
       }
 
       public final boolean isInitialized() {
+        for (int i = 0; i < getEmailMessageCount(); i++) {
+          if (!getEmailMessage(i).isInitialized()) {
+            
+            return false;
+          }
+        }
         return true;
       }
 
@@ -3536,6 +4475,101 @@ public final class History {
 
   public interface EmailMessageOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
+
+    // required bool sentFromMe = 1;
+    /**
+     * <code>required bool sentFromMe = 1;</code>
+     */
+    boolean hasSentFromMe();
+    /**
+     * <code>required bool sentFromMe = 1;</code>
+     */
+    boolean getSentFromMe();
+
+    // required string toAddress = 2;
+    /**
+     * <code>required string toAddress = 2;</code>
+     */
+    boolean hasToAddress();
+    /**
+     * <code>required string toAddress = 2;</code>
+     */
+    java.lang.String getToAddress();
+    /**
+     * <code>required string toAddress = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getToAddressBytes();
+
+    // required string fromAddress = 3;
+    /**
+     * <code>required string fromAddress = 3;</code>
+     */
+    boolean hasFromAddress();
+    /**
+     * <code>required string fromAddress = 3;</code>
+     */
+    java.lang.String getFromAddress();
+    /**
+     * <code>required string fromAddress = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getFromAddressBytes();
+
+    // required string senderName = 4;
+    /**
+     * <code>required string senderName = 4;</code>
+     */
+    boolean hasSenderName();
+    /**
+     * <code>required string senderName = 4;</code>
+     */
+    java.lang.String getSenderName();
+    /**
+     * <code>required string senderName = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getSenderNameBytes();
+
+    // required string body = 5;
+    /**
+     * <code>required string body = 5;</code>
+     */
+    boolean hasBody();
+    /**
+     * <code>required string body = 5;</code>
+     */
+    java.lang.String getBody();
+    /**
+     * <code>required string body = 5;</code>
+     */
+    com.google.protobuf.ByteString
+        getBodyBytes();
+
+    // required string subject = 6;
+    /**
+     * <code>required string subject = 6;</code>
+     */
+    boolean hasSubject();
+    /**
+     * <code>required string subject = 6;</code>
+     */
+    java.lang.String getSubject();
+    /**
+     * <code>required string subject = 6;</code>
+     */
+    com.google.protobuf.ByteString
+        getSubjectBytes();
+
+    // required uint64 timestamp = 7;
+    /**
+     * <code>required uint64 timestamp = 7;</code>
+     */
+    boolean hasTimestamp();
+    /**
+     * <code>required uint64 timestamp = 7;</code>
+     */
+    long getTimestamp();
   }
   /**
    * Protobuf type {@code EmailMessage}
@@ -3570,6 +4604,7 @@ public final class History {
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       initFields();
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -3585,6 +4620,41 @@ public final class History {
                                      extensionRegistry, tag)) {
                 done = true;
               }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              sentFromMe_ = input.readBool();
+              break;
+            }
+            case 18: {
+              bitField0_ |= 0x00000002;
+              toAddress_ = input.readBytes();
+              break;
+            }
+            case 26: {
+              bitField0_ |= 0x00000004;
+              fromAddress_ = input.readBytes();
+              break;
+            }
+            case 34: {
+              bitField0_ |= 0x00000008;
+              senderName_ = input.readBytes();
+              break;
+            }
+            case 42: {
+              bitField0_ |= 0x00000010;
+              body_ = input.readBytes();
+              break;
+            }
+            case 50: {
+              bitField0_ |= 0x00000020;
+              subject_ = input.readBytes();
+              break;
+            }
+            case 56: {
+              bitField0_ |= 0x00000040;
+              timestamp_ = input.readUInt64();
               break;
             }
           }
@@ -3626,13 +4696,296 @@ public final class History {
       return PARSER;
     }
 
+    private int bitField0_;
+    // required bool sentFromMe = 1;
+    public static final int SENTFROMME_FIELD_NUMBER = 1;
+    private boolean sentFromMe_;
+    /**
+     * <code>required bool sentFromMe = 1;</code>
+     */
+    public boolean hasSentFromMe() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required bool sentFromMe = 1;</code>
+     */
+    public boolean getSentFromMe() {
+      return sentFromMe_;
+    }
+
+    // required string toAddress = 2;
+    public static final int TOADDRESS_FIELD_NUMBER = 2;
+    private java.lang.Object toAddress_;
+    /**
+     * <code>required string toAddress = 2;</code>
+     */
+    public boolean hasToAddress() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required string toAddress = 2;</code>
+     */
+    public java.lang.String getToAddress() {
+      java.lang.Object ref = toAddress_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          toAddress_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string toAddress = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getToAddressBytes() {
+      java.lang.Object ref = toAddress_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        toAddress_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // required string fromAddress = 3;
+    public static final int FROMADDRESS_FIELD_NUMBER = 3;
+    private java.lang.Object fromAddress_;
+    /**
+     * <code>required string fromAddress = 3;</code>
+     */
+    public boolean hasFromAddress() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required string fromAddress = 3;</code>
+     */
+    public java.lang.String getFromAddress() {
+      java.lang.Object ref = fromAddress_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          fromAddress_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string fromAddress = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getFromAddressBytes() {
+      java.lang.Object ref = fromAddress_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        fromAddress_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // required string senderName = 4;
+    public static final int SENDERNAME_FIELD_NUMBER = 4;
+    private java.lang.Object senderName_;
+    /**
+     * <code>required string senderName = 4;</code>
+     */
+    public boolean hasSenderName() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>required string senderName = 4;</code>
+     */
+    public java.lang.String getSenderName() {
+      java.lang.Object ref = senderName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          senderName_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string senderName = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getSenderNameBytes() {
+      java.lang.Object ref = senderName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        senderName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // required string body = 5;
+    public static final int BODY_FIELD_NUMBER = 5;
+    private java.lang.Object body_;
+    /**
+     * <code>required string body = 5;</code>
+     */
+    public boolean hasBody() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>required string body = 5;</code>
+     */
+    public java.lang.String getBody() {
+      java.lang.Object ref = body_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          body_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string body = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+        getBodyBytes() {
+      java.lang.Object ref = body_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        body_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // required string subject = 6;
+    public static final int SUBJECT_FIELD_NUMBER = 6;
+    private java.lang.Object subject_;
+    /**
+     * <code>required string subject = 6;</code>
+     */
+    public boolean hasSubject() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>required string subject = 6;</code>
+     */
+    public java.lang.String getSubject() {
+      java.lang.Object ref = subject_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          subject_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string subject = 6;</code>
+     */
+    public com.google.protobuf.ByteString
+        getSubjectBytes() {
+      java.lang.Object ref = subject_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        subject_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // required uint64 timestamp = 7;
+    public static final int TIMESTAMP_FIELD_NUMBER = 7;
+    private long timestamp_;
+    /**
+     * <code>required uint64 timestamp = 7;</code>
+     */
+    public boolean hasTimestamp() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <code>required uint64 timestamp = 7;</code>
+     */
+    public long getTimestamp() {
+      return timestamp_;
+    }
+
     private void initFields() {
+      sentFromMe_ = false;
+      toAddress_ = "";
+      fromAddress_ = "";
+      senderName_ = "";
+      body_ = "";
+      subject_ = "";
+      timestamp_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
+      if (!hasSentFromMe()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasToAddress()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasFromAddress()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasSenderName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasBody()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasSubject()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasTimestamp()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -3640,6 +4993,27 @@ public final class History {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBool(1, sentFromMe_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getToAddressBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, getFromAddressBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, getSenderNameBytes());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeBytes(5, getBodyBytes());
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeBytes(6, getSubjectBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeUInt64(7, timestamp_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -3649,6 +5023,34 @@ public final class History {
       if (size != -1) return size;
 
       size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(1, sentFromMe_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, getToAddressBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, getFromAddressBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, getSenderNameBytes());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(5, getBodyBytes());
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, getSubjectBytes());
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(7, timestamp_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
@@ -3765,6 +5167,20 @@ public final class History {
 
       public Builder clear() {
         super.clear();
+        sentFromMe_ = false;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        toAddress_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        fromAddress_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
+        senderName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
+        body_ = "";
+        bitField0_ = (bitField0_ & ~0x00000010);
+        subject_ = "";
+        bitField0_ = (bitField0_ & ~0x00000020);
+        timestamp_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000040);
         return this;
       }
 
@@ -3791,6 +5207,37 @@ public final class History {
 
       public History.EmailMessage buildPartial() {
         History.EmailMessage result = new History.EmailMessage(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.sentFromMe_ = sentFromMe_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.toAddress_ = toAddress_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.fromAddress_ = fromAddress_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.senderName_ = senderName_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.body_ = body_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.subject_ = subject_;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.timestamp_ = timestamp_;
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -3806,11 +5253,70 @@ public final class History {
 
       public Builder mergeFrom(History.EmailMessage other) {
         if (other == History.EmailMessage.getDefaultInstance()) return this;
+        if (other.hasSentFromMe()) {
+          setSentFromMe(other.getSentFromMe());
+        }
+        if (other.hasToAddress()) {
+          bitField0_ |= 0x00000002;
+          toAddress_ = other.toAddress_;
+          onChanged();
+        }
+        if (other.hasFromAddress()) {
+          bitField0_ |= 0x00000004;
+          fromAddress_ = other.fromAddress_;
+          onChanged();
+        }
+        if (other.hasSenderName()) {
+          bitField0_ |= 0x00000008;
+          senderName_ = other.senderName_;
+          onChanged();
+        }
+        if (other.hasBody()) {
+          bitField0_ |= 0x00000010;
+          body_ = other.body_;
+          onChanged();
+        }
+        if (other.hasSubject()) {
+          bitField0_ |= 0x00000020;
+          subject_ = other.subject_;
+          onChanged();
+        }
+        if (other.hasTimestamp()) {
+          setTimestamp(other.getTimestamp());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
+        if (!hasSentFromMe()) {
+          
+          return false;
+        }
+        if (!hasToAddress()) {
+          
+          return false;
+        }
+        if (!hasFromAddress()) {
+          
+          return false;
+        }
+        if (!hasSenderName()) {
+          
+          return false;
+        }
+        if (!hasBody()) {
+          
+          return false;
+        }
+        if (!hasSubject()) {
+          
+          return false;
+        }
+        if (!hasTimestamp()) {
+          
+          return false;
+        }
         return true;
       }
 
@@ -3829,6 +5335,443 @@ public final class History {
             mergeFrom(parsedMessage);
           }
         }
+        return this;
+      }
+      private int bitField0_;
+
+      // required bool sentFromMe = 1;
+      private boolean sentFromMe_ ;
+      /**
+       * <code>required bool sentFromMe = 1;</code>
+       */
+      public boolean hasSentFromMe() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required bool sentFromMe = 1;</code>
+       */
+      public boolean getSentFromMe() {
+        return sentFromMe_;
+      }
+      /**
+       * <code>required bool sentFromMe = 1;</code>
+       */
+      public Builder setSentFromMe(boolean value) {
+        bitField0_ |= 0x00000001;
+        sentFromMe_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bool sentFromMe = 1;</code>
+       */
+      public Builder clearSentFromMe() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        sentFromMe_ = false;
+        onChanged();
+        return this;
+      }
+
+      // required string toAddress = 2;
+      private java.lang.Object toAddress_ = "";
+      /**
+       * <code>required string toAddress = 2;</code>
+       */
+      public boolean hasToAddress() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required string toAddress = 2;</code>
+       */
+      public java.lang.String getToAddress() {
+        java.lang.Object ref = toAddress_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          toAddress_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string toAddress = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getToAddressBytes() {
+        java.lang.Object ref = toAddress_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          toAddress_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string toAddress = 2;</code>
+       */
+      public Builder setToAddress(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        toAddress_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string toAddress = 2;</code>
+       */
+      public Builder clearToAddress() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        toAddress_ = getDefaultInstance().getToAddress();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string toAddress = 2;</code>
+       */
+      public Builder setToAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        toAddress_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required string fromAddress = 3;
+      private java.lang.Object fromAddress_ = "";
+      /**
+       * <code>required string fromAddress = 3;</code>
+       */
+      public boolean hasFromAddress() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required string fromAddress = 3;</code>
+       */
+      public java.lang.String getFromAddress() {
+        java.lang.Object ref = fromAddress_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          fromAddress_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string fromAddress = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getFromAddressBytes() {
+        java.lang.Object ref = fromAddress_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          fromAddress_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string fromAddress = 3;</code>
+       */
+      public Builder setFromAddress(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        fromAddress_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string fromAddress = 3;</code>
+       */
+      public Builder clearFromAddress() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        fromAddress_ = getDefaultInstance().getFromAddress();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string fromAddress = 3;</code>
+       */
+      public Builder setFromAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        fromAddress_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required string senderName = 4;
+      private java.lang.Object senderName_ = "";
+      /**
+       * <code>required string senderName = 4;</code>
+       */
+      public boolean hasSenderName() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>required string senderName = 4;</code>
+       */
+      public java.lang.String getSenderName() {
+        java.lang.Object ref = senderName_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          senderName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string senderName = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getSenderNameBytes() {
+        java.lang.Object ref = senderName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          senderName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string senderName = 4;</code>
+       */
+      public Builder setSenderName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        senderName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string senderName = 4;</code>
+       */
+      public Builder clearSenderName() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        senderName_ = getDefaultInstance().getSenderName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string senderName = 4;</code>
+       */
+      public Builder setSenderNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        senderName_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required string body = 5;
+      private java.lang.Object body_ = "";
+      /**
+       * <code>required string body = 5;</code>
+       */
+      public boolean hasBody() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>required string body = 5;</code>
+       */
+      public java.lang.String getBody() {
+        java.lang.Object ref = body_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          body_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string body = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+          getBodyBytes() {
+        java.lang.Object ref = body_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          body_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string body = 5;</code>
+       */
+      public Builder setBody(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        body_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string body = 5;</code>
+       */
+      public Builder clearBody() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        body_ = getDefaultInstance().getBody();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string body = 5;</code>
+       */
+      public Builder setBodyBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        body_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required string subject = 6;
+      private java.lang.Object subject_ = "";
+      /**
+       * <code>required string subject = 6;</code>
+       */
+      public boolean hasSubject() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>required string subject = 6;</code>
+       */
+      public java.lang.String getSubject() {
+        java.lang.Object ref = subject_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          subject_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string subject = 6;</code>
+       */
+      public com.google.protobuf.ByteString
+          getSubjectBytes() {
+        java.lang.Object ref = subject_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          subject_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string subject = 6;</code>
+       */
+      public Builder setSubject(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        subject_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string subject = 6;</code>
+       */
+      public Builder clearSubject() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        subject_ = getDefaultInstance().getSubject();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string subject = 6;</code>
+       */
+      public Builder setSubjectBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000020;
+        subject_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required uint64 timestamp = 7;
+      private long timestamp_ ;
+      /**
+       * <code>required uint64 timestamp = 7;</code>
+       */
+      public boolean hasTimestamp() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>required uint64 timestamp = 7;</code>
+       */
+      public long getTimestamp() {
+        return timestamp_;
+      }
+      /**
+       * <code>required uint64 timestamp = 7;</code>
+       */
+      public Builder setTimestamp(long value) {
+        bitField0_ |= 0x00000040;
+        timestamp_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required uint64 timestamp = 7;</code>
+       */
+      public Builder clearTimestamp() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        timestamp_ = 0L;
+        onChanged();
         return this;
       }
 
@@ -6535,6 +8478,11 @@ public final class History {
   }
 
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_MessageList_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_MessageList_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_ChatConversationList_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -6588,78 +8536,90 @@ public final class History {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rHistory.proto\"?\n\024ChatConversationList\022" +
-      "\'\n\014conversation\030\001 \003(\0132\021.ChatConversation" +
-      "\"\211\001\n\020ChatConversation\022!\n\013chatMessage\030\001 \003" +
-      "(\0132\014.ChatMessage\022\026\n\016conversationID\030\002 \002(\t" +
-      "\022\021\n\ttheirName\030\003 \002(\t\022\024\n\014theirAddress\030\004 \002(" +
-      "\t\022\021\n\tmyAddress\030\005 \002(\t\"S\n\013ChatMessage\022\022\n\ns" +
-      "entFromMe\030\001 \002(\010\022\014\n\004name\030\002 \002(\t\022\017\n\007content" +
-      "\030\003 \002(\t\022\021\n\ttimestamp\030\004 \002(\004\"0\n\tEmailList\022#" +
-      "\n\014emailMessage\030\001 \003(\0132\r.EmailMessage\"\016\n\014E" +
-      "mailMessage\")\n\rGroupChatList\022\030\n\004chat\030\001 \003",
-      "(\0132\n.GroupChat\"P\n\tGroupChat\022\033\n\010chatRoom\030" +
-      "\001 \002(\0132\t.ChatRoom\022&\n\020chatRoomMessages\030\002 \003" +
-      "(\0132\014.RoomMessage\"b\n\010ChatRoom\022\020\n\010roomName" +
-      "\030\001 \002(\t\022\026\n\016roomPrivateKey\030\002 \001(\014\022\025\n\rroomPu" +
-      "blicKey\030\003 \001(\014\022\025\n\rtimeOfLastGET\030\004 \002(\t\"\r\n\013" +
-      "RoomMessage"
+      "\n\rHistory.proto\"x\n\013MessageList\022\'\n\010chatLi" +
+      "st\030\001 \001(\0132\025.ChatConversationList\022\035\n\temail" +
+      "List\030\002 \001(\0132\n.EmailList\022!\n\tgroupList\030\003 \001(" +
+      "\0132\016.GroupChatList\"?\n\024ChatConversationLis" +
+      "t\022\'\n\014conversation\030\001 \003(\0132\021.ChatConversati" +
+      "on\"\211\001\n\020ChatConversation\022!\n\013chatMessage\030\001" +
+      " \003(\0132\014.ChatMessage\022\026\n\016conversationID\030\002 \002" +
+      "(\t\022\021\n\ttheirName\030\003 \002(\t\022\024\n\014theirAddress\030\004 " +
+      "\002(\t\022\021\n\tmyAddress\030\005 \002(\t\"S\n\013ChatMessage\022\022\n" +
+      "\nsentFromMe\030\001 \002(\010\022\014\n\004name\030\002 \002(\t\022\017\n\007conte",
+      "nt\030\003 \002(\t\022\021\n\ttimestamp\030\004 \002(\004\"0\n\tEmailList" +
+      "\022#\n\014emailMessage\030\001 \003(\0132\r.EmailMessage\"\220\001" +
+      "\n\014EmailMessage\022\022\n\nsentFromMe\030\001 \002(\010\022\021\n\tto" +
+      "Address\030\002 \002(\t\022\023\n\013fromAddress\030\003 \002(\t\022\022\n\nse" +
+      "nderName\030\004 \002(\t\022\014\n\004body\030\005 \002(\t\022\017\n\007subject\030" +
+      "\006 \002(\t\022\021\n\ttimestamp\030\007 \002(\004\")\n\rGroupChatLis" +
+      "t\022\030\n\004chat\030\001 \003(\0132\n.GroupChat\"P\n\tGroupChat" +
+      "\022\033\n\010chatRoom\030\001 \002(\0132\t.ChatRoom\022&\n\020chatRoo" +
+      "mMessages\030\002 \003(\0132\014.RoomMessage\"b\n\010ChatRoo" +
+      "m\022\020\n\010roomName\030\001 \002(\t\022\026\n\016roomPrivateKey\030\002 ",
+      "\001(\014\022\025\n\rroomPublicKey\030\003 \001(\014\022\025\n\rtimeOfLast" +
+      "GET\030\004 \002(\t\"\r\n\013RoomMessage"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
         public com.google.protobuf.ExtensionRegistry assignDescriptors(
             com.google.protobuf.Descriptors.FileDescriptor root) {
           descriptor = root;
-          internal_static_ChatConversationList_descriptor =
+          internal_static_MessageList_descriptor =
             getDescriptor().getMessageTypes().get(0);
+          internal_static_MessageList_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_MessageList_descriptor,
+              new java.lang.String[] { "ChatList", "EmailList", "GroupList", });
+          internal_static_ChatConversationList_descriptor =
+            getDescriptor().getMessageTypes().get(1);
           internal_static_ChatConversationList_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ChatConversationList_descriptor,
               new java.lang.String[] { "Conversation", });
           internal_static_ChatConversation_descriptor =
-            getDescriptor().getMessageTypes().get(1);
+            getDescriptor().getMessageTypes().get(2);
           internal_static_ChatConversation_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ChatConversation_descriptor,
               new java.lang.String[] { "ChatMessage", "ConversationID", "TheirName", "TheirAddress", "MyAddress", });
           internal_static_ChatMessage_descriptor =
-            getDescriptor().getMessageTypes().get(2);
+            getDescriptor().getMessageTypes().get(3);
           internal_static_ChatMessage_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ChatMessage_descriptor,
               new java.lang.String[] { "SentFromMe", "Name", "Content", "Timestamp", });
           internal_static_EmailList_descriptor =
-            getDescriptor().getMessageTypes().get(3);
+            getDescriptor().getMessageTypes().get(4);
           internal_static_EmailList_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_EmailList_descriptor,
               new java.lang.String[] { "EmailMessage", });
           internal_static_EmailMessage_descriptor =
-            getDescriptor().getMessageTypes().get(4);
+            getDescriptor().getMessageTypes().get(5);
           internal_static_EmailMessage_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_EmailMessage_descriptor,
-              new java.lang.String[] { });
+              new java.lang.String[] { "SentFromMe", "ToAddress", "FromAddress", "SenderName", "Body", "Subject", "Timestamp", });
           internal_static_GroupChatList_descriptor =
-            getDescriptor().getMessageTypes().get(5);
+            getDescriptor().getMessageTypes().get(6);
           internal_static_GroupChatList_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_GroupChatList_descriptor,
               new java.lang.String[] { "Chat", });
           internal_static_GroupChat_descriptor =
-            getDescriptor().getMessageTypes().get(6);
+            getDescriptor().getMessageTypes().get(7);
           internal_static_GroupChat_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_GroupChat_descriptor,
               new java.lang.String[] { "ChatRoom", "ChatRoomMessages", });
           internal_static_ChatRoom_descriptor =
-            getDescriptor().getMessageTypes().get(7);
+            getDescriptor().getMessageTypes().get(8);
           internal_static_ChatRoom_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ChatRoom_descriptor,
               new java.lang.String[] { "RoomName", "RoomPrivateKey", "RoomPublicKey", "TimeOfLastGET", });
           internal_static_RoomMessage_descriptor =
-            getDescriptor().getMessageTypes().get(8);
+            getDescriptor().getMessageTypes().get(9);
           internal_static_RoomMessage_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_RoomMessage_descriptor,

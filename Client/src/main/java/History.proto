@@ -1,3 +1,9 @@
+message MessageList {
+    optional ChatConversationList chatList = 1;
+    optional EmailList emailList           = 2;
+    optional GroupChatList groupList       = 3;
+}
+
 message ChatConversationList {
     repeated ChatConversation conversation = 1;
 }
@@ -23,7 +29,13 @@ message EmailList {
 }
 
 message EmailMessage {
-
+    required bool sentFromMe    = 1;
+    required string toAddress   = 2;
+    required string fromAddress = 3;
+    required string senderName  = 4;
+    required string body        = 5;
+    required string subject     = 6;
+    required uint64 timestamp   = 7;
 }
 
 message GroupChatList{

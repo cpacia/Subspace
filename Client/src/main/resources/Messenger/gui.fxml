@@ -21,7 +21,7 @@
       </Pane>
       <Pane fx:id="emailPane" layoutY="-1.0" prefHeight="675.0" prefWidth="990.0" visible="false">
          <children>
-            <ListView fx:id="emailList" layoutY="93.0" prefHeight="507.0" prefWidth="253.0" style="-fx-background-color: #393939;" />
+            <ListView fx:id="emailList" layoutY="93.0" prefHeight="506.0" prefWidth="253.0" style="-fx-background-color: #393939;" />
             <Label fx:id="lblNewEmail" layoutY="64.0" prefHeight="29.0" prefWidth="253.0" style="-fx-text-fill: #14d0a0; -fx-padding: 2; -fx-cursor: hand; -fx-background-color: #393939" text="        Create New Email [+]">
                <font>
                   <Font size="16.0" />

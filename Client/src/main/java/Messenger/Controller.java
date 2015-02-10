@@ -110,6 +110,7 @@ public class Controller {
         emailList.setItems(emailListData);
         writer = new FileWriter();
         loadChatConversations();
+        loadEmails();
         TorListener listener = new TorListener();
         TorClient tor = Main.torClient;
         if(tor != null) {
@@ -517,7 +518,24 @@ public class Controller {
             }
         }
         chatList.setItems(chatListData);
+    }
 
+    private void loadEmails(){
+        emailListData = FXCollections.observableArrayList();
+        if (writer.getSavedEmails().size()==0){emailListData.add(chatInit);}
+        else {
+            Map<Long,History.EmailMessage> sortedMap = new TreeMap<Long, History.EmailMessage>(Collections.reverseOrder());
+            for (History.EmailMessage email : writer.getSavedEmails()){
+                sortedMap.put(email.getTimestamp(), email);
+            }
+            for (Map.Entry<Long, History.EmailMessage> entry : sortedMap.entrySet()) {
+                History.EmailMessage m = entry.getValue();
+                if (!m.getSentFromMe()) {
+                    addToEmailListView(m.getFromAddress(), m.getSenderName(), m.getSubject());
+                }
+            }
+        }
+        emailList.setItems(emailListData);
     }
 
     public AllMessageListener getListener(){
@@ -579,7 +597,10 @@ public class Controller {
                             updateChatListView();
                         }
                     } else if (m.getMessageType() == Payload.MessageType.EMAIL){
+                        writer.addEmail(m.getToAddress().toString(), m.getFromAddress(), m.getSenderName(),
+                                m.getDecryptedMessage(), m.getSubject(), m.getTimeStamp(), false);
                         addToEmailListView(m.getFromAddress(), m.getSenderName(), m.getSubject());
+                        updateEmailListView();
                     }
                 }
             });
@@ -606,6 +627,11 @@ public class Controller {
     private void updateChatListView(){
         chatList.getItems().clear();
         loadChatConversations();
+    }
+
+    private void updateEmailListView(){
+        emailList.getItems().clear();
+        loadEmails();
     }
 
     private void addToChatListView(String conversationID, String theirAddress,

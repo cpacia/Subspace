@@ -64,18 +64,47 @@ public class FileWriter {
         output.close();
     }
 
-    private synchronized History.ChatConversationList.Builder getMessageFileBuilder() {
-        History.ChatConversationList.Builder savedMessages = History.ChatConversationList.newBuilder();
+    private synchronized History.MessageList.Builder getMessageFileBuilder() {
+        History.MessageList.Builder savedMessages = History.MessageList.newBuilder();
         try{savedMessages.mergeDelimitedFrom(new FileInputStream(messageFilePath)); }
         catch(Exception e){e.printStackTrace();}
         return savedMessages;
     }
 
-    private synchronized void writeMessageFile(History.ChatConversationList.Builder savedMessages) throws IOException{
+    private synchronized void writeMessageFile(History.MessageList.Builder savedMessages) throws IOException{
         FileOutputStream output = new FileOutputStream(messageFilePath);
         savedMessages.build().writeDelimitedTo(output);
         output.close();
     }
+
+    private synchronized History.ChatConversationList.Builder getChatFileBuilder() {
+        History.ChatConversationList.Builder savedChats = History.ChatConversationList.newBuilder();
+        savedChats.mergeFrom(getMessageFileBuilder().getChatList());
+        return savedChats;
+    }
+
+    private synchronized void writeChatsToFile(History.ChatConversationList.Builder savedMessages) throws IOException{
+        History.MessageList.Builder b = getMessageFileBuilder();
+        History.ChatConversationList chatList = savedMessages.build();
+        b.setChatList(chatList);
+        try{writeMessageFile(b);}
+        catch (IOException e){e.printStackTrace();}
+    }
+
+    private synchronized History.EmailList.Builder getEmailFileBuilder() {
+        History.EmailList.Builder savedEmails = History.EmailList.newBuilder();
+        savedEmails.mergeFrom(getMessageFileBuilder().getEmailList());
+        return savedEmails;
+    }
+
+    private synchronized void writeEmailsToFile(History.EmailList.Builder savedMessages) throws IOException{
+        History.MessageList.Builder b = getMessageFileBuilder();
+        History.EmailList emailList = savedMessages.build();
+        b.setEmailList(emailList);
+        try{writeMessageFile(b);}
+        catch (IOException e){e.printStackTrace();}
+    }
+
 
     public List<Contacts.Contact> getContacts(){
         Contacts.ContactList.Builder b = getContactsFileBuilder();
@@ -315,9 +344,9 @@ public class FileWriter {
                 .setTheirAddress(theirAddress)
                 .setTheirName(theirName)
                 .setMyAddress(myAddress).build();
-        History.ChatConversationList.Builder builder = getMessageFileBuilder();
+        History.ChatConversationList.Builder builder = getChatFileBuilder();
         builder.addConversation(conversation);
-        try {writeMessageFile(builder);
+        try {writeChatsToFile(builder);
         } catch (IOException e) {e.printStackTrace();}
     }
 
@@ -327,7 +356,7 @@ public class FileWriter {
                 .setName(m.getSenderName())
                 .setTimestamp(m.getTimeStamp())
                 .setSentFromMe(isSentFromMe).build();
-        History.ChatConversationList.Builder builder = getMessageFileBuilder();
+        History.ChatConversationList.Builder builder = getChatFileBuilder();
         List<History.ChatConversation> conversations = builder.getConversationList();
         int index = 0;
         for (History.ChatConversation convo: conversations){
@@ -345,12 +374,12 @@ public class FileWriter {
         }
         builder.removeConversation(index);
         builder.addConversation(index, convoBuilder);
-        try {writeMessageFile(builder);
+        try {writeChatsToFile(builder);
         } catch (IOException e) {e.printStackTrace();}
     }
 
     public boolean conversationExists(String conversationID){
-        History.ChatConversationList.Builder builder = getMessageFileBuilder();
+        History.ChatConversationList.Builder builder = getChatFileBuilder();
         List<History.ChatConversation> conversations = builder.getConversationList();
         for (History.ChatConversation convo: conversations){
             if (convo.getConversationID().equals(conversationID)){
@@ -361,7 +390,7 @@ public class FileWriter {
     }
 
     public String getNameFromConversation(String conversationID){
-        History.ChatConversationList.Builder builder = getMessageFileBuilder();
+        History.ChatConversationList.Builder builder = getChatFileBuilder();
         List<History.ChatConversation> conversations = builder.getConversationList();
         for (History.ChatConversation convo: conversations){
             if (convo.getConversationID().equals(conversationID)){
@@ -372,7 +401,7 @@ public class FileWriter {
     }
 
     public History.ChatConversation getConversation(String conversationID){
-        History.ChatConversationList.Builder builder = getMessageFileBuilder();
+        History.ChatConversationList.Builder builder = getChatFileBuilder();
         List<History.ChatConversation> conversations = builder.getConversationList();
         for (History.ChatConversation convo: conversations){
             if (convo.getConversationID().equals(conversationID)){
@@ -383,7 +412,7 @@ public class FileWriter {
     }
 
     public void deleteConversation(String conversationID){
-        History.ChatConversationList.Builder builder = getMessageFileBuilder();
+        History.ChatConversationList.Builder builder = getChatFileBuilder();
         List<History.ChatConversation> conversations = builder.getConversationList();
         for (History.ChatConversation convo: conversations){
             if (convo.getConversationID().equals(conversationID)){
@@ -391,13 +420,34 @@ public class FileWriter {
                 break;
             }
         }
-        try {writeMessageFile(builder);
+        try {writeChatsToFile(builder);
         } catch (IOException e) {e.printStackTrace();}
     }
 
     public List<History.ChatConversation> getSavedCoversations(){
-        History.ChatConversationList.Builder builder = getMessageFileBuilder();
+        History.ChatConversationList.Builder builder = getChatFileBuilder();
         return builder.getConversationList();
+    }
+
+    public void addEmail(String toAddress, String fromAddress, String senderName,
+                         String body, String subject, long timestamp, Boolean isSentFromMe){
+        History.EmailList.Builder b = getEmailFileBuilder();
+        History.EmailMessage email = History.EmailMessage.newBuilder()
+                .setSenderName(senderName)
+                .setToAddress(toAddress)
+                .setFromAddress(fromAddress)
+                .setBody(body)
+                .setSubject(subject)
+                .setTimestamp(timestamp)
+                .setSentFromMe(isSentFromMe).build();
+        b.addEmailMessage(email);
+        try {writeEmailsToFile(b);
+        } catch (IOException e) {e.printStackTrace();}
+    }
+
+    public List<History.EmailMessage> getSavedEmails(){
+        History.EmailList.Builder b = getEmailFileBuilder();
+        return b.getEmailMessageList();
     }
 
 }
