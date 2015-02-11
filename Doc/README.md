@@ -12,7 +12,7 @@ A server is running on bitcoinauthenticator.org which you can use with the Clien
 ### Running
 Start mongodb 
 ```
-sudo service mongod start
+sudo service mongodb start
 ```
 
 Start the subspace server
