@@ -98,20 +98,43 @@ public class Controller {
     ChoiceBox cbEmailFrom;
     @FXML
     WebView wvEmailBody;
+    @FXML
+    TextField txtTo;
+    @FXML
+    Label lblFrom;
+    @FXML
+    Label lblSubject;
+    @FXML
+    Label lblDate;
+    @FXML
+    Button btnReply;
+    @FXML
+    Button btnReplyAll;
+    @FXML
+    Button btnForward;
+    @FXML
+    Label lblSentOrInbox;
+    @FXML
+    ListView sentEmailList;
     private PopOver pop;
     private boolean readyToGo = false;
     private ObservableList<HBox> chatListData;
     private ObservableList<HBox> emailListData = FXCollections.observableArrayList();
+    private ObservableList<HBox> sentEmailListData = FXCollections.observableArrayList();
     private HBox chatInit = new HBox();
     private AllMessageListener messageListener = new AllMessageListener();
     private FileWriter writer;
     private List<String> chatConversationIDs = new ArrayList<String>();
     private List<String> openChatWindows = new ArrayList<String>();
     private List<History.EmailMessage> sortedEmailList = new ArrayList<History.EmailMessage>();
+    private List<History.EmailMessage> sortedSentEmailList = new ArrayList<History.EmailMessage>();
+    private History.EmailMessage emailCurrentlyBeingViewed;
 
     public void initialize() {
         emailListData.add(chatInit);
         emailList.setItems(emailListData);
+        sentEmailListData.add(chatInit);
+        sentEmailList.setItems(emailListData);
         writer = new FileWriter();
         loadChatConversations();
         loadEmails();
@@ -200,13 +223,39 @@ public class Controller {
                 }
             }
         });
+        MenuItem deleteSentEmail = new MenuItem("Delete");
+        ContextMenu contextMenuSentEmail = new ContextMenu(deleteSentEmail);
+        sentEmailList.setCellFactory(ContextMenuListCell.forListView(contextMenuSentEmail));
+        deleteSentEmail.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                if (sentEmailList.getSelectionModel().getSelectedIndex()<= sortedSentEmailList.size()-1) {
+                    History.EmailMessage m = sortedSentEmailList.get(sentEmailList.getSelectionModel().getSelectedIndex());
+                    writer.deleteEmail(m);
+                    updateEmailListView();
+                    newEmailPane.setVisible(true);
+                    emailContentPane.setVisible(false);
+                }
+            }
+        });
         emailList.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent click) {
                 if (click.getButton() != MouseButton.SECONDARY) {
                     emailContentPane.setVisible(true);
                     newEmailPane.setVisible(false);
-                    setEmailContent(emailList.getSelectionModel().getSelectedIndex());
+                    History.EmailMessage m = sortedEmailList.get(emailList.getSelectionModel().getSelectedIndex());
+                    setEmailContent(m, false);
+                }
+            }
+        });
+        sentEmailList.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent click) {
+                if (click.getButton() != MouseButton.SECONDARY) {
+                    emailContentPane.setVisible(true);
+                    newEmailPane.setVisible(false);
+                    History.EmailMessage m = sortedSentEmailList.get(sentEmailList.getSelectionModel().getSelectedIndex());
+                    setEmailContent(m, true);
                 }
             }
         });
@@ -256,47 +305,171 @@ public class Controller {
     }
 
     @FXML
+    void reply(ActionEvent e){
+        String emailBody = emailCurrentlyBeingViewed.getBody();
+        if (emailBody.contains("<ToAddresses>")){
+            String toAddresses = emailBody.substring(emailBody.indexOf("<ToAddresses>") + 13, emailBody.indexOf("</ToAddresses>"));
+            emailBody = emailBody.replace("<ToAddresses>" + toAddresses + "</ToAddresses>", "");
+        }
+        emailContentPane.setVisible(false);
+        newEmailPane.setVisible(true);
+        emailEditor.setHtmlText("<br><br>On " + new Date(emailCurrentlyBeingViewed.getTimestamp()*1000) + " " +
+                emailCurrentlyBeingViewed.getSenderName() + " wrote:<br><blockquote>" +
+                emailBody + "</blockquote>");
+        emailToField.setText(emailCurrentlyBeingViewed.getFromAddress());
+        emailSubjectField.setText("Re: " + emailCurrentlyBeingViewed.getSubject());
+        String sentTo = writer.getNameFromAddress(emailCurrentlyBeingViewed.getToAddress()) +
+                " <" + emailCurrentlyBeingViewed.getToAddress() + ">";
+        cbEmailFrom.getSelectionModel().select(sentTo);
+    }
+
+    @FXML
+    void replyAll(ActionEvent e){
+
+        emailContentPane.setVisible(false);
+        newEmailPane.setVisible(true);
+        String emailBody = emailCurrentlyBeingViewed.getBody();
+        if (emailBody.contains("<ToAddresses>")){
+            String toAddresses = emailBody.substring(emailBody.indexOf("<ToAddresses>") + 13, emailBody.indexOf("</ToAddresses>"));
+            emailBody = emailBody.replace("<ToAddresses>" + toAddresses + "</ToAddresses>", "");
+            emailToField.setText(toAddresses);
+        }
+        else{
+            emailToField.setText(emailCurrentlyBeingViewed.getFromAddress());
+        }
+        emailSubjectField.setText("Re: " + emailCurrentlyBeingViewed.getSubject());
+        String sentTo = writer.getNameFromAddress(emailCurrentlyBeingViewed.getToAddress()) +
+                " <" + emailCurrentlyBeingViewed.getToAddress() + ">";
+        cbEmailFrom.getSelectionModel().select(sentTo);
+        emailEditor.setHtmlText("<br><br>On " + new Date(emailCurrentlyBeingViewed.getTimestamp()*1000) + " " +
+                emailCurrentlyBeingViewed.getSenderName() + " wrote:<br><blockquote>" +
+                emailBody + "</blockquote>");
+    }
+
+    @FXML
+    void forward(ActionEvent e){
+        String emailBody = emailCurrentlyBeingViewed.getBody();
+        if (emailBody.contains("<ToAddresses>")){
+            String toAddresses = emailBody.substring(emailBody.indexOf("<ToAddresses>") + 13, emailBody.indexOf("</ToAddresses>"));
+            emailBody = emailBody.replace("<ToAddresses>" + toAddresses + "</ToAddresses>", "");
+        }
+        emailContentPane.setVisible(false);
+        newEmailPane.setVisible(true);
+        emailEditor.setHtmlText("<br><br>-------- Forwarded Message --------<br><b>Subject: </b>" +
+                emailCurrentlyBeingViewed.getSubject() + "<br><b>Date: </b>" +
+                new Date(emailCurrentlyBeingViewed.getTimestamp() * 1000) +
+                "<br><b>From: </b>" + emailCurrentlyBeingViewed.getSenderName() + " <" +
+                emailCurrentlyBeingViewed.getFromAddress() + ">" +
+                "<br><b>To: </b>" + writer.getNameFromAddress(emailCurrentlyBeingViewed.getToAddress()) + " <" +
+                emailCurrentlyBeingViewed.getToAddress() + "><br>" +
+                emailBody);
+        emailSubjectField.setText("Fwd: " + emailCurrentlyBeingViewed.getSubject());
+        String sentTo = writer.getNameFromAddress(emailCurrentlyBeingViewed.getToAddress()) +
+                " <" + emailCurrentlyBeingViewed.getToAddress() + ">";
+        cbEmailFrom.getSelectionModel().select(sentTo);
+    }
+
+    @FXML
     void emailPaneClear(ActionEvent e){
-        emailEditor.setHtmlText("<html><head></head><body text=\"#00d0d0\" bgcolor=\"#393939\" contenteditable=\"true\"></body></html>");
+        clear();
+    }
+
+    void clear(){
+        emailEditor.setHtmlText("<html><div><head></head><body text=\"#00d0d0\" style=\"width: 728px;word-wrap: break-word;\" bgcolor=\"#393939\" contenteditable=\"true\"></body></div></html>");
         emailSubjectField.setText("");
         emailToField.setText("");
         cbEmailFrom.getSelectionModel().select(0);
+        lblSubject.setText("");
+        lblFrom.setText("");
+        txtTo.setText("");
+        lblDate.setText("");
     }
 
     @FXML
     void showNewEmailPane(MouseEvent e){
+        clear();
         emailContentPane.setVisible(false);
         newEmailPane.setVisible(true);
     }
 
-    private void setEmailContent(int index){
-        History.EmailMessage m = sortedEmailList.get(index);
+    @FXML
+    void showSentOrInbox(MouseEvent e){
+        if (lblSentOrInbox.getText().equals("   Sent [-]")){
+            lblSentOrInbox.setText("   Inbox [-]");
+            emailList.setVisible(false);
+            sentEmailList.setVisible(true);
+        }
+        else {
+            lblSentOrInbox.setText("   Sent [-]");
+            sentEmailList.setVisible(false);
+            emailList.setVisible(true);
+        }
+    }
+
+    private void setEmailContent(History.EmailMessage m, boolean sentFromMe){
         String emailBody = m.getBody();
         if (emailBody.contains("contenteditable=\"true\"")) {
             emailBody = emailBody.replace("contenteditable=\"true\"", "contenteditable=\"false\"");
         }
+        String[] addrArray = null;
+        if (emailBody.contains("<ToAddresses>")){
+            String toAddresses = emailBody.substring(emailBody.indexOf("<ToAddresses>") + 13, emailBody.indexOf("</ToAddresses>"));
+            addrArray = toAddresses.split("\\;",-1);
+            emailBody = emailBody.replace("<ToAddresses>" + toAddresses + "</ToAddresses>", "");
+        }
+        emailCurrentlyBeingViewed = m;
         wvEmailBody.getEngine().loadContent(emailBody);
+        lblSubject.setText(m.getSubject());
+        lblDate.setText(new Date(m.getTimestamp() * 1000).toString());
+        lblFrom.setText(m.getSenderName() + " <" + m.getFromAddress() + ">");
+        if (!sentFromMe){
+            txtTo.setText(writer.getNameFromAddress(m.getToAddress()) + " <" + m.getToAddress() + ">");
+            String withOtherRecipients = txtTo.getText();
+            for (String s : addrArray){
+                if (!s.equals(m.getToAddress()) && !s.equals("")){
+                    if (writer.contactExists(s)){
+                        withOtherRecipients = withOtherRecipients + ", " + writer.getNameForContact(s) + " <" + s + ">";
+                    }
+                    else {
+                        withOtherRecipients = withOtherRecipients + ", " + s;
+                    }
+                }
+            }
+            txtTo.setText(withOtherRecipients);
+        } else {
+            if (writer.contactExists(m.getToAddress())){
+                txtTo.setText(writer.getNameForContact(m.getToAddress()) + " <" + m.getToAddress() + ">");
+            } else {txtTo.setText(m.getToAddress());}
+        }
     }
 
     @FXML
     void emailSend(ActionEvent e){
-        Address addr = null;
-        try {addr = new Address(emailToField.getText());}
-        catch (AddressFormatException e1){e1.printStackTrace();}
+        String[] addrsArray = emailToField.getText().split("\\;",-1);
         String fromAddress = cbEmailFrom.getValue().toString().substring(
-                cbEmailFrom.getValue().toString().indexOf("<")+1,
-                cbEmailFrom.getValue().toString().length()-1);
-        Message m = new Message(addr, emailEditor.getHtmlText(),
-                writer.getKeyFromAddress(fromAddress),
-                Payload.MessageType.EMAIL, emailSubjectField.getText());
-        m.send();
+                cbEmailFrom.getValue().toString().indexOf("<") + 1,
+                cbEmailFrom.getValue().toString().length() - 1);
+        String body = "<ToAddresses>" + emailToField.getText() + "</ToAddresses>" + emailEditor.getHtmlText();
+        for (String strAddr : addrsArray) {
+            if (!strAddr.equals("")) {
+                Address addr = null;
+                try {addr = new Address(strAddr);}
+                catch (AddressFormatException e1) {e1.printStackTrace();}
+                Message m = new Message(addr, body,
+                        writer.getKeyFromAddress(fromAddress),
+                        Payload.MessageType.EMAIL, emailSubjectField.getText());
+                m.send();
+            }
+        }
+        writer.addEmail(addrsArray[0], fromAddress, writer.getNameFromAddress(fromAddress),
+                body, emailSubjectField.getText(), System.currentTimeMillis()/1000L, true);
         emailEditor.setHtmlText("<html><head></head><body text=\"#00d0d0\" bgcolor=\"#393939\" contenteditable=\"true\"></body></html>");
         emailSubjectField.setText("");
         emailToField.setText("");
         cbEmailFrom.getSelectionModel().select(0);
-        String name = addr.toString();
-        if (writer.contactExists(name)){name = writer.getNameFromAddress(addr.toString());}
-        Notification info = new Notification("Subspace", "Sent email to: " + name);
+        String name = addrsArray[0] + " + " + (addrsArray.length-1) + " more";
+        if (writer.contactExists(name)){name = writer.getNameFromAddress(addrsArray[0]) + " + " + (addrsArray.length-1) + " more";}
+        Notification info = new Notification("Subspace", "Sent email to: " + name + " + " + (addrsArray.length-1) + " more");
         Notification.Notifier.INSTANCE.notify(info);
     }
 
@@ -345,7 +518,14 @@ public class Controller {
             @Override
             public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue) {
                 if (!newPropertyValue) {
-                    if (Address.validateAddress(emailToField.getText())) {
+                    boolean isValid = true;
+                    String[] array = emailToField.getText().split("\\;", -1);
+                    for (String s : array) {
+                        if (!s.equals("")){
+                            if (!Address.validateAddress(s)){isValid=false;}
+                        }
+                    }
+                    if (isValid) {
                         if (cbEmailFrom.getSelectionModel().getSelectedIndex() != 0) {
                             btnEmailSend.setDisable(false);
                         }
@@ -419,6 +599,36 @@ public class Controller {
     @FXML
     void deleteButtonReleased(MouseEvent e){
         btnEmailDelete.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
+
+    @FXML
+    void replyButtonPressed(MouseEvent e){
+        btnReply.setStyle("-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
+
+    @FXML
+    void replyButtonReleased(MouseEvent e){
+        btnReply.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
+
+    @FXML
+    void replyAllButtonPressed(MouseEvent e){
+        btnReplyAll.setStyle("-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
+
+    @FXML
+    void replyAllButtonReleased(MouseEvent e){
+        btnReplyAll.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
+
+    @FXML
+    void forwardButtonPressed(MouseEvent e){
+        btnForward.setStyle("-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
+
+    @FXML
+    void forwardButtonReleased(MouseEvent e){
+        btnForward.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
     }
 
     void setChatTab1(){
@@ -574,22 +784,41 @@ public class Controller {
 
     private void loadEmails(){
         emailListData = FXCollections.observableArrayList();
-        if (writer.getSavedEmails().size()==0){emailListData.add(chatInit);}
+        if (writer.getEmailsSentToMe().size()==0){emailListData.add(chatInit);}
         else {
             Map<Long,History.EmailMessage> sortedEmails = new TreeMap<Long, History.EmailMessage>(Collections.reverseOrder());
-            for (History.EmailMessage email : writer.getSavedEmails()){
+            for (History.EmailMessage email : writer.getEmailsSentToMe()){
                 sortedEmails.put(email.getTimestamp(), email);
             }
             sortedEmailList.clear();
             for (Map.Entry<Long, History.EmailMessage> entry : sortedEmails.entrySet()) {
                 History.EmailMessage m = entry.getValue();
-                if (!m.getSentFromMe()) {
-                    addToEmailListView(m.getFromAddress(), m.getSenderName(), m.getSubject());
-                    sortedEmailList.add(m);
-                }
+                addToEmailListView(m.getFromAddress(), m.getSenderName(), m.getSubject(), true);
+                sortedEmailList.add(m);
             }
         }
         emailList.setItems(emailListData);
+
+        sentEmailListData = FXCollections.observableArrayList();
+        if (writer.getEmailSentFromMe().size()==0){sentEmailListData.add(chatInit);}
+        else {
+            Map<Long,History.EmailMessage> sortedEmails = new TreeMap<Long, History.EmailMessage>(Collections.reverseOrder());
+            for (History.EmailMessage email : writer.getEmailSentFromMe()){
+                sortedEmails.put(email.getTimestamp(), email);
+            }
+            sortedSentEmailList.clear();
+            for (Map.Entry<Long, History.EmailMessage> entry : sortedEmails.entrySet()) {
+                History.EmailMessage m = entry.getValue();
+                String name;
+                if (writer.contactExists(m.getToAddress())){
+                    name = writer.getNameForContact(m.getToAddress());
+                }
+                else {name = m.getToAddress();}
+                addToEmailListView(m.getToAddress(), name, m.getSubject(), false);
+                sortedSentEmailList.add(m);
+            }
+        }
+        sentEmailList.setItems(sentEmailListData);
     }
 
     public AllMessageListener getListener(){
@@ -609,6 +838,14 @@ public class Controller {
                             writer.getNameFromAddress(m.getFromAddress()), m.getDecryptedMessage(), true);
                     updateChatListView();
                 } else {updateChatListView();}
+            } else if (m.getMessageType() == Payload.MessageType.EMAIL){
+                String name;
+                if (writer.contactExists(m.getToAddress().toString())){
+                    name = writer.getNameForContact(m.getToAddress().toString());
+                }
+                else {name = m.getToAddress().toString();}
+                addToEmailListView(m.getToAddress().toString(), name, m.getSubject(), false);
+                updateEmailListView();
             }
         }
 
@@ -653,7 +890,7 @@ public class Controller {
                     } else if (m.getMessageType() == Payload.MessageType.EMAIL){
                         writer.addEmail(m.getToAddress().toString(), m.getFromAddress(), m.getSenderName(),
                                 m.getDecryptedMessage(), m.getSubject(), m.getTimeStamp(), false);
-                        addToEmailListView(m.getFromAddress(), m.getSenderName(), m.getSubject());
+                        addToEmailListView(m.getFromAddress(), m.getSenderName(), m.getSubject(), true);
                         updateEmailListView();
                     }
                 }
@@ -685,6 +922,7 @@ public class Controller {
 
     private void updateEmailListView(){
         emailList.getItems().clear();
+        sentEmailList.getItems().clear();
         loadEmails();
     }
 
@@ -736,8 +974,9 @@ public class Controller {
         chatListData.add(h);
     }
 
-    private void addToEmailListView(String theirAddress, String theirName, String subject) {
-        emailListData.remove(chatInit);
+    private void addToEmailListView(String theirAddress, String theirName, String subject, boolean sentToMe) {
+        if (sentToMe){emailListData.remove(chatInit);}
+        else {sentEmailListData.remove(chatInit);}
         HBox h = new HBox();
         Label lblSubject = new Label(subject);
         lblSubject.setMaxWidth(235);
@@ -755,7 +994,8 @@ public class Controller {
         h.setAlignment(Pos.TOP_LEFT);
         h.setPrefWidth(235);
         h.setPadding(new Insets(0, 0, 0, 0));
-        emailListData.add(h);
+        if (sentToMe){emailListData.add(h);}
+        else {sentEmailListData.add(h);}
     }
 
     public static class ContextMenuListCell<T> extends ListCell<T> {

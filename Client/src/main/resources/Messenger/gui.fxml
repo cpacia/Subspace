@@ -2,7 +2,6 @@
 
 <?import javafx.scene.web.*?>
 <?import javafx.scene.text.*?>
-<?import java.lang.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -22,7 +21,13 @@
       <Pane fx:id="emailPane" layoutY="-1.0" prefHeight="675.0" prefWidth="990.0" visible="false">
          <children>
             <ListView fx:id="emailList" layoutY="93.0" prefHeight="506.0" prefWidth="253.0" style="-fx-background-color: #393939;" />
-            <Label fx:id="lblNewEmail" layoutY="64.0" prefHeight="29.0" prefWidth="253.0" style="-fx-text-fill: #14d0a0; -fx-padding: 2; -fx-cursor: hand; -fx-background-color: #393939" text="        Create New Email [+]" onMouseClicked="#showNewEmailPane">
+            <ListView fx:id="sentEmailList" layoutY="93.0" prefHeight="506.0" prefWidth="253.0" style="-fx-background-color: #393939;" visible="false"/>
+            <Label fx:id="lblNewEmail" layoutY="64.0" onMouseClicked="#showNewEmailPane" prefHeight="29.0" prefWidth="140.0" style="-fx-text-fill: #14d0a0; -fx-padding: 2; -fx-cursor: hand; -fx-background-color: #393939" text="   New Email [+]">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="lblSentOrInbox" layoutY="64.0" onMouseClicked="#showSentOrInbox" layoutX="140" prefHeight="29.0" prefWidth="113" style="-fx-text-fill: #14d0a0; -fx-padding: 2; -fx-cursor: hand; -fx-background-color: #393939" text="   Sent [-]">
                <font>
                   <Font size="16.0" />
                </font>
@@ -30,7 +35,7 @@
             <Pane fx:id="newEmailPane" layoutX="253.0" prefHeight="675.0" prefWidth="733.0">
                <children>
                   <Pane layoutX="0" prefHeight="119.0" prefWidth="739.0" style="-fx-background-color: #4d5052;" />
-                  <HTMLEditor fx:id="emailEditor" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body text=&quot;#00d0d0&quot;bgcolor=&quot;#393939&quot;contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="0" layoutY="118.0" prefHeight="483.0" prefWidth="738.0" />
+                  <HTMLEditor fx:id="emailEditor" htmlText="&lt;html&gt;&lt;div&gt;&lt;head&gt;&lt;/head&gt;&lt;body text=&quot;#00d0d0&quot; style=&quot;width: 728px;word-wrap: break-word;&quot; bgcolor=&quot;#393939&quot;contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/div&gt;&lt;/html&gt;" layoutX="0" layoutY="118.0" prefHeight="483.0" prefWidth="738.0" />
                   <TextField fx:id="emailToField" layoutX="96.0" layoutY="45.0" prefHeight="25.0" prefWidth="631.0" style="-fx-background-color: #393939; -fx-text-fill: #d8d9d7;" />
                   <Label layoutX="25.0" layoutY="15.0" style="-fx-text-fill: #14d0a0;" text="From:" />
                   <Label layoutX="25.0" layoutY="50.0" style="-fx-text-fill: #14d0a0;" text="To:" />
@@ -43,16 +48,20 @@
             </Pane>
             <Pane fx:id="emailContentPane" layoutX="251.0" prefHeight="675.0" prefWidth="745.0" visible="false">
                <children>
-                  <WebView fx:id="wvEmailBody" layoutY="127.0" layoutX="3" prefHeight="473.0" prefWidth="736.0" />
-                  <Pane prefHeight="126.0" prefWidth="739.0" layoutX="4">
+                  <WebView fx:id="wvEmailBody" layoutX="3" layoutY="127.0" prefHeight="473.0" prefWidth="736.0"/>
+                  <Pane layoutX="4" prefHeight="126.0" prefWidth="739.0">
                      <children>
-                        <Label layoutX="20.0" layoutY="14.0" prefHeight="20.0" prefWidth="53.0" text="From:" />
-                        <Label layoutX="20.0" layoutY="42.0" prefHeight="15.0" prefWidth="53.0" text="Subject:" />
-                        <Label layoutX="20.0" layoutY="68.0" text="To:" />
-                        <Label layoutX="23.0" layoutY="91.0" text="Date:" />
-                        <Button layoutX="643.0" layoutY="15.0" mnemonicParsing="false" prefWidth="78.0" text="Reply" />
-                        <Button layoutX="643.0" layoutY="49.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="78.0" text="Reply All" />
-                        <Button layoutX="643.0" layoutY="83.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="78.0" text="Forward" />
+                        <Label layoutX="20.0" layoutY="14.0" prefWidth="53.0" text="From:" style="-fx-text-fill: #14d0a0;"/>
+                        <Label layoutX="20.0" layoutY="42.0" prefWidth="53.0" text="Subject:" style="-fx-text-fill: #14d0a0;"/>
+                        <Label layoutX="20.0" layoutY="70.0" text="To:" style="-fx-text-fill: #14d0a0;"/>
+                        <Label layoutX="20.0" layoutY="98.0" text="Date:" style="-fx-text-fill: #14d0a0;"/>
+                        <Button fx:id="btnReply" layoutX="643.0" layoutY="15.0" onAction="#reply" onMousePressed="#replyButtonPressed" onMouseReleased="#replyButtonReleased" mnemonicParsing="false" prefWidth="78.0" text="Reply" style="-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;"/>
+                        <Button fx:id="btnReplyAll" layoutX="643.0" layoutY="49.0" onAction="#replyAll" onMousePressed="#replyAllButtonPressed" onMouseReleased="#replyAllButtonReleased" mnemonicParsing="false" prefHeight="25.0" prefWidth="78.0" text="Reply All" style="-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;"/>
+                        <Button fx:id="btnForward" layoutX="643.0" layoutY="83.0" onAction="#forward" onMousePressed="#forwardButtonPressed" onMouseReleased="#forwardButtonReleased" mnemonicParsing="false" prefHeight="25.0" prefWidth="78.0" text="Forward" style="-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;"/>
+                        <Label fx:id="lblFrom" layoutX="114.0" layoutY="14.0"  prefWidth="485.0" style="-fx-text-fill: #e7e7e7;"/>
+                        <Label fx:id="lblSubject" layoutX="114.0" layoutY="42.0" prefWidth="485.0" style="-fx-text-fill: #e7e7e7;"/>
+                        <TextField fx:id="txtTo" layoutX="105.0" layoutY="70.0"  prefWidth="485.0" editable="false" style="-fx-text-fill: #e7e7e7; -fx-background-color: transparent;"/>
+                        <Label fx:id="lblDate" layoutX="115.0" layoutY="98.0"  prefWidth="473.0" style="-fx-text-fill: #e7e7e7;"/>
                      </children>
                   </Pane>
                </children></Pane>

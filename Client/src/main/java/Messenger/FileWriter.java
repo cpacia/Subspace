@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -205,6 +206,20 @@ public class FileWriter {
         for (Contacts.Contact c : getContacts()){
             if (c.getOpenname().equals(openname)){
                 return c.getName();
+            }
+        }
+        return null;
+    }
+
+    public String getNameForContact(String address){
+        if (hasOpenname(address)){
+            return getFormattedName(getOpenname(address));
+        }
+        else {
+            for (Contacts.Contact c : getContacts()){
+                if (c.getAddress().equals(address)){
+                    return c.getName();
+                }
             }
         }
         return null;
@@ -448,6 +463,22 @@ public class FileWriter {
     public List<History.EmailMessage> getSavedEmails(){
         History.EmailList.Builder b = getEmailFileBuilder();
         return b.getEmailMessageList();
+    }
+
+    public List<History.EmailMessage> getEmailsSentToMe(){
+        List<History.EmailMessage> l = new ArrayList<>();
+        for (History.EmailMessage m : getSavedEmails()){
+            if (!m.getSentFromMe()){l.add(m);}
+        }
+        return l;
+    }
+
+    public List<History.EmailMessage> getEmailSentFromMe(){
+        List<History.EmailMessage> l = new ArrayList<>();
+        for (History.EmailMessage m : getSavedEmails()){
+            if (m.getSentFromMe()){l.add(m);}
+        }
+        return l;
     }
 
     public void deleteEmail(History.EmailMessage email){

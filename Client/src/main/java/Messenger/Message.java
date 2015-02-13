@@ -18,6 +18,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.security.*;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * Created by chris on 2/1/15.
@@ -39,7 +40,8 @@ public class Message {
     private String subject;
     private Payload.MessageType messageType;
 
-    public Message(Address toAddress, String message, KeyRing.Key fromKey, Payload.MessageType type, @Nullable String subject){
+    public Message(Address toAddress, String message, KeyRing.Key fromKey, Payload.MessageType type,
+                   @Nullable String subject){
         this.messageType = type;
         if (fromKey.hasOpenname()){this.senderName="+"+fromKey.getOpenname();}
         else{this.senderName = fromKey.getName();}
@@ -69,8 +71,7 @@ public class Message {
                     .setUnencryptedMessage(message)
                     .setSubject(subject)
                     .setTimeStamp(this.timeStamp)
-                    .setName(this.senderName)
-                    .build();
+                    .setName(this.senderName).build();
         }
         byte[] serializedMesssageData = data.toByteArray();
         byte[] sharedSecret = null;

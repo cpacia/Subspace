@@ -5,15 +5,14 @@ import org.apache.http.HttpException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.net.ssl.SSLSocket;
 import javax.xml.ws.http.HTTPException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by chris on 2/1/15.
@@ -103,44 +102,50 @@ public class MessageRetriever {
         } catch (JSONException e){e.printStackTrace();}
         writer.updateGETtime(addr.toString(), ts);
         Iterator<?> keys = resp.keys();
+        List<Message> messageList = new ArrayList<>();
         while (keys.hasNext()) {
             String key = (String) keys.next();
             if (!key.equals("timestamp")) {
                 String payloadString = "";
-                try{payloadString = resp.getString(key);}
-                catch (JSONException e){e.printStackTrace();}
+                try {payloadString = resp.getString(key);}
+                catch (JSONException e) { e.printStackTrace();}
                 byte[] cipherText = hexStringToByteArray(payloadString);
                 byte[] privKey = writer.getKeyFromAddress(addr.toString()).getPrivateKey().toByteArray();
                 ECKey decryptKey = ECKey.fromPrivOnly(privKey);
                 Message m = new Message(cipherText, decryptKey.getPrivKey(), addr);
-                if (m.isMessageForMe()) {
-                    String openname = null;
-                    if (m.getSenderName().substring(0,1).equals("+")){
-                        openname = m.getSenderName().substring(1);
-                        if (!writer.contactExists(m.getFromAddress()) ||
-                                !writer.hasOpenname(m.getFromAddress()) ||
-                                writer.hasOpennameChanged(m.getFromAddress(), m.getSenderName().substring(1))){
-                            String name = OpennameUtils.blockingOpennameDownload(m.getSenderName().substring(1),
-                                    Main.params.getApplicationDataFolder().toString());
-                            if (name!=null){m.setSenderName(name);}
-                        }
-                    }
-                    if (!writer.contactExists(m.getFromAddress())) {
-                        if (openname!=null) {
-                            writer.addContact(m.getFromAddress(), m.getSenderName(), openname);
-                        }
-                        else {
-                            writer.addContact(m.getFromAddress(), m.getSenderName(), null);
-                        }
-                    }
-                    else if (writer.hasOpenname(m.getFromAddress())) {
-                        m.setSenderName(writer.getFormattedName(m.getSenderName().substring(1)));
-                    }
-
-                    for (MessageListener l : listeners){l.onMessageReceived(m);}
-                    System.out.println("Received a message from " + m.getSenderName() + ": " + m.getDecryptedMessage());
+                if (m.isMessageForMe()) messageList.add(m);
+            }
+        }
+        Map<Long,Message> sortedMap = new TreeMap<Long, Message>();
+        for (Message message : messageList){
+            sortedMap.put(message.getTimeStamp(), message);
+        }
+        for (Map.Entry<Long, Message> entry : sortedMap.entrySet()) {
+            Message m = entry.getValue();
+            String openname = null;
+            if (m.getSenderName().substring(0,1).equals("+")){
+                openname = m.getSenderName().substring(1);
+                if (!writer.contactExists(m.getFromAddress()) ||
+                        !writer.hasOpenname(m.getFromAddress()) ||
+                        writer.hasOpennameChanged(m.getFromAddress(), m.getSenderName().substring(1))){
+                    String name = OpennameUtils.blockingOpennameDownload(m.getSenderName().substring(1),
+                            Main.params.getApplicationDataFolder().toString());
+                    if (name!=null){m.setSenderName(name);}
                 }
             }
+            if (!writer.contactExists(m.getFromAddress())) {
+                if (openname!=null) {
+                    writer.addContact(m.getFromAddress(), m.getSenderName(), openname);
+                }
+                else {
+                    writer.addContact(m.getFromAddress(), m.getSenderName(), null);
+                }
+            }
+            else if (writer.hasOpenname(m.getFromAddress())) {
+                m.setSenderName(writer.getFormattedName(m.getSenderName().substring(1)));
+            }
+            for (MessageListener l : listeners){l.onMessageReceived(m);}
+            System.out.println("Received a message from " + m.getSenderName() + ": " + m.getDecryptedMessage());
         }
         try {Thread.sleep(500);}
         catch (InterruptedException e) {e.printStackTrace();}
@@ -148,11 +153,15 @@ public class MessageRetriever {
 
     public void stop(){
         running = false;
-        for (HttpURLConnection con : connections){
-            con.disconnect();
-        }
         for (Thread t : threads){
             t.stop();
+        }
+        for (SSLSocket s : TorLib.openSockets){
+            try{s.close();}
+            catch (IOException e){e.printStackTrace();}
+        }
+        for (HttpURLConnection con : connections){
+            con.disconnect();
         }
     }
 

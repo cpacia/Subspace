@@ -34,6 +34,8 @@ package Messenger;
         import java.io.*;
         import java.net.InetAddress;
         import java.net.Socket;
+        import java.util.ArrayList;
+        import java.util.List;
 
 /**
  * The Onion Router Java Library routines<br />
@@ -88,6 +90,9 @@ public class TorLib {
      * the command line.  Run with "-h" to get the help menu.
      * @param args Command line arguments for test main method.
      */
+
+    public static List<SSLSocket> openSockets = new ArrayList<>();
+
     public static void main(String[] args) {
         String req = "-r";
         String targetHostname = "tor.eff.org";
@@ -196,6 +201,7 @@ public class TorLib {
                 socket.getPort(), false);
         sslSocket.setUseClientMode(true);
         sslSocket.startHandshake();
+        openSockets.add(sslSocket);
 
         //Create the HTTP GET request and push it over the outputstream
         BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(sslSocket.getOutputStream(), "UTF8"));
@@ -217,6 +223,7 @@ public class TorLib {
         wr.close();
         sslSocket.close();
         System.out.println(output);
+        openSockets.remove(sslSocket);
         return new JSONObject(output);
     }
 
@@ -244,6 +251,7 @@ public class TorLib {
         }
         wr.close();
         rd.close();
+        sslSocket.close();
     }
 
 
