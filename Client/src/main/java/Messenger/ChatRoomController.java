@@ -44,6 +44,7 @@ import org.controlsfx.glyphfont.GlyphFontRegistry;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
@@ -169,6 +170,7 @@ public class ChatRoomController {
                             String s = txtArea.getText();
                             txtArea.setText(s + "\n");
                             txtArea.positionCaret(txtArea.getLength());
+
                         }
                     }
                 }
@@ -191,6 +193,15 @@ public class ChatRoomController {
                 if (scrollToBottom) {
                     scrollPane.setVvalue(scrollPane.getVmax());
                     scrollToBottom = false;
+                }
+            }
+        });
+        txtArea.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+                if (txtArea.getText().length() > 1000) {
+                    String s = txtArea.getText().substring(0, 1000);
+                    txtArea.setText(s);
                 }
             }
         });

@@ -33,6 +33,7 @@ import javafx.util.Callback;
 import org.bouncycastle.util.encoders.Hex;
 import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.DialogStyle;
 import org.controlsfx.dialog.Dialogs;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
@@ -147,6 +148,7 @@ public class AddressWindowController {
                     Action response = Dialogs.create()
                             .owner(stage)
                             .title("Warning")
+                            .style(DialogStyle.CROSS_PLATFORM_DARK)
                             .masthead("You are about to permanently delete a private key. " +
                                     "You will no longer be able to send or receive messages from this address.")
                             .message("Are you ok with this?")
@@ -187,6 +189,7 @@ public class AddressWindowController {
                             .owner(stage)
                             .title("Delete Contact")
                             .masthead("You are about to delete a contact.")
+                            .style(DialogStyle.CROSS_PLATFORM_DARK)
                             .message("Are you ok with this?")
                             .actions(Dialog.Actions.YES, Dialog.Actions.CANCEL)
                             .showConfirm();
@@ -224,6 +227,7 @@ public class AddressWindowController {
                 Optional<String> response = Dialogs.create()
                         .owner(stage)
                         .title("Import")
+                        .style(DialogStyle.CROSS_PLATFORM_DARK)
                         .masthead("If you would like to import a private key, enter it below.")
                         .message("Private key (hex)")
                         .showTextInput("");
@@ -312,6 +316,7 @@ public class AddressWindowController {
             Dialogs.create()
                     .owner(stage)
                     .title("Error")
+                    .style(DialogStyle.CROSS_PLATFORM_DARK)
                     .masthead("Ooops, looks like you entered an invalid private key")
                     .showError();
         }
@@ -372,6 +377,7 @@ public class AddressWindowController {
                     Dialogs.create()
                             .owner(stage)
                             .title("Error")
+                            .style(DialogStyle.CROSS_PLATFORM_DARK)
                             .masthead("Unable to download your openname profile")
                             .showError();
                 }

@@ -134,6 +134,19 @@ public class ChatWindowController {
                 else {
                     btnSend.setDisable(true);
                 }
+                if (txtArea1.getText().length() > 1000) {
+                    String s = txtArea1.getText().substring(0, 1000);
+                    txtArea1.setText(s);
+                }
+            }
+        });
+        txtArea2.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+                if (txtArea2.getText().length() > 1000) {
+                    String s = txtArea2.getText().substring(0, 1000);
+                    txtArea2.setText(s);
+                }
             }
         });
         txtArea2.setOnKeyPressed(new EventHandler<KeyEvent>() {

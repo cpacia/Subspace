@@ -45,6 +45,9 @@ import Messenger.Utils.easing.ElasticInterpolator;
 import org.bitcoinj.core.AddressFormatException;
 import org.controlsfx.control.Notifications;
 import org.controlsfx.control.PopOver;
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.DialogStyle;
 import org.controlsfx.dialog.Dialogs;
 
 import java.awt.*;
@@ -531,28 +534,39 @@ public class Controller {
                 cbEmailFrom.getValue().toString().indexOf("<") + 1,
                 cbEmailFrom.getValue().toString().length() - 1);
         String body = "<ToAddresses>" + emailToField.getText() + "</ToAddresses>" + emailEditor.getHtmlText();
-        for (String strAddr : addrsArray) {
-            if (!strAddr.equals("")) {
-                Address addr = null;
-                try {addr = new Address(strAddr);}
-                catch (AddressFormatException e1) {e1.printStackTrace();}
-                Message m = new Message(addr, body,
-                        writer.getKeyFromAddress(fromAddress),
-                        Payload.MessageType.EMAIL, emailSubjectField.getText());
-                m.send();
+        if (body.getBytes().length<10000) {
+            for (String strAddr : addrsArray) {
+                if (!strAddr.equals("")) {
+                    Address addr = null;
+                    try {addr = new Address(strAddr);}
+                    catch (AddressFormatException e1) {e1.printStackTrace();}
+                    Message m = new Message(addr, body,
+                            writer.getKeyFromAddress(fromAddress),
+                            Payload.MessageType.EMAIL, emailSubjectField.getText());
+                    m.send();
+                }
             }
+            writer.addEmail(addrsArray[0], fromAddress, writer.getNameFromAddress(fromAddress),
+                    body, emailSubjectField.getText(), System.currentTimeMillis()/1000L, true);
+            emailEditor.setHtmlText("<html><head></head><body text=\"#00d0d0\" bgcolor=\"#393939\" contenteditable=\"true\"></body></html>");
+            emailSubjectField.setText("");
+            emailToField.setText("");
+            cbEmailFrom.getSelectionModel().select(0);
+            String name = addrsArray[0];
+            if (writer.contactExists(name)){name = writer.getNameFromAddress(addrsArray[0]);}
+            Image i = new Image(Main.class.getResourceAsStream("logo.png"));
+            Notification info = new Notification("Subspace", "Sent email to: " + name, i);
+            Notification.Notifier.INSTANCE.notify(info);
+        } else {
+            Action response = Dialogs.create()
+                    .owner(Main.getStage())
+                    .title("Error")
+                    .style(DialogStyle.CROSS_PLATFORM_DARK)
+                    .masthead("Your email is too long")
+                    .message("Keep it under 10 KB.")
+                    .actions(Dialog.Actions.OK)
+                    .showError();
         }
-        writer.addEmail(addrsArray[0], fromAddress, writer.getNameFromAddress(fromAddress),
-                body, emailSubjectField.getText(), System.currentTimeMillis()/1000L, true);
-        emailEditor.setHtmlText("<html><head></head><body text=\"#00d0d0\" bgcolor=\"#393939\" contenteditable=\"true\"></body></html>");
-        emailSubjectField.setText("");
-        emailToField.setText("");
-        cbEmailFrom.getSelectionModel().select(0);
-        String name = addrsArray[0];
-        if (writer.contactExists(name)){name = writer.getNameFromAddress(addrsArray[0]);}
-        Image i = new Image(Main.class.getResourceAsStream("logo.png"));
-        Notification info = new Notification("Subspace", "Sent email to: " + name, i);
-        Notification.Notifier.INSTANCE.notify(info);
     }
 
 
