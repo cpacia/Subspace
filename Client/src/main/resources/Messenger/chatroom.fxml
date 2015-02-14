@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="650.0" style="-fx-background-color: #4d5052;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Messenger.ChatRoomController">
+   <children>
+      <StackPane prefHeight="450.0" prefWidth="650.0">
+         <children>
+            <Pane fx:id="chatRoomPane" prefHeight="450.0" prefWidth="650.0">
+               <children>
+                  <ScrollPane fx:id="scrollPane" layoutX="16.0" layoutY="56.0" prefHeight="287.0" prefWidth="618.0" style="-fx-background: #393939;" />
+                  <TextArea fx:id="txtArea" layoutX="16.0" layoutY="355.0" prefHeight="68.0" prefWidth="618.0" style="-fx-background-color: #3d3d3d; -fx-border-color: #00d0d0; -fx-text-fill: #a7ec21;">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </TextArea>
+                  <HBox fx:id="hBox" prefHeight="40.0" prefWidth="614.0" />
+               </children>
+            </Pane>
+            <Pane fx:id="addPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="372.0" prefWidth="553.0" style="-fx-background-color: #393939; -fx-border-color: #00d0d0;" visible="false">
+               <children>
+                  <RadioButton fx:id="rbPublic" layoutX="46.0" layoutY="42.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="344.0" selected="true" style="-fx-text-fill: #dc78dc;" text="Public Chat Room" />
+                  <RadioButton fx:id="rbPrivate" layoutX="46.0" layoutY="166.0" mnemonicParsing="false" selected="false" style="-fx-text-fill: #dc78dc;" text="Private Chat Room" />
+                  <Label layoutX="46.0" layoutY="74.0" prefHeight="53.0" prefWidth="461.0" style="-fx-text-fill: #00d0d0;" text="Messages in this room will be visible to anyone who knows (or can guess) the name of the room." wrapText="true" />
+                  <Label layoutX="48.0" layoutY="193.0" prefHeight="70.0" prefWidth="461.0" style="-fx-text-fill: #00d0d0;" text="Messages in this room will be completely private, but you will have to invite others by sharing the room key. (Note the room key should only be shared through a subspace private message and not over an insecure channel)." wrapText="true" />
+                  <TextField fx:id="txtRoomName" layoutX="200.0" layoutY="46.0" prefHeight="25.0" prefWidth="308.0" promptText="Enter room name" style="-fx-background-color: #4d5052; -fx-text-fill: #d8d9d7;" />
+                  <HBox fx:id="randomHBox" layoutX="200.0" layoutY="162.0" prefHeight="32.0" prefWidth="344.0">
+                     <children>
+                        <TextField fx:id="txtRoomKey" prefHeight="12.0" prefWidth="283.0" promptText="Enter room key" style="-fx-background-color: #4d5052; -fx-text-fill: #d8d9d7;" />
+                     </children>
+                  </HBox>
+                  <Button fx:id="btnDone" layoutX="216.0" layoutY="313.0" maxWidth="121.0" onMousePressed="#doneButtonPressed" onMouseReleased="#doneButtonReleased" mnemonicParsing="false" prefHeight="25.0" prefWidth="121.0" text="Done" style="-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;" />
+               </children>
+            </Pane>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>

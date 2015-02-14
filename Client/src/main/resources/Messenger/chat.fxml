@@ -19,7 +19,7 @@
          </children></Pane>
       <Pane fx:id="paneOne" prefHeight="430.0" prefWidth="642.0" style="-fx-background-color: #4d5052;">
          <children>
-            <TextField fx:id="txtAddress" layoutX="15.0" layoutY="24.0" prefHeight="32.0" prefWidth="612.0" promptText="Enter a subspace address or openname" style="-fx-background-color: #393939; -fx-text-fill: #f92672; -fx-border-color: #00d0d0;" />
+            <TextField fx:id="txtAddress" layoutX="15.0" layoutY="24.0" prefHeight="32.0" prefWidth="612.0" promptText="Enter a subspace address" style="-fx-background-color: #393939; -fx-text-fill: #f92672; -fx-border-color: #00d0d0;" />
             <Button fx:id="btnSend" disable="true" layoutX="508.0" layoutY="380.0" mnemonicParsing="false" onAction="#send" onMousePressed="#sendButtonPressed" onMouseReleased="#sendButtonReleased" prefHeight="32.0" prefWidth="119.0" style="-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;" text="Send" />
             <TextArea fx:id="txtArea1" layoutX="15.0" layoutY="114.0" prefHeight="251.0" prefWidth="612.0" style="-fx-background-color: #3d3d3d; -fx-border-color: #00d0d0; -fx-text-fill: #a7ec21;">
                <font>

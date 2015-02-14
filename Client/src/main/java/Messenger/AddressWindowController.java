@@ -1,5 +1,6 @@
 package Messenger;
 
+import Messenger.Utils.Base58Check;
 import Messenger.Utils.Identicon.Identicon;
 import Messenger.Utils.openname.OpennameListener;
 import Messenger.Utils.openname.OpennameUtils;
@@ -377,7 +378,7 @@ public class AddressWindowController {
         }
     }
 
-            @FXML
+    @FXML
     void doneButtonPressed(MouseEvent e){
         btnAddressDone.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
     }

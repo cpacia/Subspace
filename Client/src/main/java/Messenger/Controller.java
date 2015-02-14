@@ -116,11 +116,19 @@ public class Controller {
     Label lblSentOrInbox;
     @FXML
     ListView sentEmailList;
+    @FXML
+    Pane chatRoomPane;
+    @FXML
+    Label lblNewChatRoom;
+    @FXML
+    ListView chatRoomList;
+
     private PopOver pop;
     private boolean readyToGo = false;
     private ObservableList<HBox> chatListData;
     private ObservableList<HBox> emailListData = FXCollections.observableArrayList();
     private ObservableList<HBox> sentEmailListData = FXCollections.observableArrayList();
+    private ObservableList<HBox> chatRoomListData = FXCollections.observableArrayList();
     private HBox chatInit = new HBox();
     private AllMessageListener messageListener = new AllMessageListener();
     private FileWriter writer;
@@ -135,6 +143,8 @@ public class Controller {
         emailList.setItems(emailListData);
         sentEmailListData.add(chatInit);
         sentEmailList.setItems(emailListData);
+        chatRoomListData.add(chatInit);
+        chatRoomList.setItems(chatRoomListData);
         writer = new FileWriter();
         loadChatConversations();
         loadEmails();
@@ -158,6 +168,31 @@ public class Controller {
                     stage.setScene(new Scene(addressUI, 642, 429));
                     stage.setResizable(false);
                     ChatWindowController controller = (ChatWindowController) loader.getController();
+                    controller.setStage(stage);
+                    String file = Main.class.getResource("gui.css").toString();
+                    stage.getScene().getStylesheets().add(file);
+                    stage.show();
+
+                } catch (IOException e2) {
+                    e2.printStackTrace();
+                }
+            }
+        });
+        lblNewChatRoom.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Parent root;
+                try {
+                    URL location = getClass().getResource("chatroom.fxml");
+                    FXMLLoader loader = new FXMLLoader(location);
+                    AnchorPane addressUI = (AnchorPane) loader.load();
+                    Stage stage = new Stage();
+                    stage.setTitle("New chat room");
+                    stage.setX(700);
+                    stage.setY(200);
+                    stage.setScene(new Scene(addressUI, 650, 450));
+                    stage.setResizable(false);
+                    ChatRoomController controller = (ChatRoomController) loader.getController();
                     controller.setStage(stage);
                     String file = Main.class.getResource("gui.css").toString();
                     stage.getScene().getStylesheets().add(file);
@@ -633,6 +668,7 @@ public class Controller {
 
     void setChatTab1(){
         chatPane.setVisible(false);
+        chatRoomPane.setVisible(true);
         Image imgChat1 = new Image(getClass().getResourceAsStream("chat-2-icon.png"));
         ImageView ivChat1 = new ImageView(imgChat1);
         btnChat.setGraphic(ivChat1);
@@ -642,6 +678,7 @@ public class Controller {
 
     void setChatTab2(){
         chatPane.setVisible(true);
+        chatRoomPane.setVisible(false);
         Image imgChat2 = new Image(getClass().getResourceAsStream("chat-2-icon2.png"));
         ImageView ivChat2 = new ImageView(imgChat2);
         btnChat.setGraphic(ivChat2);
