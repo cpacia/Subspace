@@ -1,5 +1,6 @@
 package Messenger;
 
+import Messenger.Utils.Preloader;
 import com.subgraph.orchid.TorClient;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
@@ -52,6 +53,7 @@ public class Main extends Application {
     public static void main(String[] args) {
         try{params = new ApplicationParams(args);}
         catch (IOException e){e.printStackTrace();}
+        Preloader.set();
         torClient = new TorClient();
         torClient.getConfig().setDataDirectory(params.getApplicationDataFolder());
         torClient.enableSocksListener();

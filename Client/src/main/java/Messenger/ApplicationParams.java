@@ -36,7 +36,7 @@ public class ApplicationParams {
         }
     }
 
-    File getApplicationDataFolder(){
+    public File getApplicationDataFolder(){
         return this.applicationDataFolder;
     }
 

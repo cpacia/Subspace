@@ -1,5 +1,6 @@
 message ContactList {
     repeated Contact contact = 1;
+    optional bool preloaded  = 2 [default=false];
 }
 
 message Contact {

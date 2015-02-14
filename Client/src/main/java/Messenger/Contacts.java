@@ -35,6 +35,16 @@ public final class Contacts {
      */
     Contacts.ContactOrBuilder getContactOrBuilder(
         int index);
+
+    // optional bool preloaded = 2 [default = false];
+    /**
+     * <code>optional bool preloaded = 2 [default = false];</code>
+     */
+    boolean hasPreloaded();
+    /**
+     * <code>optional bool preloaded = 2 [default = false];</code>
+     */
+    boolean getPreloaded();
   }
   /**
    * Protobuf type {@code ContactList}
@@ -95,6 +105,11 @@ public final class Contacts {
               contact_.add(input.readMessage(Contacts.Contact.PARSER, extensionRegistry));
               break;
             }
+            case 16: {
+              bitField0_ |= 0x00000001;
+              preloaded_ = input.readBool();
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -137,6 +152,7 @@ public final class Contacts {
       return PARSER;
     }
 
+    private int bitField0_;
     // repeated .Contact contact = 1;
     public static final int CONTACT_FIELD_NUMBER = 1;
     private java.util.List<Contacts.Contact> contact_;
@@ -173,8 +189,25 @@ public final class Contacts {
       return contact_.get(index);
     }
 
+    // optional bool preloaded = 2 [default = false];
+    public static final int PRELOADED_FIELD_NUMBER = 2;
+    private boolean preloaded_;
+    /**
+     * <code>optional bool preloaded = 2 [default = false];</code>
+     */
+    public boolean hasPreloaded() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional bool preloaded = 2 [default = false];</code>
+     */
+    public boolean getPreloaded() {
+      return preloaded_;
+    }
+
     private void initFields() {
       contact_ = java.util.Collections.emptyList();
+      preloaded_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -197,6 +230,9 @@ public final class Contacts {
       for (int i = 0; i < contact_.size(); i++) {
         output.writeMessage(1, contact_.get(i));
       }
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBool(2, preloaded_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -209,6 +245,10 @@ public final class Contacts {
       for (int i = 0; i < contact_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, contact_.get(i));
+      }
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, preloaded_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -333,6 +373,8 @@ public final class Contacts {
         } else {
           contactBuilder_.clear();
         }
+        preloaded_ = false;
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -360,6 +402,7 @@ public final class Contacts {
       public Contacts.ContactList buildPartial() {
         Contacts.ContactList result = new Contacts.ContactList(this);
         int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
         if (contactBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001)) {
             contact_ = java.util.Collections.unmodifiableList(contact_);
@@ -369,6 +412,11 @@ public final class Contacts {
         } else {
           result.contact_ = contactBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.preloaded_ = preloaded_;
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -409,6 +457,9 @@ public final class Contacts {
               contactBuilder_.addAllMessages(other.contact_);
             }
           }
+        }
+        if (other.hasPreloaded()) {
+          setPreloaded(other.getPreloaded());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -681,6 +732,39 @@ public final class Contacts {
           contact_ = null;
         }
         return contactBuilder_;
+      }
+
+      // optional bool preloaded = 2 [default = false];
+      private boolean preloaded_ ;
+      /**
+       * <code>optional bool preloaded = 2 [default = false];</code>
+       */
+      public boolean hasPreloaded() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional bool preloaded = 2 [default = false];</code>
+       */
+      public boolean getPreloaded() {
+        return preloaded_;
+      }
+      /**
+       * <code>optional bool preloaded = 2 [default = false];</code>
+       */
+      public Builder setPreloaded(boolean value) {
+        bitField0_ |= 0x00000002;
+        preloaded_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool preloaded = 2 [default = false];</code>
+       */
+      public Builder clearPreloaded() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        preloaded_ = false;
+        onChanged();
+        return this;
       }
 
       // @@protoc_insertion_point(builder_scope:ContactList)
@@ -1593,10 +1677,11 @@ public final class Contacts {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\016Contacts.proto\"(\n\013ContactList\022\031\n\007conta" +
-      "ct\030\001 \003(\0132\010.Contact\"K\n\007Contact\022\014\n\004name\030\001 " +
-      "\001(\t\022\020\n\010openname\030\002 \001(\t\022\017\n\007address\030\003 \002(\t\022\017" +
-      "\n\007isFresh\030\004 \002(\010"
+      "\n\016Contacts.proto\"B\n\013ContactList\022\031\n\007conta" +
+      "ct\030\001 \003(\0132\010.Contact\022\030\n\tpreloaded\030\002 \001(\010:\005f" +
+      "alse\"K\n\007Contact\022\014\n\004name\030\001 \001(\t\022\020\n\010opennam" +
+      "e\030\002 \001(\t\022\017\n\007address\030\003 \002(\t\022\017\n\007isFresh\030\004 \002(" +
+      "\010"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1608,7 +1693,7 @@ public final class Contacts {
           internal_static_ContactList_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ContactList_descriptor,
-              new java.lang.String[] { "Contact", });
+              new java.lang.String[] { "Contact", "Preloaded", });
           internal_static_Contact_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_Contact_fieldAccessorTable = new

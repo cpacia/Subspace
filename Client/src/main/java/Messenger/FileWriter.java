@@ -132,6 +132,17 @@ public class FileWriter {
     //
     //#####################################
 
+    public void setPreloaded(boolean preloaded){
+        Contacts.ContactList.Builder b = getContactsFileBuilder();
+        b.setPreloaded(preloaded);
+        try {writeContactsFile(b);
+        } catch (IOException e) {e.printStackTrace();}
+    }
+
+    public boolean getPreloaded(){
+        Contacts.ContactList.Builder b = getContactsFileBuilder();
+        return b.getPreloaded();
+    }
 
     public List<Contacts.Contact> getContacts(){
         Contacts.ContactList.Builder b = getContactsFileBuilder();
