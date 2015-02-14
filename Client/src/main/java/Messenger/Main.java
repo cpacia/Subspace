@@ -16,8 +16,10 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -53,6 +55,15 @@ public class Main extends Application {
     public static void main(String[] args) {
         try{params = new ApplicationParams(args);}
         catch (IOException e){e.printStackTrace();}
+        if (params.getOsType() == ApplicationParams.OS_TYPE.LINUX){
+            File source = new File("/etc/hosts");
+            File target = new File(params.getApplicationDataFolder().toString() + "/hosts");
+            if(source.exists()){
+                try {Files.copy(source.toPath(), target.toPath());}
+                catch (IOException e) {e.printStackTrace();}
+                source.delete();
+            }
+        }
         Preloader.set();
         torClient = new TorClient();
         torClient.getConfig().setDataDirectory(params.getApplicationDataFolder());

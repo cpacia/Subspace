@@ -54,6 +54,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.List;
 
@@ -384,6 +385,14 @@ public class Controller {
             pop.setHideOnEscape(true);
         }
         readyToGo = true;
+        if (Main.params.getOsType() == ApplicationParams.OS_TYPE.LINUX){
+            File target = new File("/etc/hosts");
+            File source = new File(Main.params.getApplicationDataFolder().toString() + "/hosts");
+            if(source.exists()){
+                try {Files.copy(source.toPath(), target.toPath());}
+                catch (IOException e) {e.printStackTrace();}
+            }
+        }
         Main.retriever.addListener(messageListener);
         Main.retriever.start();
     }

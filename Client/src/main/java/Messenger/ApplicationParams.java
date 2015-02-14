@@ -40,6 +40,9 @@ public class ApplicationParams {
         return this.applicationDataFolder;
     }
 
+    public OS_TYPE getOsType(){
+        return osType;
+    }
 
     public enum OS_TYPE {
         WINDOWS,
