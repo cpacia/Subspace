@@ -76,6 +76,16 @@
                   <Label layoutX="38.0" layoutY="240.0" style="-fx-text-fill: #dc78dc;" text="Upload Node: " />
                </children>
             </Pane>
+            <Pane fx:id="addContactPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="272.0" prefWidth="455.0" style="-fx-background-color: #393939; -fx-border-color: #00d0d0;" visible="false">
+               <children>
+                  <Button fx:id="btnContactDone" disable="true" layoutX="255.0" layoutY="208.0" mnemonicParsing="false" onAction="#contactDoneClicked" onMousePressed="#doneButtonPressed" onMouseReleased="#doneButtonReleased" prefWidth="92.0" style="-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;" text="Done" />
+                  <Button fx:id="btnContactCancel" layoutX="111.0" layoutY="208.0" mnemonicParsing="false" onAction="#contactCancelClicked" onMousePressed="#cancelButtonPressed" onMouseReleased="#cancelButtonReleased" prefWidth="92.0" style="-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;" text="Cancel" />
+                  <Label layoutX="40.0" layoutY="123.0" style="-fx-text-fill: #dc78dc;" text="And address:" />
+                  <TextField fx:id="txtContactAddress" layoutX="40.0" layoutY="147.0" prefHeight="25.0" prefWidth="375.0" style="-fx-background-color: #4d5052; -fx-text-fill: #d8d9d7;" />
+                  <Label layoutX="40.0" layoutY="47.0" style="-fx-text-fill: #dc78dc;" text="Enter the contact's name or +openname:" />
+                  <TextField fx:id="txtContactName" layoutX="40.0" layoutY="73.0" prefHeight="25.0" prefWidth="375.0" style="-fx-background-color: #4d5052; -fx-text-fill: #d8d9d7;" />
+               </children>
+            </Pane>
             <Pane fx:id="spinner" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="215.0" prefWidth="250.0" style="-fx-background-color: transparent;" visible="false">
                <children>
                   <ProgressIndicator layoutX="41.0" layoutY="0.0" prefHeight="215.0" prefWidth="170.0" style="-fx-progress-color: #dc78dc;" />

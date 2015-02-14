@@ -80,6 +80,17 @@ public class AddressWindowController {
     HBox addKeyHBox;
     @FXML
     Pane spinner;
+    @FXML
+    Button btnContactDone;
+    @FXML
+    Button btnContactCancel;
+    @FXML
+    Pane addContactPane;
+    @FXML
+    TextField txtContactAddress;
+    @FXML
+    TextField txtContactName;
+
     ObservableList<HBox> data;
     ObservableList<HBox> contacts;
     HBox init = new HBox();
@@ -246,6 +257,30 @@ public class AddressWindowController {
                 }
             }
         });
+        txtContactAddress.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
+                if (txtContactAddress.getText().equals("") || !Address.validateAddress(txtContactAddress.getText())
+                        || txtContactName.getText().equals("")) {
+                    btnContactDone.setDisable(true);
+                }
+                else {
+                    btnContactDone.setDisable(false);
+                }
+            }
+        });
+        txtContactName.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
+                if (txtContactAddress.getText().equals("") || !Address.validateAddress(txtContactAddress.getText())
+                        || txtContactName.getText().equals("")) {
+                    btnContactDone.setDisable(true);
+                }
+                else {
+                    btnContactDone.setDisable(false);
+                }
+            }
+        });
 
     }
 
@@ -282,16 +317,43 @@ public class AddressWindowController {
 
     @FXML
     void newContact(ActionEvent e) {
-        if (RateLimiter.tryAcquire(15)){
+        blurOut(tabPane);
+        fadeIn(addContactPane);
+        addContactPane.setVisible(true);
+    }
 
+    @FXML
+    void contactDoneClicked(ActionEvent e){
+        if (txtContactName.getText().substring(0,1).equals("+")){
+            spinner.setVisible(true);
+            blurOut(addContactPane);
+            fadeIn(spinner);
+            DownloadListenerContacts listener = new DownloadListenerContacts();
+            OpennameUtils.downloadAvatar(txtContactName.getText().substring(1),
+                    Main.params.getApplicationDataFolder().toString(),
+                    listener, null);
         } else {
-            Dialogs.create()
-                    .owner(stage)
-                    .title("Error")
-                    .style(DialogStyle.CROSS_PLATFORM_DARK)
-                    .masthead("Ooops, looks like you entered an invalid private key")
-                    .showError();
+            fadeOut(addContactPane);
+            addContactPane.setVisible(false);
+            blurIn(tabPane);
+            FileWriter f = new FileWriter();
+            f.addContact(txtContactAddress.getText(), txtContactName.getText(), null);
+            HBox h = getContactListViewNode(txtContactAddress.getText(), txtContactName.getText(), null);
+            contacts.add(h);
+            txtContactName.setText("");
+            txtContactAddress.setText("");
+            btnContactDone.setDisable(true);
         }
+    }
+
+    @FXML
+    void contactCancelClicked(ActionEvent e){
+        fadeOut(addContactPane);
+        addContactPane.setVisible(false);
+        blurIn(tabPane);
+        txtContactName.setText("");
+        txtContactAddress.setText("");
+        btnContactDone.setDisable(true);
     }
 
     @FXML
@@ -395,24 +457,72 @@ public class AddressWindowController {
         }
     }
 
+    private class DownloadListenerContacts implements OpennameListener {
+        @Override
+        public void onDownloadComplete(Address addr, String formattedName) {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    blurIn(addContactPane);
+                    fadeOut(addContactPane);
+                    fadeOut(spinner);
+                    spinner.setVisible(false);
+                    addContactPane.setVisible(false);
+                    blurIn(tabPane);
+                    FileWriter f = new FileWriter();
+                    f.addContact(txtContactAddress.getText(), formattedName, txtContactName.getText().substring(1));
+                    HBox h = getContactListViewNode(txtContactAddress.getText(), formattedName,
+                            txtContactName.getText().substring(1));
+                    contacts.add(h);
+                    txtContactName.setText("");
+                    txtContactAddress.setText("");
+                    btnContactDone.setDisable(true);
+                }
+            });
+        }
+
+        @Override
+        public void onDownloadFailed() {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    fadeOut(spinner);
+                    spinner.setVisible(false);
+                    blurIn(addContactPane);
+                    Dialogs.create()
+                            .owner(stage)
+                            .title("Error")
+                            .style(DialogStyle.CROSS_PLATFORM_DARK)
+                            .masthead("Unable to download the openname profile")
+                            .showError();
+                }
+            });
+        }
+    }
+
     @FXML
     void doneButtonPressed(MouseEvent e){
         btnAddressDone.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+        btnContactDone.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+
     }
 
     @FXML
     void doneButtonReleased(MouseEvent e){
         btnAddressDone.setStyle("-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+        btnContactDone.setStyle("-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
     }
 
     @FXML
     void cancelButtonPressed(MouseEvent e){
         btnAddressCancel.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+        btnContactCancel.setStyle("-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
     }
 
     @FXML
     void cancelButtonReleased(MouseEvent e){
         btnAddressCancel.setStyle("-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+        btnContactCancel.setStyle("-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
     }
 
     HBox getAddressListViewNode(String address, String name){
