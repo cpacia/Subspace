@@ -28,7 +28,7 @@ public class Preloader {
                     outputStream.write(bytes, 0, read);
                 }
             } catch (IOException e){e.printStackTrace();}
-            f.addContact("115rjnv5KYLMqunrcbqF91Jmnf94dMkWi9YdXJD3NREvHX5tj9oV", "Chris Pacia", "chrispacia");
+            f.addContact("117jqTQWfRp7GNJgjnMEJUw6QDQY5WFvhuMVHdYgxwTcxKQ2xBLW", "Chris Pacia", "chrispacia");
             String roomName = "#dilithiumchamber";
             f.addChatRoom(roomName, false);
             byte[] privKey = Utils.doubleDigest(roomName.getBytes());

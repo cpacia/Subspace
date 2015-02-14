@@ -118,15 +118,18 @@ class WebResource(resource.Resource):
     def render_POST(self, request):
         key = request.path.split('/')[-1]
         value = request.content.getvalue()
-        print ObjectId(key)
         post = {"_id": ObjectId(key),
                 "message": value,
                 "timestamp": datetime.datetime.utcnow()}
-        messages.insert(post)
-        self.incoming_posts.append(key)
-        log.msg("Setting %s = %s" % (key, value))
-        self.kserver.set(key, value)
+        if db.command("dbstats").get("dataSize") < options["limit"]:
+            messages.insert(post)
+            self.incoming_posts.append(key)
+            log.msg("Setting %s = %s" % (key, value))
+            self.kserver.set(key, value)
+        else:
+            value = "DB full"
         return value
+
 
     def processDelayedRequests(self):
         """
@@ -170,6 +173,6 @@ webserver.setServiceParent(application)
 
 
 # To test, you can set with:
-# $> curl --data "hi there" http://localhost:8080/one
+# $> curl --data <cipherText> http://localhost:8335/prefix?timestamp=
 # and get with:
-# $> curl http://localhost:8080/one
+# $> curl http://localhost:8335/prefix

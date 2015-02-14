@@ -22,6 +22,3 @@ def get_options():
     if "ttl" in cfg:
         options["ttl"] = cfg.ttl
     return options
-
-o = get_options()
-print o["ttl"]

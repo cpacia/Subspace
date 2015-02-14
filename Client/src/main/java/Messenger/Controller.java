@@ -153,6 +153,7 @@ public class Controller {
         loadChatConversations();
         loadEmails();
         loadChatRooms();
+        Tooltip.install(torIcon, new Tooltip("Connected to Tor"));
         TorListener listener = new TorListener();
         TorClient tor = Main.torClient;
         if(tor != null) {
