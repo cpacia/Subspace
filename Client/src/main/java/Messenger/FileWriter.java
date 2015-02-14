@@ -278,32 +278,15 @@ public class FileWriter {
     //#####################################
 
     public void addKey(ECKey key, String name, int prefixLength, String address,
-                       String uploadHostName, @Nullable String openname){
+                       String uploadHostName, @Nullable String openname, @Nullable String roomKey){
         KeyRing.SavedKeys.Builder builder = getKeyFileBuilder();
         ByteString priv = ByteString.copyFrom(key.getPrivKeyBtyes());
         ByteString pub = ByteString.copyFrom(key.getPubKeyBytes());
-        KeyRing.Key addKey = null;
-        if (openname==null) {
-            addKey = KeyRing.Key.newBuilder().setName(name)
-                    .setPrivateKey(priv)
-                    .setPublicKey(pub)
-                    .setPrefixLength(prefixLength)
-                    .setAddress(address)
-                    .setUploadNode(uploadHostName)
-                    .setTimeOfLastGET("0")
-                    .build();
-        }
-        else {
-            addKey = KeyRing.Key.newBuilder().setName(name)
-                    .setPrivateKey(priv)
-                    .setPublicKey(pub)
-                    .setPrefixLength(prefixLength)
-                    .setAddress(address)
-                    .setUploadNode(uploadHostName)
-                    .setTimeOfLastGET("0")
-                    .setOpenname(openname)
-                    .build();
-        }
+        KeyRing.Key.Builder addKey = KeyRing.Key.newBuilder();
+        addKey.setName(name).setPrivateKey(priv).setPublicKey(pub).setPrefixLength(prefixLength)
+                .setAddress(address).setUploadNode(uploadHostName).setTimeOfLastGET("0");
+        if (openname != null){addKey.setOpenname(openname);}
+        if (roomKey != null){addKey.setRoomKey(roomKey);}
         builder.addKey(addKey);
         try {writeKeyFile(builder);
         } catch (IOException e) {e.printStackTrace();}

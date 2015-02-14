@@ -37,7 +37,7 @@ public class Preloader {
             try {addr = new Address(32, ecKey);
             } catch (InvalidPrefixLengthException e2) {e2.printStackTrace();}
             f.addKey(ecKey, roomName, 32, addr.toString(),
-                    "bitcoinauthenticator.org", null);
+                    "bitcoinauthenticator.org", null, null);
             f.setPreloaded(true);
         }
     }

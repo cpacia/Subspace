@@ -801,6 +801,21 @@ public final class KeyRing {
      */
     com.google.protobuf.ByteString
         getTimeOfLastGETBytes();
+
+    // optional string roomKey = 9;
+    /**
+     * <code>optional string roomKey = 9;</code>
+     */
+    boolean hasRoomKey();
+    /**
+     * <code>optional string roomKey = 9;</code>
+     */
+    java.lang.String getRoomKey();
+    /**
+     * <code>optional string roomKey = 9;</code>
+     */
+    com.google.protobuf.ByteString
+        getRoomKeyBytes();
   }
   /**
    * Protobuf type {@code Key}
@@ -891,6 +906,11 @@ public final class KeyRing {
             case 66: {
               bitField0_ |= 0x00000080;
               timeOfLastGET_ = input.readBytes();
+              break;
+            }
+            case 74: {
+              bitField0_ |= 0x00000100;
+              roomKey_ = input.readBytes();
               break;
             }
           }
@@ -1196,6 +1216,49 @@ public final class KeyRing {
       }
     }
 
+    // optional string roomKey = 9;
+    public static final int ROOMKEY_FIELD_NUMBER = 9;
+    private java.lang.Object roomKey_;
+    /**
+     * <code>optional string roomKey = 9;</code>
+     */
+    public boolean hasRoomKey() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    /**
+     * <code>optional string roomKey = 9;</code>
+     */
+    public java.lang.String getRoomKey() {
+      java.lang.Object ref = roomKey_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          roomKey_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string roomKey = 9;</code>
+     */
+    public com.google.protobuf.ByteString
+        getRoomKeyBytes() {
+      java.lang.Object ref = roomKey_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        roomKey_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       privateKey_ = com.google.protobuf.ByteString.EMPTY;
       publicKey_ = com.google.protobuf.ByteString.EMPTY;
@@ -1205,6 +1268,7 @@ public final class KeyRing {
       address_ = "";
       uploadNode_ = "";
       timeOfLastGET_ = "0";
+      roomKey_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1262,6 +1326,9 @@ public final class KeyRing {
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         output.writeBytes(8, getTimeOfLastGETBytes());
       }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeBytes(9, getRoomKeyBytes());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -1302,6 +1369,10 @@ public final class KeyRing {
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(8, getTimeOfLastGETBytes());
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(9, getRoomKeyBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1435,6 +1506,8 @@ public final class KeyRing {
         bitField0_ = (bitField0_ & ~0x00000040);
         timeOfLastGET_ = "0";
         bitField0_ = (bitField0_ & ~0x00000080);
+        roomKey_ = "";
+        bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
 
@@ -1495,6 +1568,10 @@ public final class KeyRing {
           to_bitField0_ |= 0x00000080;
         }
         result.timeOfLastGET_ = timeOfLastGET_;
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        result.roomKey_ = roomKey_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1543,6 +1620,11 @@ public final class KeyRing {
         if (other.hasTimeOfLastGET()) {
           bitField0_ |= 0x00000080;
           timeOfLastGET_ = other.timeOfLastGET_;
+          onChanged();
+        }
+        if (other.hasRoomKey()) {
+          bitField0_ |= 0x00000100;
+          roomKey_ = other.roomKey_;
           onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
@@ -2067,6 +2149,80 @@ public final class KeyRing {
         return this;
       }
 
+      // optional string roomKey = 9;
+      private java.lang.Object roomKey_ = "";
+      /**
+       * <code>optional string roomKey = 9;</code>
+       */
+      public boolean hasRoomKey() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      /**
+       * <code>optional string roomKey = 9;</code>
+       */
+      public java.lang.String getRoomKey() {
+        java.lang.Object ref = roomKey_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          roomKey_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string roomKey = 9;</code>
+       */
+      public com.google.protobuf.ByteString
+          getRoomKeyBytes() {
+        java.lang.Object ref = roomKey_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          roomKey_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string roomKey = 9;</code>
+       */
+      public Builder setRoomKey(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000100;
+        roomKey_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string roomKey = 9;</code>
+       */
+      public Builder clearRoomKey() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        roomKey_ = getDefaultInstance().getRoomKey();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string roomKey = 9;</code>
+       */
+      public Builder setRoomKeyBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000100;
+        roomKey_ = value;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:Key)
     }
 
@@ -2098,11 +2254,11 @@ public final class KeyRing {
   static {
     java.lang.String[] descriptorData = {
       "\n\rKeyRing.proto\"\036\n\tSavedKeys\022\021\n\003key\030\001 \003(" +
-      "\0132\004.Key\"\241\001\n\003Key\022\022\n\nprivateKey\030\001 \002(\014\022\021\n\tp" +
+      "\0132\004.Key\"\262\001\n\003Key\022\022\n\nprivateKey\030\001 \002(\014\022\021\n\tp" +
       "ublicKey\030\002 \001(\014\022\014\n\004name\030\003 \002(\t\022\020\n\010openname" +
       "\030\004 \001(\t\022\024\n\014prefixLength\030\005 \002(\005\022\017\n\007address\030" +
       "\006 \001(\t\022\022\n\nuploadNode\030\007 \002(\t\022\030\n\rtimeOfLastG" +
-      "ET\030\010 \002(\t:\0010"
+      "ET\030\010 \002(\t:\0010\022\017\n\007roomKey\030\t \001(\t"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2120,7 +2276,7 @@ public final class KeyRing {
           internal_static_Key_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Key_descriptor,
-              new java.lang.String[] { "PrivateKey", "PublicKey", "Name", "Openname", "PrefixLength", "Address", "UploadNode", "TimeOfLastGET", });
+              new java.lang.String[] { "PrivateKey", "PublicKey", "Name", "Openname", "PrefixLength", "Address", "UploadNode", "TimeOfLastGET", "RoomKey", });
           return null;
         }
       };

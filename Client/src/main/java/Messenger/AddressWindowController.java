@@ -330,7 +330,8 @@ public class AddressWindowController {
         }
         else {
             FileWriter writer = new FileWriter();
-            writer.addKey(addr.getECKey(), txtName.getText(), (int) prefixSlider.getValue(), addr.toString(), cbNode.getValue().toString(), null);
+            writer.addKey(addr.getECKey(), txtName.getText(), (int) prefixSlider.getValue(), addr.toString(),
+                    cbNode.getValue().toString(), null, null);
             Main.retriever.addWatchKey(writer.getKeyFromAddress(addr.toString()));
             data.remove(init);
             HBox hBox = getAddressListViewNode(addr.toString(), txtName.getText());
@@ -348,7 +349,7 @@ public class AddressWindowController {
                 public void run() {
                     FileWriter writer = new FileWriter();
                     writer.addKey(addr.getECKey(), formatted, (int) prefixSlider.getValue(),
-                            addr.toString(), cbNode.getValue().toString(), txtName.getText().substring(1));
+                            addr.toString(), cbNode.getValue().toString(), txtName.getText().substring(1), null);
                     Main.retriever.addWatchKey(writer.getKeyFromAddress(addr.toString()));
                     data.remove(init);
                     HBox hBox = getAddressListViewNode(addr.toString(), txtName.getText().substring(1));

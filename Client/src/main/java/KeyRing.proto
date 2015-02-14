@@ -11,5 +11,6 @@ message Key {
 	optional string address             = 6;
 	required string uploadNode          = 7;
 	required string timeOfLastGET       = 8 [default = "0"];
+	optional string roomKey             = 9;
 }
 

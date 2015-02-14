@@ -12,20 +12,22 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.*;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.apache.commons.codec.binary.Hex;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Utils;
@@ -33,6 +35,8 @@ import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.crypto.generators.HKDFBytesGenerator;
 import org.bouncycastle.crypto.params.HKDFParameters;
+import org.controlsfx.control.Notifications;
+import org.controlsfx.control.PopOver;
 import org.controlsfx.dialog.Dialogs;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
@@ -77,6 +81,10 @@ public class ChatRoomController {
     ChoiceBox addressChoiceBox;
     @FXML
     ChoiceBox cbNode;
+    @FXML
+    HBox topHBox;
+    @FXML
+    AnchorPane anchorPane;
 
     private Stage stage;
     private FileWriter fileWriter;
@@ -85,6 +93,7 @@ public class ChatRoomController {
     private VBox scrollVBox = new VBox();
     private boolean scrollToBottom = false;
     private Address roomAddress;
+    private boolean isPrivate;
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -232,6 +241,7 @@ public class ChatRoomController {
         fadeOut(addPane);
         addPane.setVisible(false);
         this.chatRoomName = fileWriter.getChatRooms().get(index).getRoomName();
+        this.isPrivate = fileWriter.getChatRooms().get(index).getIsPrivate();
         setRoomUI();
     }
 
@@ -258,14 +268,15 @@ public class ChatRoomController {
                 try {addr = new Address(32, ecKey);}
                 catch (InvalidPrefixLengthException e2) {e2.printStackTrace();}
                 fileWriter.addKey(ecKey, roomName, 32, addr.toString(),
-                        cbNode.getValue().toString(), null);
-                fileWriter.addChatRoom(roomName, false);
+                        cbNode.getValue().toString(), null, txtRoomKey.getText());
+                fileWriter.addChatRoom(roomName, true);
                 Main.retriever.addWatchKey(fileWriter.getKeyFromAddress(addr.toString()));
                 Main.controller.addChatRoom(roomName);
                 blurIn(chatRoomPane);
                 fadeOut(addPane);
                 addPane.setVisible(false);
                 this.chatRoomName = roomName;
+                isPrivate = true;
                 setRoomUI();
             } catch (AddressFormatException e2) {
                 Dialogs.create()
@@ -286,13 +297,14 @@ public class ChatRoomController {
                 e2.printStackTrace();
             }
             fileWriter.addKey(ecKey, roomName, 32, addr.toString(),
-                    cbNode.getValue().toString(), null);
+                    cbNode.getValue().toString(), null, null);
             fileWriter.addChatRoom(roomName, false);
             Main.retriever.addWatchKey(fileWriter.getKeyFromAddress(addr.toString()));
             Main.controller.addChatRoom(roomName);
             blurIn(chatRoomPane);
             fadeOut(addPane);
             addPane.setVisible(false);
+            isPrivate = false;
             this.chatRoomName = roomName;
             setRoomUI();
         }
@@ -331,6 +343,36 @@ public class ChatRoomController {
         this.stage.setTitle(this.chatRoomName);
         lblRoomName.setText(this.chatRoomName);
         lblRoomName.setStyle("-fx-text-fill: #dc78dc; -fx-font-size: 16");
+        if (isPrivate){
+            lblRoomName.setPrefWidth(200);
+            GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
+            Button btnKey = new Button("", fontAwesome.create("KEY").color(javafx.scene.paint.Color.CYAN));
+            btnKey.setStyle("-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;");
+            btnKey.setPrefSize(10, 10);
+            Tooltip.install(btnKey, new Tooltip("Copy the room key to clipboard"));
+            topHBox.getChildren().addAll(btnKey);
+            topHBox.setMargin(btnKey, new Insets(7, 0, 0, 0));
+            btnKey.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent e) {
+                    final Clipboard clipboard = Clipboard.getSystemClipboard();
+                    final ClipboardContent content = new ClipboardContent();
+                    String key = fileWriter.getKeyFromName(chatRoomName).getRoomKey();
+                    content.putString(key);
+                    clipboard.setContent(content);
+                    Label lblPopOver = new Label("Copied room key to clipboard");
+                    lblPopOver.setWrapText(true);
+                    lblPopOver.setStyle("-fx-text-fill: #dc78dc; -fx-padding: 5; -fx-font-size: 13;");
+                    PopOver pop = new PopOver(lblPopOver);
+                    pop.setDetachable(false);
+                    pop.setArrowLocation(PopOver.ArrowLocation.TOP_CENTER);
+                    pop.show(btnKey);
+                    pop.setAutoHide(true);
+                    pop.setHideOnEscape(true);
+                    pop.show(stage);
+                }
+            });
+        }
         ChatRoomListener listener = new ChatRoomListener();
         Main.retriever.addListener(listener);
         loadMessages();
@@ -428,4 +470,5 @@ public class ChatRoomController {
             }
         }
     }
+
 }

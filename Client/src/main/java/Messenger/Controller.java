@@ -43,6 +43,7 @@ import javafx.animation.ParallelTransition;
 import Messenger.Utils.easing.EasingMode;
 import Messenger.Utils.easing.ElasticInterpolator;
 import org.bitcoinj.core.AddressFormatException;
+import org.controlsfx.control.Notifications;
 import org.controlsfx.control.PopOver;
 import org.controlsfx.dialog.Dialogs;
 
@@ -547,9 +548,10 @@ public class Controller {
         emailSubjectField.setText("");
         emailToField.setText("");
         cbEmailFrom.getSelectionModel().select(0);
-        String name = addrsArray[0] + " + " + (addrsArray.length-1) + " more";
-        if (writer.contactExists(name)){name = writer.getNameFromAddress(addrsArray[0]) + " + " + (addrsArray.length-1) + " more";}
-        Notification info = new Notification("Subspace", "Sent email to: " + name + " + " + (addrsArray.length-1) + " more");
+        String name = addrsArray[0];
+        if (writer.contactExists(name)){name = writer.getNameFromAddress(addrsArray[0]);}
+        Image i = new Image(Main.class.getResourceAsStream("logo.png"));
+        Notification info = new Notification("Subspace", "Sent email to: " + name, i);
         Notification.Notifier.INSTANCE.notify(info);
     }
 
@@ -968,11 +970,7 @@ public class Controller {
                                 image = new Image(file.toURI().toString());
                             }
                             else {
-                                //Put subspace logo here
-                                ImageView imView = null;
-                                try{imView = Identicon.generate(m.getFromAddress(), Color.decode("#393939"));}
-                                catch (Exception e){e.printStackTrace();}
-                                image = imView.getImage();
+                                image = new Image(Main.class.getResourceAsStream("logo.png"));
                             }
                             Notification info = new Notification("Subspace", m.getSenderName()+": " + m.getDecryptedMessage(), image);
                             Notification.Notifier.INSTANCE.notify(info);
@@ -996,6 +994,17 @@ public class Controller {
                                 m.getDecryptedMessage(), m.getSubject(), m.getTimeStamp(), false);
                         addToEmailListView(m.getFromAddress(), m.getSenderName(), m.getSubject(), true);
                         updateEmailListView();
+                        Image image = null;
+                        if (writer.getOpenname(m.getFromAddress())!=null) {
+                            File file = new File(Main.params.getApplicationDataFolder()+"/avatars/"+
+                                    writer.getOpenname(m.getFromAddress())+".jpg");
+                            image = new Image(file.toURI().toString());
+                        }
+                        else {
+                            image = new Image(Main.class.getResourceAsStream("logo.png"));
+                        }
+                        Notification info = new Notification("Subspace", "New email from: " + m.getSenderName(), image);
+                        Notification.Notifier.INSTANCE.notify(info);
                     } else if (m.getMessageType() == Payload.MessageType.CHATROOM){
                         String roomName = writer.getNameFromAddress(m.getToAddress().toString());
                         writer.addChatRoomMessage(roomName, m);

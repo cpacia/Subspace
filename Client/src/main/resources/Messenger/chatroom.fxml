@@ -5,7 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="650.0" style="-fx-background-color: #4d5052;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Messenger.ChatRoomController">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="650.0" style="-fx-background-color: #4d5052;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Messenger.ChatRoomController">
    <children>
       <StackPane prefHeight="450.0" prefWidth="650.0">
          <children>
@@ -17,7 +17,7 @@
                         <Font size="16.0" />
                      </font>
                   </TextArea>
-                  <HBox fx:id="hBox" layoutX="17.0" prefHeight="53.0" prefWidth="597.0">
+                  <HBox fx:id="topHBox" layoutX="17.0" prefHeight="53.0" prefWidth="597.0">
                      <children>
                         <Label fx:id="lblRoomName" prefHeight="44.0" prefWidth="303.0" />
                      </children>
