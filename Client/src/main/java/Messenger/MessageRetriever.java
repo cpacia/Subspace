@@ -113,7 +113,7 @@ public class MessageRetriever {
                 byte[] privKey = writer.getKeyFromAddress(addr.toString()).getPrivateKey().toByteArray();
                 ECKey decryptKey = ECKey.fromPrivOnly(privKey);
                 Message m = new Message(cipherText, decryptKey.getPrivKey(), addr);
-                if (m.isMessageForMe()) messageList.add(m);
+                if (m.isMessageForMe()){messageList.add(m);}
             }
         }
         Map<Long,Message> sortedMap = new TreeMap<Long, Message>();

@@ -73,28 +73,48 @@ public class Message {
                     .setTimeStamp(this.timeStamp)
                     .setName(this.senderName).build();
         }
-        byte[] serializedMesssageData = data.toByteArray();
-        byte[] sharedSecret = null;
-        byte[] hMACBytes = null;
-
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-        try{
-            KeyAgreement keyAgree = KeyAgreement.getInstance("ECDH", "BC");
-            keyAgree.init(this.sendingKey.getPrivKey());
-            keyAgree.doPhase(toAddress.getECKey().getPubKey(), true);
-            MessageDigest hash = MessageDigest.getInstance("SHA256", "BC");
-            sharedSecret = hash.digest(keyAgree.generateSecret());
-            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secret_key = new SecretKeySpec(sharedSecret, "HmacSHA256");
-            sha256_HMAC.init(secret_key);
-            hMACBytes = sha256_HMAC.doFinal(serializedMesssageData);
+        else if (this.messageType == Payload.MessageType.CHATROOM) {
+            data = Payload.MessageData.newBuilder()
+                    .setSenderAddress(this.fromAddress)
+                    .setMessageType(type)
+                    .setUnencryptedMessage(message)
+                    .setTimeStamp(this.timeStamp)
+                    .setName(this.senderName).build();
         }
-        catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchProviderException e){e.printStackTrace();}
+        byte[] serializedMesssageData = data.toByteArray();
         ByteString serializedData = ByteString.copyFrom(serializedMesssageData);
-        ByteString hmac = ByteString.copyFrom(hMACBytes);
+        ByteString hmacOrSig = null;
+
+        if (this.messageType == Payload.MessageType.CHAT || this.messageType == Payload.MessageType.EMAIL) {
+            byte[] hMACBytes = null;
+            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+            try {
+                KeyAgreement keyAgree = KeyAgreement.getInstance("ECDH", "BC");
+                keyAgree.init(this.sendingKey.getPrivKey());
+                keyAgree.doPhase(toAddress.getECKey().getPubKey(), true);
+                MessageDigest hash = MessageDigest.getInstance("SHA256", "BC");
+                byte[] sharedSecret = hash.digest(keyAgree.generateSecret());
+                Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+                SecretKeySpec secret_key = new SecretKeySpec(sharedSecret, "HmacSHA256");
+                sha256_HMAC.init(secret_key);
+                hMACBytes = sha256_HMAC.doFinal(serializedMesssageData);
+            } catch (InvalidKeyException | NoSuchAlgorithmException | NoSuchProviderException e) {
+                e.printStackTrace();
+            }
+            hmacOrSig = ByteString.copyFrom(hMACBytes);
+        } else if (this.messageType == Payload.MessageType.CHATROOM){
+            byte[] signature = null;
+            try {
+                Signature ecdsa = Signature.getInstance("SHA256withECDSA");
+                ecdsa.initSign(this.sendingKey.getPrivKey());
+                ecdsa.update(serializedMesssageData);
+                signature = ecdsa.sign();
+            } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e){e.printStackTrace();}
+            hmacOrSig = ByteString.copyFrom(signature);
+        }
         Payload.SignedPayload payload = Payload.SignedPayload.newBuilder()
                 .setSerializedMessageData(serializedData)
-                .setHMac(hmac)
+                .setHMacOrSig(hmacOrSig)
                 .build();
         this.payloadBytes = payload.toByteArray();
         try {
@@ -136,24 +156,36 @@ public class Message {
                     this.subject = data.getSubject();
                 }
             } catch (InvalidProtocolBufferException e){isForMe = false;}
+            if (this.messageType == Payload.MessageType.CHAT || this.messageType == Payload.MessageType.EMAIL) {
+                byte[] hmac = payload.getHMacOrSig().toByteArray();
+                byte[] testHMac = null;
+                Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+                try {
+                    KeyAgreement keyAgree = KeyAgreement.getInstance("ECDH", "BC");
+                    keyAgree.init(decryptKey);
+                    keyAgree.doPhase(new Address(data.getSenderAddress()).getECKey().getPubKey(), true);
+                    MessageDigest hash = MessageDigest.getInstance("SHA256", "BC");
+                    byte[] sharedSecret = hash.digest(keyAgree.generateSecret());
+                    Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+                    SecretKeySpec secret_key = new SecretKeySpec(sharedSecret, "HmacSHA256");
+                    sha256_HMAC.init(secret_key);
+                    testHMac = sha256_HMAC.doFinal(payload.getSerializedMessageData().toByteArray());
+                    if (!Arrays.equals(hmac, testHMac)) {throw new BadHMACException();}
+                } catch (NoSuchAlgorithmException | NoSuchProviderException
+                        | InvalidKeyException | AddressFormatException | BadHMACException e) {
+                    isForMe = false;
+                }
+            } else if(this.messageType == Payload.MessageType.CHATROOM){
+                try {
+                    Signature ecdsa = Signature.getInstance("SHA256withECDSA");
+                    ecdsa.initVerify(new Address(data.getSenderAddress()).getECKey().getPubKey());
+                    ecdsa.update(payload.getSerializedMessageData().toByteArray());
+                    if (!ecdsa.verify(payload.getHMacOrSig().toByteArray())) {
+                        throw new BadSignatureException();
+                    }
+                } catch (NoSuchAlgorithmException | AddressFormatException | SignatureException
+                        | BadSignatureException | InvalidKeyException e) {isForMe = false;}
 
-            byte[] hmac = payload.getHMac().toByteArray();
-            byte[] testHMac = null;
-            Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-            try {
-                KeyAgreement keyAgree = KeyAgreement.getInstance("ECDH", "BC");
-                keyAgree.init(decryptKey);
-                keyAgree.doPhase(new Address(data.getSenderAddress()).getECKey().getPubKey(), true);
-                MessageDigest hash = MessageDigest.getInstance("SHA256", "BC");
-                byte[] sharedSecret = hash.digest(keyAgree.generateSecret());
-                Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
-                SecretKeySpec secret_key = new SecretKeySpec(sharedSecret, "HmacSHA256");
-                sha256_HMAC.init(secret_key);
-                testHMac = sha256_HMAC.doFinal(payload.getSerializedMessageData().toByteArray());
-                if (!Arrays.equals(hmac, testHMac)){throw new BadHMACException();}
-            } catch (NoSuchAlgorithmException | NoSuchProviderException
-                    | InvalidKeyException | AddressFormatException | BadHMACException e) {
-                isForMe = false;
             }
         }
 

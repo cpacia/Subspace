@@ -112,15 +112,15 @@ public final class Payload {
      */
     com.google.protobuf.ByteString getSerializedMessageData();
 
-    // required bytes HMac = 5;
+    // required bytes HMacOrSig = 2;
     /**
-     * <code>required bytes HMac = 5;</code>
+     * <code>required bytes HMacOrSig = 2;</code>
      */
-    boolean hasHMac();
+    boolean hasHMacOrSig();
     /**
-     * <code>required bytes HMac = 5;</code>
+     * <code>required bytes HMacOrSig = 2;</code>
      */
-    com.google.protobuf.ByteString getHMac();
+    com.google.protobuf.ByteString getHMacOrSig();
   }
   /**
    * Protobuf type {@code SignedPayload}
@@ -178,9 +178,9 @@ public final class Payload {
               serializedMessageData_ = input.readBytes();
               break;
             }
-            case 42: {
+            case 18: {
               bitField0_ |= 0x00000002;
-              hMac_ = input.readBytes();
+              hMacOrSig_ = input.readBytes();
               break;
             }
           }
@@ -239,25 +239,25 @@ public final class Payload {
       return serializedMessageData_;
     }
 
-    // required bytes HMac = 5;
-    public static final int HMAC_FIELD_NUMBER = 5;
-    private com.google.protobuf.ByteString hMac_;
+    // required bytes HMacOrSig = 2;
+    public static final int HMACORSIG_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString hMacOrSig_;
     /**
-     * <code>required bytes HMac = 5;</code>
+     * <code>required bytes HMacOrSig = 2;</code>
      */
-    public boolean hasHMac() {
+    public boolean hasHMacOrSig() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required bytes HMac = 5;</code>
+     * <code>required bytes HMacOrSig = 2;</code>
      */
-    public com.google.protobuf.ByteString getHMac() {
-      return hMac_;
+    public com.google.protobuf.ByteString getHMacOrSig() {
+      return hMacOrSig_;
     }
 
     private void initFields() {
       serializedMessageData_ = com.google.protobuf.ByteString.EMPTY;
-      hMac_ = com.google.protobuf.ByteString.EMPTY;
+      hMacOrSig_ = com.google.protobuf.ByteString.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -268,7 +268,7 @@ public final class Payload {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasHMac()) {
+      if (!hasHMacOrSig()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -283,7 +283,7 @@ public final class Payload {
         output.writeBytes(1, serializedMessageData_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(5, hMac_);
+        output.writeBytes(2, hMacOrSig_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -300,7 +300,7 @@ public final class Payload {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(5, hMac_);
+          .computeBytesSize(2, hMacOrSig_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -420,7 +420,7 @@ public final class Payload {
         super.clear();
         serializedMessageData_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
-        hMac_ = com.google.protobuf.ByteString.EMPTY;
+        hMacOrSig_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
@@ -457,7 +457,7 @@ public final class Payload {
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.hMac_ = hMac_;
+        result.hMacOrSig_ = hMacOrSig_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -477,8 +477,8 @@ public final class Payload {
         if (other.hasSerializedMessageData()) {
           setSerializedMessageData(other.getSerializedMessageData());
         }
-        if (other.hasHMac()) {
-          setHMac(other.getHMac());
+        if (other.hasHMacOrSig()) {
+          setHMacOrSig(other.getHMacOrSig());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -489,7 +489,7 @@ public final class Payload {
           
           return false;
         }
-        if (!hasHMac()) {
+        if (!hasHMacOrSig()) {
           
           return false;
         }
@@ -551,38 +551,38 @@ public final class Payload {
         return this;
       }
 
-      // required bytes HMac = 5;
-      private com.google.protobuf.ByteString hMac_ = com.google.protobuf.ByteString.EMPTY;
+      // required bytes HMacOrSig = 2;
+      private com.google.protobuf.ByteString hMacOrSig_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>required bytes HMac = 5;</code>
+       * <code>required bytes HMacOrSig = 2;</code>
        */
-      public boolean hasHMac() {
+      public boolean hasHMacOrSig() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required bytes HMac = 5;</code>
+       * <code>required bytes HMacOrSig = 2;</code>
        */
-      public com.google.protobuf.ByteString getHMac() {
-        return hMac_;
+      public com.google.protobuf.ByteString getHMacOrSig() {
+        return hMacOrSig_;
       }
       /**
-       * <code>required bytes HMac = 5;</code>
+       * <code>required bytes HMacOrSig = 2;</code>
        */
-      public Builder setHMac(com.google.protobuf.ByteString value) {
+      public Builder setHMacOrSig(com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000002;
-        hMac_ = value;
+        hMacOrSig_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required bytes HMac = 5;</code>
+       * <code>required bytes HMacOrSig = 2;</code>
        */
-      public Builder clearHMac() {
+      public Builder clearHMacOrSig() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        hMac_ = getDefaultInstance().getHMac();
+        hMacOrSig_ = getDefaultInstance().getHMacOrSig();
         onChanged();
         return this;
       }
@@ -1767,13 +1767,14 @@ public final class Payload {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rPayload.proto\"<\n\rSignedPayload\022\035\n\025seri" +
-      "alizedMessageData\030\001 \002(\014\022\014\n\004HMac\030\005 \002(\014\"\225\001" +
-      "\n\013MessageData\022\025\n\rsenderAddress\030\001 \002(\t\022!\n\013" +
-      "messageType\030\002 \002(\0162\014.MessageType\022\021\n\ttimeS" +
-      "tamp\030\003 \002(\004\022\017\n\007subject\030\004 \001(\t\022\032\n\022Unencrypt" +
-      "edMessage\030\005 \002(\t\022\014\n\004name\030\006 \002(\t*0\n\013Message" +
-      "Type\022\010\n\004CHAT\020\001\022\t\n\005EMAIL\020\002\022\014\n\010CHATROOM\020\003"
+      "\n\rPayload.proto\"A\n\rSignedPayload\022\035\n\025seri" +
+      "alizedMessageData\030\001 \002(\014\022\021\n\tHMacOrSig\030\002 \002" +
+      "(\014\"\225\001\n\013MessageData\022\025\n\rsenderAddress\030\001 \002(" +
+      "\t\022!\n\013messageType\030\002 \002(\0162\014.MessageType\022\021\n\t" +
+      "timeStamp\030\003 \002(\004\022\017\n\007subject\030\004 \001(\t\022\032\n\022Unen" +
+      "cryptedMessage\030\005 \002(\t\022\014\n\004name\030\006 \002(\t*0\n\013Me" +
+      "ssageType\022\010\n\004CHAT\020\001\022\t\n\005EMAIL\020\002\022\014\n\010CHATRO" +
+      "OM\020\003"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1785,7 +1786,7 @@ public final class Payload {
           internal_static_SignedPayload_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_SignedPayload_descriptor,
-              new java.lang.String[] { "SerializedMessageData", "HMac", });
+              new java.lang.String[] { "SerializedMessageData", "HMacOrSig", });
           internal_static_MessageData_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_MessageData_fieldAccessorTable = new

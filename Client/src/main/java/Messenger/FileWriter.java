@@ -344,6 +344,13 @@ public class FileWriter {
         return b.getKeyList();
     }
 
+    public boolean keyExists(String address){
+        for (KeyRing.Key k : getSavedKeys()){
+            if (k.getAddress().equals(address))return true;
+        }
+        return false;
+    }
+
     public Address getSavedAddress(String address) throws InvalidPrefixLengthException{
         KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
         List<KeyRing.Key> keys = b.getKeyList();
@@ -378,42 +385,12 @@ public class FileWriter {
         return null;
     }
 
-    //#####################################
-    //
-    //	Chat Room Keys
-    //
-    //#####################################
-
-    public void addChatKey(String roomName, byte[] chatRoomKey){
+    public KeyRing.Key getKeyFromName(String roomName){
         KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
-        KeyRing.ChatKey chatKey = KeyRing.ChatKey.newBuilder()
-                .setRoomName(roomName)
-                .setRoomKey(ByteString.copyFrom(chatRoomKey))
-                .build();
-        b.addRoomKey(chatKey);
-        try { writeKeyFile(b);}
-        catch (IOException e) {e.printStackTrace();}
-    }
-
-    public void deleteChatKey(String roomName){
-        KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
-        int index = 0;
-        for (KeyRing.ChatKey key : b.getRoomKeyList()){
-            if (key.getRoomName().equals(roomName)){
-                index = b.getRoomKeyList().indexOf(key);
-                break;
-            }
-        }
-        b.removeRoomKey(index);
-        try { writeKeyFile(b);}
-        catch (IOException e) {e.printStackTrace();}
-    }
-
-    public byte[] getChatRoomKey(String roomName){
-        KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
-        for (KeyRing.ChatKey key : b.getRoomKeyList()){
-            if (key.getRoomName().equals(roomName)){
-                return key.getRoomKey().toByteArray();
+        List<KeyRing.Key> keys = b.getKeyList();
+        for (KeyRing.Key key : keys){
+            if (key.getName().equals(roomName)){
+                return key;
             }
         }
         return null;
@@ -582,13 +559,33 @@ public class FileWriter {
 
     public void addChatRoom(String roomName, boolean isPrivate){
         History.GroupChatList.Builder b = getGroupChatFileBuilder();
-        History.ChatRoom chatRoom = History.ChatRoom.newBuilder()
-                .setRoomName(roomName)
-                .setTimeOfLastGET("0")
-                .setIsPrivate(isPrivate).build();
         History.GroupChat groupChat = History.GroupChat.newBuilder()
-                .setChatRoom(chatRoom).build();
+                .setRoomName(roomName)
+                .setIsPrivate(isPrivate).build();
         b.addChat(groupChat);
+        try {writeGroupChatsToFile(b);}
+        catch (IOException e){e.printStackTrace();}
+    }
+
+    public void addChatRoomMessage(String roomName, Message m){
+        History.GroupChatList.Builder b = getGroupChatFileBuilder();
+        int index = 0;
+        for (History.GroupChat g : b.getChatList()){
+            if (g.getRoomName().equals(roomName)){
+                index = b.getChatList().indexOf(g);
+                break;
+            }
+        }
+        History.RoomMessage message = History.RoomMessage.newBuilder()
+                .setContent(m.getDecryptedMessage())
+                .setSenderAddress(m.getFromAddress())
+                .setSenderName(m.getSenderName())
+                .setTimestamp(m.getTimeStamp()).build();
+        History.GroupChat.Builder groupChatBuilder = History.GroupChat.newBuilder();
+        groupChatBuilder.mergeFrom(b.getChat(index));
+        groupChatBuilder.addChatRoomMessages(message);
+        b.removeChat(index);
+        b.addChat(index, groupChatBuilder);
         try {writeGroupChatsToFile(b);}
         catch (IOException e){e.printStackTrace();}
     }
@@ -597,6 +594,16 @@ public class FileWriter {
         History.GroupChatList.Builder b = getGroupChatFileBuilder();
         return b.getChatList();
     }
+    public int getNumberOfChatRooms(){
+        History.GroupChatList.Builder b = getGroupChatFileBuilder();
+        return b.getChatList().size();
+    }
 
+    public void deleteChatRoom(int index){
+        History.GroupChatList.Builder b = getGroupChatFileBuilder();
+        b.removeChat(index);
+        try {writeGroupChatsToFile(b);}
+        catch (IOException e){e.printStackTrace();}
+    }
 
 }

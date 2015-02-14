@@ -234,11 +234,11 @@ public class AddressWindowController {
         txtName.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
-                if (!txtName.getText().equals("")) {
-                    btnAddressDone.setDisable(false);
+                if (txtName.getText().equals("") || txtName.getText().substring(0,1).equals("#")) {
+                    btnAddressDone.setDisable(true);
                 }
                 else {
-                    btnAddressDone.setDisable(true);
+                    btnAddressDone.setDisable(false);
                 }
             }
         });

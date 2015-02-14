@@ -1,6 +1,6 @@
 message SignedPayload {
 	required bytes serializedMessageData = 1;
-	required bytes HMac                  = 5;
+	required bytes HMacOrSig             = 2;
 }
 
 message MessageData {

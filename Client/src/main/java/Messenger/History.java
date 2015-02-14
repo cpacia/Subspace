@@ -6475,41 +6475,52 @@ public final class History {
   public interface GroupChatOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // required .ChatRoom chatRoom = 1;
+    // required string roomName = 1;
     /**
-     * <code>required .ChatRoom chatRoom = 1;</code>
+     * <code>required string roomName = 1;</code>
      */
-    boolean hasChatRoom();
+    boolean hasRoomName();
     /**
-     * <code>required .ChatRoom chatRoom = 1;</code>
+     * <code>required string roomName = 1;</code>
      */
-    History.ChatRoom getChatRoom();
+    java.lang.String getRoomName();
     /**
-     * <code>required .ChatRoom chatRoom = 1;</code>
+     * <code>required string roomName = 1;</code>
      */
-    History.ChatRoomOrBuilder getChatRoomOrBuilder();
+    com.google.protobuf.ByteString
+        getRoomNameBytes();
 
-    // repeated .RoomMessage chatRoomMessages = 2;
+    // required bool isPrivate = 2;
     /**
-     * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
+     * <code>required bool isPrivate = 2;</code>
+     */
+    boolean hasIsPrivate();
+    /**
+     * <code>required bool isPrivate = 2;</code>
+     */
+    boolean getIsPrivate();
+
+    // repeated .RoomMessage chatRoomMessages = 3;
+    /**
+     * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
      */
     java.util.List<History.RoomMessage> 
         getChatRoomMessagesList();
     /**
-     * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
+     * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
      */
     History.RoomMessage getChatRoomMessages(int index);
     /**
-     * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
+     * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
      */
     int getChatRoomMessagesCount();
     /**
-     * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
+     * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
      */
     java.util.List<? extends History.RoomMessageOrBuilder> 
         getChatRoomMessagesOrBuilderList();
     /**
-     * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
+     * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
      */
     History.RoomMessageOrBuilder getChatRoomMessagesOrBuilder(
         int index);
@@ -6566,22 +6577,19 @@ public final class History {
               break;
             }
             case 10: {
-              History.ChatRoom.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                subBuilder = chatRoom_.toBuilder();
-              }
-              chatRoom_ = input.readMessage(History.ChatRoom.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(chatRoom_);
-                chatRoom_ = subBuilder.buildPartial();
-              }
               bitField0_ |= 0x00000001;
+              roomName_ = input.readBytes();
               break;
             }
-            case 18: {
-              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+            case 16: {
+              bitField0_ |= 0x00000002;
+              isPrivate_ = input.readBool();
+              break;
+            }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
                 chatRoomMessages_ = new java.util.ArrayList<History.RoomMessage>();
-                mutable_bitField0_ |= 0x00000002;
+                mutable_bitField0_ |= 0x00000004;
               }
               chatRoomMessages_.add(input.readMessage(History.RoomMessage.PARSER, extensionRegistry));
               break;
@@ -6594,7 +6602,7 @@ public final class History {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
           chatRoomMessages_ = java.util.Collections.unmodifiableList(chatRoomMessages_);
         }
         this.unknownFields = unknownFields.build();
@@ -6629,58 +6637,95 @@ public final class History {
     }
 
     private int bitField0_;
-    // required .ChatRoom chatRoom = 1;
-    public static final int CHATROOM_FIELD_NUMBER = 1;
-    private History.ChatRoom chatRoom_;
+    // required string roomName = 1;
+    public static final int ROOMNAME_FIELD_NUMBER = 1;
+    private java.lang.Object roomName_;
     /**
-     * <code>required .ChatRoom chatRoom = 1;</code>
+     * <code>required string roomName = 1;</code>
      */
-    public boolean hasChatRoom() {
+    public boolean hasRoomName() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required .ChatRoom chatRoom = 1;</code>
+     * <code>required string roomName = 1;</code>
      */
-    public History.ChatRoom getChatRoom() {
-      return chatRoom_;
+    public java.lang.String getRoomName() {
+      java.lang.Object ref = roomName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          roomName_ = s;
+        }
+        return s;
+      }
     }
     /**
-     * <code>required .ChatRoom chatRoom = 1;</code>
+     * <code>required string roomName = 1;</code>
      */
-    public History.ChatRoomOrBuilder getChatRoomOrBuilder() {
-      return chatRoom_;
+    public com.google.protobuf.ByteString
+        getRoomNameBytes() {
+      java.lang.Object ref = roomName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        roomName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
-    // repeated .RoomMessage chatRoomMessages = 2;
-    public static final int CHATROOMMESSAGES_FIELD_NUMBER = 2;
+    // required bool isPrivate = 2;
+    public static final int ISPRIVATE_FIELD_NUMBER = 2;
+    private boolean isPrivate_;
+    /**
+     * <code>required bool isPrivate = 2;</code>
+     */
+    public boolean hasIsPrivate() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required bool isPrivate = 2;</code>
+     */
+    public boolean getIsPrivate() {
+      return isPrivate_;
+    }
+
+    // repeated .RoomMessage chatRoomMessages = 3;
+    public static final int CHATROOMMESSAGES_FIELD_NUMBER = 3;
     private java.util.List<History.RoomMessage> chatRoomMessages_;
     /**
-     * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
+     * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
      */
     public java.util.List<History.RoomMessage> getChatRoomMessagesList() {
       return chatRoomMessages_;
     }
     /**
-     * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
+     * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
      */
     public java.util.List<? extends History.RoomMessageOrBuilder> 
         getChatRoomMessagesOrBuilderList() {
       return chatRoomMessages_;
     }
     /**
-     * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
+     * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
      */
     public int getChatRoomMessagesCount() {
       return chatRoomMessages_.size();
     }
     /**
-     * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
+     * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
      */
     public History.RoomMessage getChatRoomMessages(int index) {
       return chatRoomMessages_.get(index);
     }
     /**
-     * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
+     * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
      */
     public History.RoomMessageOrBuilder getChatRoomMessagesOrBuilder(
         int index) {
@@ -6688,7 +6733,8 @@ public final class History {
     }
 
     private void initFields() {
-      chatRoom_ = History.ChatRoom.getDefaultInstance();
+      roomName_ = "";
+      isPrivate_ = false;
       chatRoomMessages_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
@@ -6696,11 +6742,11 @@ public final class History {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
-      if (!hasChatRoom()) {
+      if (!hasRoomName()) {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!getChatRoom().isInitialized()) {
+      if (!hasIsPrivate()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -6718,10 +6764,13 @@ public final class History {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(1, chatRoom_);
+        output.writeBytes(1, getRoomNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBool(2, isPrivate_);
       }
       for (int i = 0; i < chatRoomMessages_.size(); i++) {
-        output.writeMessage(2, chatRoomMessages_.get(i));
+        output.writeMessage(3, chatRoomMessages_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -6734,11 +6783,15 @@ public final class History {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, chatRoom_);
+          .computeBytesSize(1, getRoomNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, isPrivate_);
       }
       for (int i = 0; i < chatRoomMessages_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, chatRoomMessages_.get(i));
+          .computeMessageSize(3, chatRoomMessages_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -6848,7 +6901,6 @@ public final class History {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getChatRoomFieldBuilder();
           getChatRoomMessagesFieldBuilder();
         }
       }
@@ -6858,15 +6910,13 @@ public final class History {
 
       public Builder clear() {
         super.clear();
-        if (chatRoomBuilder_ == null) {
-          chatRoom_ = History.ChatRoom.getDefaultInstance();
-        } else {
-          chatRoomBuilder_.clear();
-        }
+        roomName_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
+        isPrivate_ = false;
+        bitField0_ = (bitField0_ & ~0x00000002);
         if (chatRoomMessagesBuilder_ == null) {
           chatRoomMessages_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000002);
+          bitField0_ = (bitField0_ & ~0x00000004);
         } else {
           chatRoomMessagesBuilder_.clear();
         }
@@ -6901,15 +6951,15 @@ public final class History {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        if (chatRoomBuilder_ == null) {
-          result.chatRoom_ = chatRoom_;
-        } else {
-          result.chatRoom_ = chatRoomBuilder_.build();
+        result.roomName_ = roomName_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
         }
+        result.isPrivate_ = isPrivate_;
         if (chatRoomMessagesBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
             chatRoomMessages_ = java.util.Collections.unmodifiableList(chatRoomMessages_);
-            bitField0_ = (bitField0_ & ~0x00000002);
+            bitField0_ = (bitField0_ & ~0x00000004);
           }
           result.chatRoomMessages_ = chatRoomMessages_;
         } else {
@@ -6931,14 +6981,19 @@ public final class History {
 
       public Builder mergeFrom(History.GroupChat other) {
         if (other == History.GroupChat.getDefaultInstance()) return this;
-        if (other.hasChatRoom()) {
-          mergeChatRoom(other.getChatRoom());
+        if (other.hasRoomName()) {
+          bitField0_ |= 0x00000001;
+          roomName_ = other.roomName_;
+          onChanged();
+        }
+        if (other.hasIsPrivate()) {
+          setIsPrivate(other.getIsPrivate());
         }
         if (chatRoomMessagesBuilder_ == null) {
           if (!other.chatRoomMessages_.isEmpty()) {
             if (chatRoomMessages_.isEmpty()) {
               chatRoomMessages_ = other.chatRoomMessages_;
-              bitField0_ = (bitField0_ & ~0x00000002);
+              bitField0_ = (bitField0_ & ~0x00000004);
             } else {
               ensureChatRoomMessagesIsMutable();
               chatRoomMessages_.addAll(other.chatRoomMessages_);
@@ -6951,7 +7006,7 @@ public final class History {
               chatRoomMessagesBuilder_.dispose();
               chatRoomMessagesBuilder_ = null;
               chatRoomMessages_ = other.chatRoomMessages_;
-              bitField0_ = (bitField0_ & ~0x00000002);
+              bitField0_ = (bitField0_ & ~0x00000004);
               chatRoomMessagesBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getChatRoomMessagesFieldBuilder() : null;
@@ -6965,11 +7020,11 @@ public final class History {
       }
 
       public final boolean isInitialized() {
-        if (!hasChatRoom()) {
+        if (!hasRoomName()) {
           
           return false;
         }
-        if (!getChatRoom().isInitialized()) {
+        if (!hasIsPrivate()) {
           
           return false;
         }
@@ -6991,914 +7046,6 @@ public final class History {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (History.GroupChat) e.getUnfinishedMessage();
-          throw e;
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      // required .ChatRoom chatRoom = 1;
-      private History.ChatRoom chatRoom_ = History.ChatRoom.getDefaultInstance();
-      private com.google.protobuf.SingleFieldBuilder<
-          History.ChatRoom, History.ChatRoom.Builder, History.ChatRoomOrBuilder> chatRoomBuilder_;
-      /**
-       * <code>required .ChatRoom chatRoom = 1;</code>
-       */
-      public boolean hasChatRoom() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>required .ChatRoom chatRoom = 1;</code>
-       */
-      public History.ChatRoom getChatRoom() {
-        if (chatRoomBuilder_ == null) {
-          return chatRoom_;
-        } else {
-          return chatRoomBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>required .ChatRoom chatRoom = 1;</code>
-       */
-      public Builder setChatRoom(History.ChatRoom value) {
-        if (chatRoomBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          chatRoom_ = value;
-          onChanged();
-        } else {
-          chatRoomBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      /**
-       * <code>required .ChatRoom chatRoom = 1;</code>
-       */
-      public Builder setChatRoom(
-          History.ChatRoom.Builder builderForValue) {
-        if (chatRoomBuilder_ == null) {
-          chatRoom_ = builderForValue.build();
-          onChanged();
-        } else {
-          chatRoomBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      /**
-       * <code>required .ChatRoom chatRoom = 1;</code>
-       */
-      public Builder mergeChatRoom(History.ChatRoom value) {
-        if (chatRoomBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              chatRoom_ != History.ChatRoom.getDefaultInstance()) {
-            chatRoom_ =
-              History.ChatRoom.newBuilder(chatRoom_).mergeFrom(value).buildPartial();
-          } else {
-            chatRoom_ = value;
-          }
-          onChanged();
-        } else {
-          chatRoomBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000001;
-        return this;
-      }
-      /**
-       * <code>required .ChatRoom chatRoom = 1;</code>
-       */
-      public Builder clearChatRoom() {
-        if (chatRoomBuilder_ == null) {
-          chatRoom_ = History.ChatRoom.getDefaultInstance();
-          onChanged();
-        } else {
-          chatRoomBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
-        return this;
-      }
-      /**
-       * <code>required .ChatRoom chatRoom = 1;</code>
-       */
-      public History.ChatRoom.Builder getChatRoomBuilder() {
-        bitField0_ |= 0x00000001;
-        onChanged();
-        return getChatRoomFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>required .ChatRoom chatRoom = 1;</code>
-       */
-      public History.ChatRoomOrBuilder getChatRoomOrBuilder() {
-        if (chatRoomBuilder_ != null) {
-          return chatRoomBuilder_.getMessageOrBuilder();
-        } else {
-          return chatRoom_;
-        }
-      }
-      /**
-       * <code>required .ChatRoom chatRoom = 1;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilder<
-          History.ChatRoom, History.ChatRoom.Builder, History.ChatRoomOrBuilder> 
-          getChatRoomFieldBuilder() {
-        if (chatRoomBuilder_ == null) {
-          chatRoomBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              History.ChatRoom, History.ChatRoom.Builder, History.ChatRoomOrBuilder>(
-                  chatRoom_,
-                  getParentForChildren(),
-                  isClean());
-          chatRoom_ = null;
-        }
-        return chatRoomBuilder_;
-      }
-
-      // repeated .RoomMessage chatRoomMessages = 2;
-      private java.util.List<History.RoomMessage> chatRoomMessages_ =
-        java.util.Collections.emptyList();
-      private void ensureChatRoomMessagesIsMutable() {
-        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-          chatRoomMessages_ = new java.util.ArrayList<History.RoomMessage>(chatRoomMessages_);
-          bitField0_ |= 0x00000002;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilder<
-          History.RoomMessage, History.RoomMessage.Builder, History.RoomMessageOrBuilder> chatRoomMessagesBuilder_;
-
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public java.util.List<History.RoomMessage> getChatRoomMessagesList() {
-        if (chatRoomMessagesBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(chatRoomMessages_);
-        } else {
-          return chatRoomMessagesBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public int getChatRoomMessagesCount() {
-        if (chatRoomMessagesBuilder_ == null) {
-          return chatRoomMessages_.size();
-        } else {
-          return chatRoomMessagesBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public History.RoomMessage getChatRoomMessages(int index) {
-        if (chatRoomMessagesBuilder_ == null) {
-          return chatRoomMessages_.get(index);
-        } else {
-          return chatRoomMessagesBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public Builder setChatRoomMessages(
-          int index, History.RoomMessage value) {
-        if (chatRoomMessagesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureChatRoomMessagesIsMutable();
-          chatRoomMessages_.set(index, value);
-          onChanged();
-        } else {
-          chatRoomMessagesBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public Builder setChatRoomMessages(
-          int index, History.RoomMessage.Builder builderForValue) {
-        if (chatRoomMessagesBuilder_ == null) {
-          ensureChatRoomMessagesIsMutable();
-          chatRoomMessages_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          chatRoomMessagesBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public Builder addChatRoomMessages(History.RoomMessage value) {
-        if (chatRoomMessagesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureChatRoomMessagesIsMutable();
-          chatRoomMessages_.add(value);
-          onChanged();
-        } else {
-          chatRoomMessagesBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public Builder addChatRoomMessages(
-          int index, History.RoomMessage value) {
-        if (chatRoomMessagesBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureChatRoomMessagesIsMutable();
-          chatRoomMessages_.add(index, value);
-          onChanged();
-        } else {
-          chatRoomMessagesBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public Builder addChatRoomMessages(
-          History.RoomMessage.Builder builderForValue) {
-        if (chatRoomMessagesBuilder_ == null) {
-          ensureChatRoomMessagesIsMutable();
-          chatRoomMessages_.add(builderForValue.build());
-          onChanged();
-        } else {
-          chatRoomMessagesBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public Builder addChatRoomMessages(
-          int index, History.RoomMessage.Builder builderForValue) {
-        if (chatRoomMessagesBuilder_ == null) {
-          ensureChatRoomMessagesIsMutable();
-          chatRoomMessages_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          chatRoomMessagesBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public Builder addAllChatRoomMessages(
-          java.lang.Iterable<? extends History.RoomMessage> values) {
-        if (chatRoomMessagesBuilder_ == null) {
-          ensureChatRoomMessagesIsMutable();
-          super.addAll(values, chatRoomMessages_);
-          onChanged();
-        } else {
-          chatRoomMessagesBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public Builder clearChatRoomMessages() {
-        if (chatRoomMessagesBuilder_ == null) {
-          chatRoomMessages_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000002);
-          onChanged();
-        } else {
-          chatRoomMessagesBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public Builder removeChatRoomMessages(int index) {
-        if (chatRoomMessagesBuilder_ == null) {
-          ensureChatRoomMessagesIsMutable();
-          chatRoomMessages_.remove(index);
-          onChanged();
-        } else {
-          chatRoomMessagesBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public History.RoomMessage.Builder getChatRoomMessagesBuilder(
-          int index) {
-        return getChatRoomMessagesFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public History.RoomMessageOrBuilder getChatRoomMessagesOrBuilder(
-          int index) {
-        if (chatRoomMessagesBuilder_ == null) {
-          return chatRoomMessages_.get(index);  } else {
-          return chatRoomMessagesBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public java.util.List<? extends History.RoomMessageOrBuilder> 
-           getChatRoomMessagesOrBuilderList() {
-        if (chatRoomMessagesBuilder_ != null) {
-          return chatRoomMessagesBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(chatRoomMessages_);
-        }
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public History.RoomMessage.Builder addChatRoomMessagesBuilder() {
-        return getChatRoomMessagesFieldBuilder().addBuilder(
-            History.RoomMessage.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public History.RoomMessage.Builder addChatRoomMessagesBuilder(
-          int index) {
-        return getChatRoomMessagesFieldBuilder().addBuilder(
-            index, History.RoomMessage.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .RoomMessage chatRoomMessages = 2;</code>
-       */
-      public java.util.List<History.RoomMessage.Builder> 
-           getChatRoomMessagesBuilderList() {
-        return getChatRoomMessagesFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilder<
-          History.RoomMessage, History.RoomMessage.Builder, History.RoomMessageOrBuilder> 
-          getChatRoomMessagesFieldBuilder() {
-        if (chatRoomMessagesBuilder_ == null) {
-          chatRoomMessagesBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              History.RoomMessage, History.RoomMessage.Builder, History.RoomMessageOrBuilder>(
-                  chatRoomMessages_,
-                  ((bitField0_ & 0x00000002) == 0x00000002),
-                  getParentForChildren(),
-                  isClean());
-          chatRoomMessages_ = null;
-        }
-        return chatRoomMessagesBuilder_;
-      }
-
-      // @@protoc_insertion_point(builder_scope:GroupChat)
-    }
-
-    static {
-      defaultInstance = new GroupChat(true);
-      defaultInstance.initFields();
-    }
-
-    // @@protoc_insertion_point(class_scope:GroupChat)
-  }
-
-  public interface ChatRoomOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-
-    // required string roomName = 1;
-    /**
-     * <code>required string roomName = 1;</code>
-     */
-    boolean hasRoomName();
-    /**
-     * <code>required string roomName = 1;</code>
-     */
-    java.lang.String getRoomName();
-    /**
-     * <code>required string roomName = 1;</code>
-     */
-    com.google.protobuf.ByteString
-        getRoomNameBytes();
-
-    // required string timeOfLastGET = 2 [default = "0"];
-    /**
-     * <code>required string timeOfLastGET = 2 [default = "0"];</code>
-     */
-    boolean hasTimeOfLastGET();
-    /**
-     * <code>required string timeOfLastGET = 2 [default = "0"];</code>
-     */
-    java.lang.String getTimeOfLastGET();
-    /**
-     * <code>required string timeOfLastGET = 2 [default = "0"];</code>
-     */
-    com.google.protobuf.ByteString
-        getTimeOfLastGETBytes();
-
-    // required bool isPrivate = 3;
-    /**
-     * <code>required bool isPrivate = 3;</code>
-     */
-    boolean hasIsPrivate();
-    /**
-     * <code>required bool isPrivate = 3;</code>
-     */
-    boolean getIsPrivate();
-  }
-  /**
-   * Protobuf type {@code ChatRoom}
-   */
-  public static final class ChatRoom extends
-      com.google.protobuf.GeneratedMessage
-      implements ChatRoomOrBuilder {
-    // Use ChatRoom.newBuilder() to construct.
-    private ChatRoom(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-      super(builder);
-      this.unknownFields = builder.getUnknownFields();
-    }
-    private ChatRoom(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-    private static final ChatRoom defaultInstance;
-    public static ChatRoom getDefaultInstance() {
-      return defaultInstance;
-    }
-
-    public ChatRoom getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-
-    private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-      return this.unknownFields;
-    }
-    private ChatRoom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      initFields();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 10: {
-              bitField0_ |= 0x00000001;
-              roomName_ = input.readBytes();
-              break;
-            }
-            case 18: {
-              bitField0_ |= 0x00000002;
-              timeOfLastGET_ = input.readBytes();
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000004;
-              isPrivate_ = input.readBool();
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e.getMessage()).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return History.internal_static_ChatRoom_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return History.internal_static_ChatRoom_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              History.ChatRoom.class, History.ChatRoom.Builder.class);
-    }
-
-    public static com.google.protobuf.Parser<ChatRoom> PARSER =
-        new com.google.protobuf.AbstractParser<ChatRoom>() {
-      public ChatRoom parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new ChatRoom(input, extensionRegistry);
-      }
-    };
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ChatRoom> getParserForType() {
-      return PARSER;
-    }
-
-    private int bitField0_;
-    // required string roomName = 1;
-    public static final int ROOMNAME_FIELD_NUMBER = 1;
-    private java.lang.Object roomName_;
-    /**
-     * <code>required string roomName = 1;</code>
-     */
-    public boolean hasRoomName() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>required string roomName = 1;</code>
-     */
-    public java.lang.String getRoomName() {
-      java.lang.Object ref = roomName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          roomName_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string roomName = 1;</code>
-     */
-    public com.google.protobuf.ByteString
-        getRoomNameBytes() {
-      java.lang.Object ref = roomName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        roomName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // required string timeOfLastGET = 2 [default = "0"];
-    public static final int TIMEOFLASTGET_FIELD_NUMBER = 2;
-    private java.lang.Object timeOfLastGET_;
-    /**
-     * <code>required string timeOfLastGET = 2 [default = "0"];</code>
-     */
-    public boolean hasTimeOfLastGET() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>required string timeOfLastGET = 2 [default = "0"];</code>
-     */
-    public java.lang.String getTimeOfLastGET() {
-      java.lang.Object ref = timeOfLastGET_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          timeOfLastGET_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string timeOfLastGET = 2 [default = "0"];</code>
-     */
-    public com.google.protobuf.ByteString
-        getTimeOfLastGETBytes() {
-      java.lang.Object ref = timeOfLastGET_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        timeOfLastGET_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    // required bool isPrivate = 3;
-    public static final int ISPRIVATE_FIELD_NUMBER = 3;
-    private boolean isPrivate_;
-    /**
-     * <code>required bool isPrivate = 3;</code>
-     */
-    public boolean hasIsPrivate() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>required bool isPrivate = 3;</code>
-     */
-    public boolean getIsPrivate() {
-      return isPrivate_;
-    }
-
-    private void initFields() {
-      roomName_ = "";
-      timeOfLastGET_ = "0";
-      isPrivate_ = false;
-    }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-
-      if (!hasRoomName()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasTimeOfLastGET()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasIsPrivate()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getRoomNameBytes());
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getTimeOfLastGETBytes());
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBool(3, isPrivate_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getRoomNameBytes());
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, getTimeOfLastGETBytes());
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, isPrivate_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
-    public static History.ChatRoom parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static History.ChatRoom parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static History.ChatRoom parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static History.ChatRoom parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static History.ChatRoom parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static History.ChatRoom parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-    public static History.ChatRoom parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
-    }
-    public static History.ChatRoom parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
-    }
-    public static History.ChatRoom parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static History.ChatRoom parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(History.ChatRoom prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code ChatRoom}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements History.ChatRoomOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return History.internal_static_ChatRoom_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return History.internal_static_ChatRoom_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                History.ChatRoom.class, History.ChatRoom.Builder.class);
-      }
-
-      // Construct using History.ChatRoom.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        }
-      }
-      private static Builder create() {
-        return new Builder();
-      }
-
-      public Builder clear() {
-        super.clear();
-        roomName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
-        timeOfLastGET_ = "0";
-        bitField0_ = (bitField0_ & ~0x00000002);
-        isPrivate_ = false;
-        bitField0_ = (bitField0_ & ~0x00000004);
-        return this;
-      }
-
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return History.internal_static_ChatRoom_descriptor;
-      }
-
-      public History.ChatRoom getDefaultInstanceForType() {
-        return History.ChatRoom.getDefaultInstance();
-      }
-
-      public History.ChatRoom build() {
-        History.ChatRoom result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public History.ChatRoom buildPartial() {
-        History.ChatRoom result = new History.ChatRoom(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.roomName_ = roomName_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        result.timeOfLastGET_ = timeOfLastGET_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
-        result.isPrivate_ = isPrivate_;
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof History.ChatRoom) {
-          return mergeFrom((History.ChatRoom)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(History.ChatRoom other) {
-        if (other == History.ChatRoom.getDefaultInstance()) return this;
-        if (other.hasRoomName()) {
-          bitField0_ |= 0x00000001;
-          roomName_ = other.roomName_;
-          onChanged();
-        }
-        if (other.hasTimeOfLastGET()) {
-          bitField0_ |= 0x00000002;
-          timeOfLastGET_ = other.timeOfLastGET_;
-          onChanged();
-        }
-        if (other.hasIsPrivate()) {
-          setIsPrivate(other.getIsPrivate());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        if (!hasRoomName()) {
-          
-          return false;
-        }
-        if (!hasTimeOfLastGET()) {
-          
-          return false;
-        }
-        if (!hasIsPrivate()) {
-          
-          return false;
-        }
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        History.ChatRoom parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (History.ChatRoom) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -7983,122 +7130,288 @@ public final class History {
         return this;
       }
 
-      // required string timeOfLastGET = 2 [default = "0"];
-      private java.lang.Object timeOfLastGET_ = "0";
+      // required bool isPrivate = 2;
+      private boolean isPrivate_ ;
       /**
-       * <code>required string timeOfLastGET = 2 [default = "0"];</code>
+       * <code>required bool isPrivate = 2;</code>
        */
-      public boolean hasTimeOfLastGET() {
+      public boolean hasIsPrivate() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required string timeOfLastGET = 2 [default = "0"];</code>
-       */
-      public java.lang.String getTimeOfLastGET() {
-        java.lang.Object ref = timeOfLastGET_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          timeOfLastGET_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>required string timeOfLastGET = 2 [default = "0"];</code>
-       */
-      public com.google.protobuf.ByteString
-          getTimeOfLastGETBytes() {
-        java.lang.Object ref = timeOfLastGET_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          timeOfLastGET_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string timeOfLastGET = 2 [default = "0"];</code>
-       */
-      public Builder setTimeOfLastGET(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        timeOfLastGET_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string timeOfLastGET = 2 [default = "0"];</code>
-       */
-      public Builder clearTimeOfLastGET() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        timeOfLastGET_ = getDefaultInstance().getTimeOfLastGET();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string timeOfLastGET = 2 [default = "0"];</code>
-       */
-      public Builder setTimeOfLastGETBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        timeOfLastGET_ = value;
-        onChanged();
-        return this;
-      }
-
-      // required bool isPrivate = 3;
-      private boolean isPrivate_ ;
-      /**
-       * <code>required bool isPrivate = 3;</code>
-       */
-      public boolean hasIsPrivate() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>required bool isPrivate = 3;</code>
+       * <code>required bool isPrivate = 2;</code>
        */
       public boolean getIsPrivate() {
         return isPrivate_;
       }
       /**
-       * <code>required bool isPrivate = 3;</code>
+       * <code>required bool isPrivate = 2;</code>
        */
       public Builder setIsPrivate(boolean value) {
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         isPrivate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required bool isPrivate = 3;</code>
+       * <code>required bool isPrivate = 2;</code>
        */
       public Builder clearIsPrivate() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000002);
         isPrivate_ = false;
         onChanged();
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:ChatRoom)
+      // repeated .RoomMessage chatRoomMessages = 3;
+      private java.util.List<History.RoomMessage> chatRoomMessages_ =
+        java.util.Collections.emptyList();
+      private void ensureChatRoomMessagesIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          chatRoomMessages_ = new java.util.ArrayList<History.RoomMessage>(chatRoomMessages_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          History.RoomMessage, History.RoomMessage.Builder, History.RoomMessageOrBuilder> chatRoomMessagesBuilder_;
+
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public java.util.List<History.RoomMessage> getChatRoomMessagesList() {
+        if (chatRoomMessagesBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(chatRoomMessages_);
+        } else {
+          return chatRoomMessagesBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public int getChatRoomMessagesCount() {
+        if (chatRoomMessagesBuilder_ == null) {
+          return chatRoomMessages_.size();
+        } else {
+          return chatRoomMessagesBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public History.RoomMessage getChatRoomMessages(int index) {
+        if (chatRoomMessagesBuilder_ == null) {
+          return chatRoomMessages_.get(index);
+        } else {
+          return chatRoomMessagesBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public Builder setChatRoomMessages(
+          int index, History.RoomMessage value) {
+        if (chatRoomMessagesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureChatRoomMessagesIsMutable();
+          chatRoomMessages_.set(index, value);
+          onChanged();
+        } else {
+          chatRoomMessagesBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public Builder setChatRoomMessages(
+          int index, History.RoomMessage.Builder builderForValue) {
+        if (chatRoomMessagesBuilder_ == null) {
+          ensureChatRoomMessagesIsMutable();
+          chatRoomMessages_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          chatRoomMessagesBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public Builder addChatRoomMessages(History.RoomMessage value) {
+        if (chatRoomMessagesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureChatRoomMessagesIsMutable();
+          chatRoomMessages_.add(value);
+          onChanged();
+        } else {
+          chatRoomMessagesBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public Builder addChatRoomMessages(
+          int index, History.RoomMessage value) {
+        if (chatRoomMessagesBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureChatRoomMessagesIsMutable();
+          chatRoomMessages_.add(index, value);
+          onChanged();
+        } else {
+          chatRoomMessagesBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public Builder addChatRoomMessages(
+          History.RoomMessage.Builder builderForValue) {
+        if (chatRoomMessagesBuilder_ == null) {
+          ensureChatRoomMessagesIsMutable();
+          chatRoomMessages_.add(builderForValue.build());
+          onChanged();
+        } else {
+          chatRoomMessagesBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public Builder addChatRoomMessages(
+          int index, History.RoomMessage.Builder builderForValue) {
+        if (chatRoomMessagesBuilder_ == null) {
+          ensureChatRoomMessagesIsMutable();
+          chatRoomMessages_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          chatRoomMessagesBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public Builder addAllChatRoomMessages(
+          java.lang.Iterable<? extends History.RoomMessage> values) {
+        if (chatRoomMessagesBuilder_ == null) {
+          ensureChatRoomMessagesIsMutable();
+          super.addAll(values, chatRoomMessages_);
+          onChanged();
+        } else {
+          chatRoomMessagesBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public Builder clearChatRoomMessages() {
+        if (chatRoomMessagesBuilder_ == null) {
+          chatRoomMessages_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onChanged();
+        } else {
+          chatRoomMessagesBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public Builder removeChatRoomMessages(int index) {
+        if (chatRoomMessagesBuilder_ == null) {
+          ensureChatRoomMessagesIsMutable();
+          chatRoomMessages_.remove(index);
+          onChanged();
+        } else {
+          chatRoomMessagesBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public History.RoomMessage.Builder getChatRoomMessagesBuilder(
+          int index) {
+        return getChatRoomMessagesFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public History.RoomMessageOrBuilder getChatRoomMessagesOrBuilder(
+          int index) {
+        if (chatRoomMessagesBuilder_ == null) {
+          return chatRoomMessages_.get(index);  } else {
+          return chatRoomMessagesBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public java.util.List<? extends History.RoomMessageOrBuilder> 
+           getChatRoomMessagesOrBuilderList() {
+        if (chatRoomMessagesBuilder_ != null) {
+          return chatRoomMessagesBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(chatRoomMessages_);
+        }
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public History.RoomMessage.Builder addChatRoomMessagesBuilder() {
+        return getChatRoomMessagesFieldBuilder().addBuilder(
+            History.RoomMessage.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public History.RoomMessage.Builder addChatRoomMessagesBuilder(
+          int index) {
+        return getChatRoomMessagesFieldBuilder().addBuilder(
+            index, History.RoomMessage.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .RoomMessage chatRoomMessages = 3;</code>
+       */
+      public java.util.List<History.RoomMessage.Builder> 
+           getChatRoomMessagesBuilderList() {
+        return getChatRoomMessagesFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          History.RoomMessage, History.RoomMessage.Builder, History.RoomMessageOrBuilder> 
+          getChatRoomMessagesFieldBuilder() {
+        if (chatRoomMessagesBuilder_ == null) {
+          chatRoomMessagesBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              History.RoomMessage, History.RoomMessage.Builder, History.RoomMessageOrBuilder>(
+                  chatRoomMessages_,
+                  ((bitField0_ & 0x00000004) == 0x00000004),
+                  getParentForChildren(),
+                  isClean());
+          chatRoomMessages_ = null;
+        }
+        return chatRoomMessagesBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:GroupChat)
     }
 
     static {
-      defaultInstance = new ChatRoom(true);
+      defaultInstance = new GroupChat(true);
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:ChatRoom)
+    // @@protoc_insertion_point(class_scope:GroupChat)
   }
 
   public interface RoomMessageOrBuilder
@@ -9038,11 +8351,6 @@ public final class History {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_GroupChat_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_ChatRoom_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_ChatRoom_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_RoomMessage_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -9072,13 +8380,12 @@ public final class History {
       "Address\030\002 \002(\t\022\023\n\013fromAddress\030\003 \002(\t\022\022\n\nse" +
       "nderName\030\004 \002(\t\022\014\n\004body\030\005 \002(\t\022\017\n\007subject\030" +
       "\006 \002(\t\022\021\n\ttimestamp\030\007 \002(\004\")\n\rGroupChatLis" +
-      "t\022\030\n\004chat\030\001 \003(\0132\n.GroupChat\"P\n\tGroupChat" +
-      "\022\033\n\010chatRoom\030\001 \002(\0132\t.ChatRoom\022&\n\020chatRoo" +
-      "mMessages\030\002 \003(\0132\014.RoomMessage\"I\n\010ChatRoo" +
-      "m\022\020\n\010roomName\030\001 \002(\t\022\030\n\rtimeOfLastGET\030\002 \002",
-      "(\t:\0010\022\021\n\tisPrivate\030\003 \002(\010\"\\\n\013RoomMessage\022" +
-      "\025\n\rsenderAddress\030\001 \002(\t\022\022\n\nsenderName\030\002 \002" +
-      "(\t\022\017\n\007content\030\003 \002(\t\022\021\n\ttimestamp\030\004 \002(\004"
+      "t\022\030\n\004chat\030\001 \003(\0132\n.GroupChat\"X\n\tGroupChat" +
+      "\022\020\n\010roomName\030\001 \002(\t\022\021\n\tisPrivate\030\002 \002(\010\022&\n" +
+      "\020chatRoomMessages\030\003 \003(\0132\014.RoomMessage\"\\\n" +
+      "\013RoomMessage\022\025\n\rsenderAddress\030\001 \002(\t\022\022\n\ns",
+      "enderName\030\002 \002(\t\022\017\n\007content\030\003 \002(\t\022\021\n\ttime" +
+      "stamp\030\004 \002(\004"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -9132,15 +8439,9 @@ public final class History {
           internal_static_GroupChat_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_GroupChat_descriptor,
-              new java.lang.String[] { "ChatRoom", "ChatRoomMessages", });
-          internal_static_ChatRoom_descriptor =
-            getDescriptor().getMessageTypes().get(8);
-          internal_static_ChatRoom_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_ChatRoom_descriptor,
-              new java.lang.String[] { "RoomName", "TimeOfLastGET", "IsPrivate", });
+              new java.lang.String[] { "RoomName", "IsPrivate", "ChatRoomMessages", });
           internal_static_RoomMessage_descriptor =
-            getDescriptor().getMessageTypes().get(9);
+            getDescriptor().getMessageTypes().get(8);
           internal_static_RoomMessage_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_RoomMessage_descriptor,

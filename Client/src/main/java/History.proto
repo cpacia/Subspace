@@ -42,14 +42,9 @@ message GroupChatList{
 }
 
 message GroupChat {
-    required ChatRoom chatRoom            = 1;
-    repeated RoomMessage chatRoomMessages = 2;
-}
-
-message ChatRoom{
-    required string roomName      = 1;
-    required string timeOfLastGET = 2 [default = "0"];
-    required bool   isPrivate     = 3;
+    required string roomName              = 1;
+    required bool isPrivate               = 2;
+    repeated RoomMessage chatRoomMessages = 3;
 }
 
 message RoomMessage{

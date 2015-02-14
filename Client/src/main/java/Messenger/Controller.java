@@ -143,7 +143,6 @@ public class Controller {
         emailList.setItems(emailListData);
         sentEmailListData.add(chatInit);
         sentEmailList.setItems(emailListData);
-        chatRoomListData.add(chatInit);
         chatRoomList.setItems(chatRoomListData);
         writer = new FileWriter();
         loadChatConversations();
@@ -233,6 +232,35 @@ public class Controller {
                 }
             }
         });
+        chatRoomList.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent click) {
+                if (click.getClickCount() == 2) {
+                    int index = chatRoomList.getSelectionModel().getSelectedIndex();
+                    Parent root;
+                    try {
+                        URL location = getClass().getResource("chatroom.fxml");
+                        FXMLLoader loader = new FXMLLoader(location);
+                        AnchorPane addressUI = (AnchorPane) loader.load();
+                        Stage stage = new Stage();
+                        stage.setTitle(writer.getChatRooms().get(index).getRoomName());
+                        stage.setX(700);
+                        stage.setY(200);
+                        stage.setScene(new Scene(addressUI, 650, 450));
+                        stage.setResizable(false);
+                        ChatRoomController controller = (ChatRoomController) loader.getController();
+                        controller.setStage(stage);
+                        controller.setChatRoom(index);
+                        String file = Main.class.getResource("gui.css").toString();
+                        stage.getScene().getStylesheets().add(file);
+                        stage.show();
+
+                    } catch (IOException e2) {
+                        e2.printStackTrace();
+                    }
+                }
+            }
+        });
         MenuItem delete = new MenuItem("Delete");
         ContextMenu contextMenu = new ContextMenu(delete);
         chatList.setCellFactory(ContextMenuListCell.forListView(contextMenu));
@@ -270,6 +298,21 @@ public class Controller {
                     updateEmailListView();
                     newEmailPane.setVisible(true);
                     emailContentPane.setVisible(false);
+                }
+            }
+        });
+        MenuItem chatroomdelete = new MenuItem("Delete");
+        ContextMenu chatRoomContextMenu = new ContextMenu(chatroomdelete);
+        chatRoomList.setCellFactory(ContextMenuListCell.forListView(chatRoomContextMenu));
+        chatroomdelete.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                if (chatRoomList.getSelectionModel().getSelectedIndex()<= writer.getNumberOfChatRooms()-1) {
+                    String roomname = writer.getChatRooms().get(chatRoomList.getSelectionModel()
+                            .getSelectedIndex()).getRoomName();
+                    writer.deleteChatRoom(chatRoomList.getSelectionModel().getSelectedIndex());
+                    KeyRing.Key k = writer.getKeyFromName(roomname);
+                    writer.deleteKey(k.getAddress());
+                    updateChatRoomListView();
                 }
             }
         });
@@ -831,9 +874,14 @@ public class Controller {
         chatList.setItems(chatListData);
     }
 
-    private void loadChatRooms(){
-        for (History.GroupChat g : writer.getChatRooms()){
-            addChatRoom(g.getChatRoom().getRoomName());
+    private void loadChatRooms() {
+        if (writer.getNumberOfChatRooms()==0){
+            chatRoomListData.add(chatInit);
+        }
+        else {
+            for (History.GroupChat g : writer.getChatRooms()) {
+                addChatRoom(g.getRoomName());
+            }
         }
     }
 
@@ -947,6 +995,9 @@ public class Controller {
                                 m.getDecryptedMessage(), m.getSubject(), m.getTimeStamp(), false);
                         addToEmailListView(m.getFromAddress(), m.getSenderName(), m.getSubject(), true);
                         updateEmailListView();
+                    } else if (m.getMessageType() == Payload.MessageType.CHATROOM){
+                        String roomName = writer.getNameFromAddress(m.getToAddress().toString());
+                        writer.addChatRoomMessage(roomName, m);
                     }
                 }
             });
@@ -973,6 +1024,11 @@ public class Controller {
     private void updateChatListView(){
         chatList.getItems().clear();
         loadChatConversations();
+    }
+
+    private void updateChatRoomListView(){
+        chatRoomList.getItems().clear();
+        loadChatRooms();
     }
 
     private void updateEmailListView(){
