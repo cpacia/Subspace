@@ -37,6 +37,7 @@ import org.bouncycastle.crypto.generators.HKDFBytesGenerator;
 import org.bouncycastle.crypto.params.HKDFParameters;
 import org.controlsfx.control.Notifications;
 import org.controlsfx.control.PopOver;
+import org.controlsfx.dialog.DialogStyle;
 import org.controlsfx.dialog.Dialogs;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
@@ -293,6 +294,7 @@ public class ChatRoomController {
                 Dialogs.create()
                         .owner(stage)
                         .title("Error")
+                        .style(DialogStyle.CROSS_PLATFORM_DARK)
                         .masthead("You entered an invalid room key.")
                         .message("Room keys must be at least 128 bits and in Base58Check format.")
                         .showError();
@@ -390,15 +392,25 @@ public class ChatRoomController {
     }
 
     private void sendMessage() {
-        String fromaddr = addressChoiceBox.getValue().toString().substring(
-                addressChoiceBox.getValue().toString().indexOf("<") + 1,
-                addressChoiceBox.getValue().toString().length() - 1);
-        KeyRing.Key fromKey = fileWriter.getKeyFromAddress(fromaddr);
-        showMessage(txtArea.getText(), fromKey.getName(), fromKey.getAddress(), fromKey, true);
-        Message m = new Message(roomAddress, txtArea.getText(), fromKey,
-                Payload.MessageType.CHATROOM, null);
-        m.send();
-        txtArea.clear();
+        if (RateLimiter.tryAcquire(15)) {
+            String fromaddr = addressChoiceBox.getValue().toString().substring(
+                    addressChoiceBox.getValue().toString().indexOf("<") + 1,
+                    addressChoiceBox.getValue().toString().length() - 1);
+            KeyRing.Key fromKey = fileWriter.getKeyFromAddress(fromaddr);
+            showMessage(txtArea.getText(), fromKey.getName(), fromKey.getAddress(), fromKey, true);
+            Message m = new Message(roomAddress, txtArea.getText(), fromKey,
+                    Payload.MessageType.CHATROOM, null);
+            m.send();
+            txtArea.clear();
+        } else {
+            Dialogs.create()
+                    .owner(stage)
+                    .title("Error")
+                    .style(DialogStyle.CROSS_PLATFORM_DARK)
+                    .masthead("You're doing that too fast.")
+                    .message("Slow down bub.")
+                    .showError();
+        }
     }
 
     private void showMessage(String content, String name, String address,

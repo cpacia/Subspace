@@ -26,6 +26,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.bitcoinj.core.AddressFormatException;
+import org.controlsfx.dialog.DialogStyle;
+import org.controlsfx.dialog.Dialogs;
 
 import java.awt.*;
 import java.awt.Image;
@@ -240,31 +242,39 @@ public class ChatWindowController {
     }
 
     void sendMessage(){
-        Message m;
-        if (paneOne.isVisible()){
-            String fromaddr = cbAddrs.getValue().toString().substring(
-                    cbAddrs.getValue().toString().indexOf("<")+1,
-                    cbAddrs.getValue().toString().length()-1);
-            this.fromAddress = fromaddr;
-            setupPane2();
-            m = new Message(toAddress, txtArea1.getText(), fromKey, Payload.MessageType.CHAT, null);
-            showOutGoingMessage(txtArea1.getText());
+        if (RateLimiter.tryAcquire(15)) {
+            Message m;
+            if (paneOne.isVisible()) {
+                String fromaddr = cbAddrs.getValue().toString().substring(
+                        cbAddrs.getValue().toString().indexOf("<") + 1,
+                        cbAddrs.getValue().toString().length() - 1);
+                this.fromAddress = fromaddr;
+                setupPane2();
+                m = new Message(toAddress, txtArea1.getText(), fromKey, Payload.MessageType.CHAT, null);
+                showOutGoingMessage(txtArea1.getText());
+            } else {
+                m = new Message(toAddress, txtArea2.getText(), fromKey, Payload.MessageType.CHAT, null);
+                showOutGoingMessage(txtArea2.getText());
+            }
+            m.send();
+            if (!fileWriter.conversationExists(conversationID)) {
+                fileWriter.newChatConversation(conversationID, m,
+                        "", m.getToAddress().toString(), m.getFromAddress(), true);
+            } else {
+                fileWriter.addChatMessage(conversationID, m, true);
+            }
+            MessageListener l = Main.controller.getListener();
+            l.onMessageSent(m);
+            txtArea2.clear();
+        } else {
+            Dialogs.create()
+                    .owner(stage)
+                    .title("Error")
+                    .style(DialogStyle.CROSS_PLATFORM_DARK)
+                    .masthead("You're doing that too fast.")
+                    .message("Slow down bub.")
+                    .showError();
         }
-        else {
-            m = new Message(toAddress, txtArea2.getText(), fromKey, Payload.MessageType.CHAT, null);
-            showOutGoingMessage(txtArea2.getText());
-        }
-        m.send();
-        if (!fileWriter.conversationExists(conversationID)) {
-            fileWriter.newChatConversation(conversationID, m,
-                    "", m.getToAddress().toString(), m.getFromAddress(), true);
-        }
-        else {
-            fileWriter.addChatMessage(conversationID, m, true);
-        }
-        MessageListener l = Main.controller.getListener();
-        l.onMessageSent(m);
-        txtArea2.clear();
     }
 
     @FXML

@@ -282,6 +282,16 @@ public class AddressWindowController {
 
     @FXML
     void newContact(ActionEvent e) {
+        if (RateLimiter.tryAcquire(15)){
+
+        } else {
+            Dialogs.create()
+                    .owner(stage)
+                    .title("Error")
+                    .style(DialogStyle.CROSS_PLATFORM_DARK)
+                    .masthead("Ooops, looks like you entered an invalid private key")
+                    .showError();
+        }
     }
 
     @FXML
