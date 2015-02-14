@@ -311,6 +311,7 @@ public class Controller {
                             .getSelectedIndex()).getRoomName();
                     writer.deleteChatRoom(chatRoomList.getSelectionModel().getSelectedIndex());
                     KeyRing.Key k = writer.getKeyFromName(roomname);
+                    Main.retriever.closeDeletedAddressThread(k.getAddress());
                     writer.deleteKey(k.getAddress());
                     updateChatRoomListView();
                 }
@@ -1053,7 +1054,11 @@ public class Controller {
         if (isSentFromMe) {
             String n = writer.getNameFromConversation(conversationID);
             if (n.equals("")) {
-                lblName = new Label(theirAddress);
+                if (writer.contactExists(theirAddress)) {
+                    lblName = new Label(writer.getNameForContact(theirAddress));
+                } else {
+                    lblName = new Label(theirAddress);
+                }
             } else {
                 lblName = new Label(n);
             }

@@ -334,19 +334,31 @@ public class FileWriter {
 
     public boolean hasKeys(){
         KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
-        int count = b.getKeyCount();
-        if (count>0){return true;}
-        else {return false;}
+        for (KeyRing.Key k : b.getKeyList()){
+            if (!k.getName().substring(0,1).equals("#")) return true;
+        }
+        return false;
     }
 
     public List<KeyRing.Key> getSavedKeys(){
+        KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
+        List<KeyRing.Key> keys = new ArrayList<>();
+        for (KeyRing.Key k : b.getKeyList()){
+            if (!k.getName().substring(0,1).equals("#")){
+                keys.add(k);
+            }
+        }
+        return keys;
+    }
+
+    public List<KeyRing.Key> getAllKeys(){
         KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
         return b.getKeyList();
     }
 
     public boolean keyExists(String address){
         for (KeyRing.Key k : getSavedKeys()){
-            if (k.getAddress().equals(address))return true;
+            if (k.getAddress().equals(address)){return true;}
         }
         return false;
     }
@@ -594,6 +606,7 @@ public class FileWriter {
         History.GroupChatList.Builder b = getGroupChatFileBuilder();
         return b.getChatList();
     }
+
     public int getNumberOfChatRooms(){
         History.GroupChatList.Builder b = getGroupChatFileBuilder();
         return b.getChatList().size();
@@ -604,6 +617,16 @@ public class FileWriter {
         b.removeChat(index);
         try {writeGroupChatsToFile(b);}
         catch (IOException e){e.printStackTrace();}
+    }
+
+    public List<History.RoomMessage> getChatRoomMessages(String roomName){
+        History.GroupChatList.Builder b = getGroupChatFileBuilder();
+        for (History.GroupChat g : b.getChatList()){
+            if (g.getRoomName().equals(roomName)){
+                return g.getChatRoomMessagesList();
+            }
+        }
+        return null;
     }
 
 }

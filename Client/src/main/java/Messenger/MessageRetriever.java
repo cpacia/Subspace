@@ -26,6 +26,7 @@ public class MessageRetriever {
     FileWriter writer = new FileWriter();
     private List<Thread> threads = new ArrayList<>();
     private List<HttpURLConnection> connections = new ArrayList<>();
+    private List<String> deletedAddresses = new ArrayList<>();
 
     public MessageRetriever(List<KeyRing.Key> keys){
         this.keys = keys;
@@ -79,6 +80,10 @@ public class MessageRetriever {
             try {
                 resp = new JSONObject(response.toString());
             } catch (JSONException e){e.printStackTrace();}
+            if (deletedAddresses.contains(addr.toString())){
+                deletedAddresses.remove(addr.toString());
+                break;
+            }
             testMessages(addr, resp);
         }
     }
@@ -91,6 +96,10 @@ public class MessageRetriever {
                 resp = TorLib.getJSON(hostname, 8335, addr.getPrefix() + "?timestamp=" +
                         writer.getKeyFromAddress(addr.toString()).getTimeOfLastGET());
             } catch (JSONException | IOException | HttpException e){e.printStackTrace();}
+            if (deletedAddresses.contains(addr.toString())){
+                deletedAddresses.remove(addr.toString());
+                break;
+            }
             testMessages(addr, resp);
         }
     }
@@ -133,7 +142,8 @@ public class MessageRetriever {
                     if (name!=null){m.setSenderName(name);}
                 }
             }
-            if (!writer.contactExists(m.getFromAddress())) {
+            if (!writer.contactExists(m.getFromAddress()) && !writer.keyExists(m.getFromAddress())
+                    && !writer.keyExists(m.getToAddress().toString())) {
                 if (openname!=null) {
                     writer.addContact(m.getFromAddress(), m.getSenderName(), openname);
                 }
@@ -194,6 +204,10 @@ public class MessageRetriever {
 
         };
         new Thread(task).start();
+    }
+
+    public void closeDeletedAddressThread(String address){
+        this.deletedAddresses.add(address);
     }
 
 }

@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.*;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -38,10 +39,10 @@ import org.controlsfx.glyphfont.GlyphFontRegistry;
 
 import javax.annotation.Nullable;
 import java.awt.*;
-import java.awt.Insets;
 import java.io.File;
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.List;
 
 import static Messenger.Utils.easing.GuiUtils.*;
 
@@ -254,12 +255,9 @@ public class ChatRoomController {
                 ECKey ecKey = ECKey.fromPrivOnly(privKey);
                 String roomName = "#PrivateRoom_" + Hex.encodeHexString(Arrays.copyOfRange(fingerprint, 0, 4));
                 Address addr = null;
-                try {
-                    addr = new Address(32, ecKey);
-                } catch (InvalidPrefixLengthException e2) {
-                    e2.printStackTrace();
-                }
-                fileWriter.addKey(ecKey, txtRoomName.getText().toLowerCase(), 32, addr.toString(),
+                try {addr = new Address(32, ecKey);}
+                catch (InvalidPrefixLengthException e2) {e2.printStackTrace();}
+                fileWriter.addKey(ecKey, roomName, 32, addr.toString(),
                         cbNode.getValue().toString(), null);
                 fileWriter.addChatRoom(roomName, false);
                 Main.retriever.addWatchKey(fileWriter.getKeyFromAddress(addr.toString()));
@@ -306,7 +304,7 @@ public class ChatRoomController {
             if (!fileWriter.keyExists(m.getFromAddress())) {
                 String senderName = m.getSenderName();
                 if (fileWriter.contactExists(m.getFromAddress())) {
-                    senderName = fileWriter.getNameFromAddress(m.getFromAddress());
+                    senderName = fileWriter.getNameForContact(m.getFromAddress());
                 }
                 showMessage(m.getDecryptedMessage(), senderName, m.getFromAddress(), null, false);
             }
@@ -335,6 +333,7 @@ public class ChatRoomController {
         lblRoomName.setStyle("-fx-text-fill: #dc78dc; -fx-font-size: 16");
         ChatRoomListener listener = new ChatRoomListener();
         Main.retriever.addListener(listener);
+        loadMessages();
     }
 
     private void sendMessage() {
@@ -415,7 +414,18 @@ public class ChatRoomController {
                 scrollPane.setVvalue(scrollPane.getVmax());
                 scrollToBottom = true;
             }
-
         });
+    }
+
+    private void loadMessages(){
+        List<History.RoomMessage> messages = fileWriter.getChatRoomMessages(this.chatRoomName);
+        for (History.RoomMessage m : messages){
+            if (!fileWriter.keyExists(m.getSenderAddress())){
+                showMessage(m.getContent(), m.getSenderName(), m.getSenderAddress(), null, false);
+            } else {
+                KeyRing.Key fromKey = fileWriter.getKeyFromAddress(m.getSenderAddress());
+                showMessage(m.getContent(), fromKey.getName() , m.getSenderAddress(), fromKey, true);
+            }
+        }
     }
 }

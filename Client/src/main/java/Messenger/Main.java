@@ -56,7 +56,7 @@ public class Main extends Application {
         torClient.getConfig().setDataDirectory(params.getApplicationDataFolder());
         torClient.enableSocksListener();
         torClient.start();
-        retriever = new MessageRetriever(new FileWriter().getSavedKeys());
+        retriever = new MessageRetriever(new FileWriter().getAllKeys());
         launch(args);
         try{torClient.waitUntilReady(5000);}
         catch (TimeoutException | InterruptedException e){e.printStackTrace();}

@@ -186,7 +186,7 @@ public class AddressWindowController {
                     Action response = Dialogs.create()
                             .owner(stage)
                             .title("Delete Contact")
-                            .masthead("You are about to a contact.")
+                            .masthead("You are about to delete a contact.")
                             .message("Are you ok with this?")
                             .actions(Dialog.Actions.YES, Dialog.Actions.CANCEL)
                             .showConfirm();
@@ -506,7 +506,10 @@ public class AddressWindowController {
             @Override public void handle(ActionEvent e) {
                 final Clipboard clipboard = Clipboard.getSystemClipboard();
                 final ClipboardContent content = new ClipboardContent();
-                content.putString(lblAddress.getText());
+                String addr = lblAddress.getText().substring(
+                        lblAddress.getText().indexOf("<")+1,
+                        lblAddress.getText().length()-1);
+                content.putString(addr);
                 clipboard.setContent(content);
             }
         });
