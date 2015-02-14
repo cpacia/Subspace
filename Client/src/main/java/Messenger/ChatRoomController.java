@@ -12,6 +12,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.apache.commons.codec.binary.Hex;
+import org.bitcoinj.core.AddressFormatException;
+import org.bitcoinj.core.Utils;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.SHA256Digest;
 import org.bouncycastle.crypto.generators.HKDFBytesGenerator;
@@ -20,9 +22,8 @@ import org.controlsfx.dialog.Dialogs;
 import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
 
-import javax.xml.soap.Text;
 import java.security.SecureRandom;
-import java.util.Optional;
+import java.util.Arrays;
 
 import static Messenger.Utils.easing.GuiUtils.*;
 
@@ -49,12 +50,14 @@ public class ChatRoomController {
     Button btnDone;
 
     private Stage stage;
+    private FileWriter fileWriter;
 
     public void setStage(Stage stage){
         this.stage = stage;
     }
 
     public void initialize(){
+        fileWriter = new FileWriter();
         GlyphFont fontAwesome = GlyphFontRegistry.font("FontAwesome");
         Button btnRandom = new Button("", fontAwesome.create("RANDOM").color(javafx.scene.paint.Color.CYAN));
         randomHBox.getChildren().add(btnRandom);
@@ -107,6 +110,43 @@ public class ChatRoomController {
     @FXML
     void doneButtonReleased(MouseEvent e){
         btnDone.setStyle("-fx-background-color: #4d5052; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;");
+    }
+
+    @FXML
+    void createRoom(ActionEvent e){
+        if (rbPrivate.isSelected()){
+            try {
+                byte[] roomKey = Base58Check.decode(txtRoomKey.getText());
+                byte[] privKey = Utils.doubleDigest(roomKey);
+                byte[] fingerprint = Utils.sha256hash160(privKey);
+                ECKey ecKey = ECKey.fromPrivOnly(privKey);
+                String roomName = "#PrivateRoom_" + Hex.encodeHexString(Arrays.copyOfRange(fingerprint, 0, 4));
+                fileWriter.addChatKey(roomName, roomKey);
+                fileWriter.addChatRoom(roomName, true);
+                Main.controller.addChatRoom(roomName);
+                blurIn(chatRoomPane);
+                fadeOut(addPane);
+                addPane.setVisible(false);
+            }
+            catch (AddressFormatException e2){
+                Dialogs.create()
+                        .owner(stage)
+                        .title("Error")
+                        .masthead("You entered an invalid room key.")
+                        .message("Keys must be at least 128 bits in Base58Check format.")
+                        .showError();
+            }
+        }
+        else {
+            byte[] privKey = Utils.doubleDigest(txtRoomName.getText().toLowerCase().getBytes());
+            ECKey ecKey = ECKey.fromPrivOnly(privKey);
+            fileWriter.addChatKey(txtRoomName.getText().toLowerCase(), txtRoomName.getText().toLowerCase().getBytes());
+            fileWriter.addChatRoom(txtRoomName.getText().toLowerCase(), false);
+            Main.controller.addChatRoom(txtRoomName.getText().toLowerCase());
+            blurIn(chatRoomPane);
+            fadeOut(addPane);
+            addPane.setVisible(false);
+        }
     }
 
 }

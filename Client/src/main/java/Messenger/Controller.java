@@ -148,6 +148,7 @@ public class Controller {
         writer = new FileWriter();
         loadChatConversations();
         loadEmails();
+        loadChatRooms();
         TorListener listener = new TorListener();
         TorClient tor = Main.torClient;
         if(tor != null) {
@@ -777,6 +778,17 @@ public class Controller {
         this.openChatWindows.remove(cID);
     }
 
+    public void addChatRoom(String roomID){
+        chatRoomListData.remove(chatInit);
+        Label lblName = new Label(roomID);
+        lblName.setWrapText(false);
+        lblName.setStyle("-fx-text-fill: #dc78dc; -fx-font-size: 16;");
+        lblName.setPadding(new Insets(13, 0, 0, 4));
+        HBox h = new HBox();
+        h.getChildren().add(lblName);
+        chatRoomListData.add(h);
+    }
+
     public class TorListener implements TorInitializationListener {
 
         @Override
@@ -817,6 +829,12 @@ public class Controller {
             }
         }
         chatList.setItems(chatListData);
+    }
+
+    private void loadChatRooms(){
+        for (History.GroupChat g : writer.getChatRooms()){
+            addChatRoom(g.getChatRoom().getRoomName());
+        }
     }
 
     private void loadEmails(){

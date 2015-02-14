@@ -21,7 +21,6 @@ message ChatMessage {
     required string name           = 2;
     required string content        = 3;
     required uint64 timestamp      = 4;
-
 }
 
 message EmailList {
@@ -49,11 +48,13 @@ message GroupChat {
 
 message ChatRoom{
     required string roomName      = 1;
-    optional bytes roomPrivateKey = 2;
-    optional bytes roomPublicKey  = 3;
-    required string timeOfLastGET = 4;
+    required string timeOfLastGET = 2 [default = "0"];
+    required bool   isPrivate     = 3;
 }
 
 message RoomMessage{
-
+    required string senderAddress  = 1;
+    required string senderName     = 2;
+    required string content        = 3;
+    required uint64 timestamp      = 4;
 }

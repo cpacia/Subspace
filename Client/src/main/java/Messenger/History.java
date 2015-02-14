@@ -6704,6 +6704,12 @@ public final class History {
         memoizedIsInitialized = 0;
         return false;
       }
+      for (int i = 0; i < getChatRoomMessagesCount(); i++) {
+        if (!getChatRoomMessages(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -6966,6 +6972,12 @@ public final class History {
         if (!getChatRoom().isInitialized()) {
           
           return false;
+        }
+        for (int i = 0; i < getChatRoomMessagesCount(); i++) {
+          if (!getChatRoomMessages(i).isInitialized()) {
+            
+            return false;
+          }
         }
         return true;
       }
@@ -7375,40 +7387,30 @@ public final class History {
     com.google.protobuf.ByteString
         getRoomNameBytes();
 
-    // optional bytes roomPrivateKey = 2;
+    // required string timeOfLastGET = 2 [default = "0"];
     /**
-     * <code>optional bytes roomPrivateKey = 2;</code>
-     */
-    boolean hasRoomPrivateKey();
-    /**
-     * <code>optional bytes roomPrivateKey = 2;</code>
-     */
-    com.google.protobuf.ByteString getRoomPrivateKey();
-
-    // optional bytes roomPublicKey = 3;
-    /**
-     * <code>optional bytes roomPublicKey = 3;</code>
-     */
-    boolean hasRoomPublicKey();
-    /**
-     * <code>optional bytes roomPublicKey = 3;</code>
-     */
-    com.google.protobuf.ByteString getRoomPublicKey();
-
-    // required string timeOfLastGET = 4;
-    /**
-     * <code>required string timeOfLastGET = 4;</code>
+     * <code>required string timeOfLastGET = 2 [default = "0"];</code>
      */
     boolean hasTimeOfLastGET();
     /**
-     * <code>required string timeOfLastGET = 4;</code>
+     * <code>required string timeOfLastGET = 2 [default = "0"];</code>
      */
     java.lang.String getTimeOfLastGET();
     /**
-     * <code>required string timeOfLastGET = 4;</code>
+     * <code>required string timeOfLastGET = 2 [default = "0"];</code>
      */
     com.google.protobuf.ByteString
         getTimeOfLastGETBytes();
+
+    // required bool isPrivate = 3;
+    /**
+     * <code>required bool isPrivate = 3;</code>
+     */
+    boolean hasIsPrivate();
+    /**
+     * <code>required bool isPrivate = 3;</code>
+     */
+    boolean getIsPrivate();
   }
   /**
    * Protobuf type {@code ChatRoom}
@@ -7468,17 +7470,12 @@ public final class History {
             }
             case 18: {
               bitField0_ |= 0x00000002;
-              roomPrivateKey_ = input.readBytes();
-              break;
-            }
-            case 26: {
-              bitField0_ |= 0x00000004;
-              roomPublicKey_ = input.readBytes();
-              break;
-            }
-            case 34: {
-              bitField0_ |= 0x00000008;
               timeOfLastGET_ = input.readBytes();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              isPrivate_ = input.readBool();
               break;
             }
           }
@@ -7564,49 +7561,17 @@ public final class History {
       }
     }
 
-    // optional bytes roomPrivateKey = 2;
-    public static final int ROOMPRIVATEKEY_FIELD_NUMBER = 2;
-    private com.google.protobuf.ByteString roomPrivateKey_;
+    // required string timeOfLastGET = 2 [default = "0"];
+    public static final int TIMEOFLASTGET_FIELD_NUMBER = 2;
+    private java.lang.Object timeOfLastGET_;
     /**
-     * <code>optional bytes roomPrivateKey = 2;</code>
+     * <code>required string timeOfLastGET = 2 [default = "0"];</code>
      */
-    public boolean hasRoomPrivateKey() {
+    public boolean hasTimeOfLastGET() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional bytes roomPrivateKey = 2;</code>
-     */
-    public com.google.protobuf.ByteString getRoomPrivateKey() {
-      return roomPrivateKey_;
-    }
-
-    // optional bytes roomPublicKey = 3;
-    public static final int ROOMPUBLICKEY_FIELD_NUMBER = 3;
-    private com.google.protobuf.ByteString roomPublicKey_;
-    /**
-     * <code>optional bytes roomPublicKey = 3;</code>
-     */
-    public boolean hasRoomPublicKey() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional bytes roomPublicKey = 3;</code>
-     */
-    public com.google.protobuf.ByteString getRoomPublicKey() {
-      return roomPublicKey_;
-    }
-
-    // required string timeOfLastGET = 4;
-    public static final int TIMEOFLASTGET_FIELD_NUMBER = 4;
-    private java.lang.Object timeOfLastGET_;
-    /**
-     * <code>required string timeOfLastGET = 4;</code>
-     */
-    public boolean hasTimeOfLastGET() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>required string timeOfLastGET = 4;</code>
+     * <code>required string timeOfLastGET = 2 [default = "0"];</code>
      */
     public java.lang.String getTimeOfLastGET() {
       java.lang.Object ref = timeOfLastGET_;
@@ -7623,7 +7588,7 @@ public final class History {
       }
     }
     /**
-     * <code>required string timeOfLastGET = 4;</code>
+     * <code>required string timeOfLastGET = 2 [default = "0"];</code>
      */
     public com.google.protobuf.ByteString
         getTimeOfLastGETBytes() {
@@ -7639,11 +7604,26 @@ public final class History {
       }
     }
 
+    // required bool isPrivate = 3;
+    public static final int ISPRIVATE_FIELD_NUMBER = 3;
+    private boolean isPrivate_;
+    /**
+     * <code>required bool isPrivate = 3;</code>
+     */
+    public boolean hasIsPrivate() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required bool isPrivate = 3;</code>
+     */
+    public boolean getIsPrivate() {
+      return isPrivate_;
+    }
+
     private void initFields() {
       roomName_ = "";
-      roomPrivateKey_ = com.google.protobuf.ByteString.EMPTY;
-      roomPublicKey_ = com.google.protobuf.ByteString.EMPTY;
-      timeOfLastGET_ = "";
+      timeOfLastGET_ = "0";
+      isPrivate_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -7658,6 +7638,10 @@ public final class History {
         memoizedIsInitialized = 0;
         return false;
       }
+      if (!hasIsPrivate()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -7669,13 +7653,10 @@ public final class History {
         output.writeBytes(1, getRoomNameBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, roomPrivateKey_);
+        output.writeBytes(2, getTimeOfLastGETBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(3, roomPublicKey_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(4, getTimeOfLastGETBytes());
+        output.writeBool(3, isPrivate_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -7692,15 +7673,11 @@ public final class History {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, roomPrivateKey_);
+          .computeBytesSize(2, getTimeOfLastGETBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, roomPublicKey_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, getTimeOfLastGETBytes());
+          .computeBoolSize(3, isPrivate_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -7820,12 +7797,10 @@ public final class History {
         super.clear();
         roomName_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
-        roomPrivateKey_ = com.google.protobuf.ByteString.EMPTY;
+        timeOfLastGET_ = "0";
         bitField0_ = (bitField0_ & ~0x00000002);
-        roomPublicKey_ = com.google.protobuf.ByteString.EMPTY;
+        isPrivate_ = false;
         bitField0_ = (bitField0_ & ~0x00000004);
-        timeOfLastGET_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -7861,15 +7836,11 @@ public final class History {
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.roomPrivateKey_ = roomPrivateKey_;
+        result.timeOfLastGET_ = timeOfLastGET_;
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.roomPublicKey_ = roomPublicKey_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        result.timeOfLastGET_ = timeOfLastGET_;
+        result.isPrivate_ = isPrivate_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -7891,16 +7862,13 @@ public final class History {
           roomName_ = other.roomName_;
           onChanged();
         }
-        if (other.hasRoomPrivateKey()) {
-          setRoomPrivateKey(other.getRoomPrivateKey());
-        }
-        if (other.hasRoomPublicKey()) {
-          setRoomPublicKey(other.getRoomPublicKey());
-        }
         if (other.hasTimeOfLastGET()) {
-          bitField0_ |= 0x00000008;
+          bitField0_ |= 0x00000002;
           timeOfLastGET_ = other.timeOfLastGET_;
           onChanged();
+        }
+        if (other.hasIsPrivate()) {
+          setIsPrivate(other.getIsPrivate());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -7912,6 +7880,10 @@ public final class History {
           return false;
         }
         if (!hasTimeOfLastGET()) {
+          
+          return false;
+        }
+        if (!hasIsPrivate()) {
           
           return false;
         }
@@ -8011,88 +7983,16 @@ public final class History {
         return this;
       }
 
-      // optional bytes roomPrivateKey = 2;
-      private com.google.protobuf.ByteString roomPrivateKey_ = com.google.protobuf.ByteString.EMPTY;
+      // required string timeOfLastGET = 2 [default = "0"];
+      private java.lang.Object timeOfLastGET_ = "0";
       /**
-       * <code>optional bytes roomPrivateKey = 2;</code>
+       * <code>required string timeOfLastGET = 2 [default = "0"];</code>
        */
-      public boolean hasRoomPrivateKey() {
+      public boolean hasTimeOfLastGET() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional bytes roomPrivateKey = 2;</code>
-       */
-      public com.google.protobuf.ByteString getRoomPrivateKey() {
-        return roomPrivateKey_;
-      }
-      /**
-       * <code>optional bytes roomPrivateKey = 2;</code>
-       */
-      public Builder setRoomPrivateKey(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        roomPrivateKey_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bytes roomPrivateKey = 2;</code>
-       */
-      public Builder clearRoomPrivateKey() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        roomPrivateKey_ = getDefaultInstance().getRoomPrivateKey();
-        onChanged();
-        return this;
-      }
-
-      // optional bytes roomPublicKey = 3;
-      private com.google.protobuf.ByteString roomPublicKey_ = com.google.protobuf.ByteString.EMPTY;
-      /**
-       * <code>optional bytes roomPublicKey = 3;</code>
-       */
-      public boolean hasRoomPublicKey() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional bytes roomPublicKey = 3;</code>
-       */
-      public com.google.protobuf.ByteString getRoomPublicKey() {
-        return roomPublicKey_;
-      }
-      /**
-       * <code>optional bytes roomPublicKey = 3;</code>
-       */
-      public Builder setRoomPublicKey(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        roomPublicKey_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bytes roomPublicKey = 3;</code>
-       */
-      public Builder clearRoomPublicKey() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        roomPublicKey_ = getDefaultInstance().getRoomPublicKey();
-        onChanged();
-        return this;
-      }
-
-      // required string timeOfLastGET = 4;
-      private java.lang.Object timeOfLastGET_ = "";
-      /**
-       * <code>required string timeOfLastGET = 4;</code>
-       */
-      public boolean hasTimeOfLastGET() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>required string timeOfLastGET = 4;</code>
+       * <code>required string timeOfLastGET = 2 [default = "0"];</code>
        */
       public java.lang.String getTimeOfLastGET() {
         java.lang.Object ref = timeOfLastGET_;
@@ -8106,7 +8006,7 @@ public final class History {
         }
       }
       /**
-       * <code>required string timeOfLastGET = 4;</code>
+       * <code>required string timeOfLastGET = 2 [default = "0"];</code>
        */
       public com.google.protobuf.ByteString
           getTimeOfLastGETBytes() {
@@ -8122,37 +8022,70 @@ public final class History {
         }
       }
       /**
-       * <code>required string timeOfLastGET = 4;</code>
+       * <code>required string timeOfLastGET = 2 [default = "0"];</code>
        */
       public Builder setTimeOfLastGET(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
+  bitField0_ |= 0x00000002;
         timeOfLastGET_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string timeOfLastGET = 4;</code>
+       * <code>required string timeOfLastGET = 2 [default = "0"];</code>
        */
       public Builder clearTimeOfLastGET() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000002);
         timeOfLastGET_ = getDefaultInstance().getTimeOfLastGET();
         onChanged();
         return this;
       }
       /**
-       * <code>required string timeOfLastGET = 4;</code>
+       * <code>required string timeOfLastGET = 2 [default = "0"];</code>
        */
       public Builder setTimeOfLastGETBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
+  bitField0_ |= 0x00000002;
         timeOfLastGET_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required bool isPrivate = 3;
+      private boolean isPrivate_ ;
+      /**
+       * <code>required bool isPrivate = 3;</code>
+       */
+      public boolean hasIsPrivate() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required bool isPrivate = 3;</code>
+       */
+      public boolean getIsPrivate() {
+        return isPrivate_;
+      }
+      /**
+       * <code>required bool isPrivate = 3;</code>
+       */
+      public Builder setIsPrivate(boolean value) {
+        bitField0_ |= 0x00000004;
+        isPrivate_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bool isPrivate = 3;</code>
+       */
+      public Builder clearIsPrivate() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        isPrivate_ = false;
         onChanged();
         return this;
       }
@@ -8170,6 +8103,61 @@ public final class History {
 
   public interface RoomMessageOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
+
+    // required string senderAddress = 1;
+    /**
+     * <code>required string senderAddress = 1;</code>
+     */
+    boolean hasSenderAddress();
+    /**
+     * <code>required string senderAddress = 1;</code>
+     */
+    java.lang.String getSenderAddress();
+    /**
+     * <code>required string senderAddress = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getSenderAddressBytes();
+
+    // required string senderName = 2;
+    /**
+     * <code>required string senderName = 2;</code>
+     */
+    boolean hasSenderName();
+    /**
+     * <code>required string senderName = 2;</code>
+     */
+    java.lang.String getSenderName();
+    /**
+     * <code>required string senderName = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getSenderNameBytes();
+
+    // required string content = 3;
+    /**
+     * <code>required string content = 3;</code>
+     */
+    boolean hasContent();
+    /**
+     * <code>required string content = 3;</code>
+     */
+    java.lang.String getContent();
+    /**
+     * <code>required string content = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getContentBytes();
+
+    // required uint64 timestamp = 4;
+    /**
+     * <code>required uint64 timestamp = 4;</code>
+     */
+    boolean hasTimestamp();
+    /**
+     * <code>required uint64 timestamp = 4;</code>
+     */
+    long getTimestamp();
   }
   /**
    * Protobuf type {@code RoomMessage}
@@ -8204,6 +8192,7 @@ public final class History {
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       initFields();
+      int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -8219,6 +8208,26 @@ public final class History {
                                      extensionRegistry, tag)) {
                 done = true;
               }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              senderAddress_ = input.readBytes();
+              break;
+            }
+            case 18: {
+              bitField0_ |= 0x00000002;
+              senderName_ = input.readBytes();
+              break;
+            }
+            case 26: {
+              bitField0_ |= 0x00000004;
+              content_ = input.readBytes();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              timestamp_ = input.readUInt64();
               break;
             }
           }
@@ -8260,13 +8269,179 @@ public final class History {
       return PARSER;
     }
 
+    private int bitField0_;
+    // required string senderAddress = 1;
+    public static final int SENDERADDRESS_FIELD_NUMBER = 1;
+    private java.lang.Object senderAddress_;
+    /**
+     * <code>required string senderAddress = 1;</code>
+     */
+    public boolean hasSenderAddress() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required string senderAddress = 1;</code>
+     */
+    public java.lang.String getSenderAddress() {
+      java.lang.Object ref = senderAddress_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          senderAddress_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string senderAddress = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getSenderAddressBytes() {
+      java.lang.Object ref = senderAddress_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        senderAddress_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // required string senderName = 2;
+    public static final int SENDERNAME_FIELD_NUMBER = 2;
+    private java.lang.Object senderName_;
+    /**
+     * <code>required string senderName = 2;</code>
+     */
+    public boolean hasSenderName() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required string senderName = 2;</code>
+     */
+    public java.lang.String getSenderName() {
+      java.lang.Object ref = senderName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          senderName_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string senderName = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getSenderNameBytes() {
+      java.lang.Object ref = senderName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        senderName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // required string content = 3;
+    public static final int CONTENT_FIELD_NUMBER = 3;
+    private java.lang.Object content_;
+    /**
+     * <code>required string content = 3;</code>
+     */
+    public boolean hasContent() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required string content = 3;</code>
+     */
+    public java.lang.String getContent() {
+      java.lang.Object ref = content_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          content_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string content = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getContentBytes() {
+      java.lang.Object ref = content_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        content_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // required uint64 timestamp = 4;
+    public static final int TIMESTAMP_FIELD_NUMBER = 4;
+    private long timestamp_;
+    /**
+     * <code>required uint64 timestamp = 4;</code>
+     */
+    public boolean hasTimestamp() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>required uint64 timestamp = 4;</code>
+     */
+    public long getTimestamp() {
+      return timestamp_;
+    }
+
     private void initFields() {
+      senderAddress_ = "";
+      senderName_ = "";
+      content_ = "";
+      timestamp_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
+      if (!hasSenderAddress()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasSenderName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasContent()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasTimestamp()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -8274,6 +8449,18 @@ public final class History {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getSenderAddressBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getSenderNameBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, getContentBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeUInt64(4, timestamp_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -8283,6 +8470,22 @@ public final class History {
       if (size != -1) return size;
 
       size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getSenderAddressBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, getSenderNameBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, getContentBytes());
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(4, timestamp_);
+      }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
       return size;
@@ -8399,6 +8602,14 @@ public final class History {
 
       public Builder clear() {
         super.clear();
+        senderAddress_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        senderName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        content_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
+        timestamp_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -8425,6 +8636,25 @@ public final class History {
 
       public History.RoomMessage buildPartial() {
         History.RoomMessage result = new History.RoomMessage(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.senderAddress_ = senderAddress_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.senderName_ = senderName_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.content_ = content_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.timestamp_ = timestamp_;
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -8440,11 +8670,45 @@ public final class History {
 
       public Builder mergeFrom(History.RoomMessage other) {
         if (other == History.RoomMessage.getDefaultInstance()) return this;
+        if (other.hasSenderAddress()) {
+          bitField0_ |= 0x00000001;
+          senderAddress_ = other.senderAddress_;
+          onChanged();
+        }
+        if (other.hasSenderName()) {
+          bitField0_ |= 0x00000002;
+          senderName_ = other.senderName_;
+          onChanged();
+        }
+        if (other.hasContent()) {
+          bitField0_ |= 0x00000004;
+          content_ = other.content_;
+          onChanged();
+        }
+        if (other.hasTimestamp()) {
+          setTimestamp(other.getTimestamp());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
+        if (!hasSenderAddress()) {
+          
+          return false;
+        }
+        if (!hasSenderName()) {
+          
+          return false;
+        }
+        if (!hasContent()) {
+          
+          return false;
+        }
+        if (!hasTimestamp()) {
+          
+          return false;
+        }
         return true;
       }
 
@@ -8463,6 +8727,262 @@ public final class History {
             mergeFrom(parsedMessage);
           }
         }
+        return this;
+      }
+      private int bitField0_;
+
+      // required string senderAddress = 1;
+      private java.lang.Object senderAddress_ = "";
+      /**
+       * <code>required string senderAddress = 1;</code>
+       */
+      public boolean hasSenderAddress() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required string senderAddress = 1;</code>
+       */
+      public java.lang.String getSenderAddress() {
+        java.lang.Object ref = senderAddress_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          senderAddress_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string senderAddress = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getSenderAddressBytes() {
+        java.lang.Object ref = senderAddress_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          senderAddress_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string senderAddress = 1;</code>
+       */
+      public Builder setSenderAddress(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        senderAddress_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string senderAddress = 1;</code>
+       */
+      public Builder clearSenderAddress() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        senderAddress_ = getDefaultInstance().getSenderAddress();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string senderAddress = 1;</code>
+       */
+      public Builder setSenderAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        senderAddress_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required string senderName = 2;
+      private java.lang.Object senderName_ = "";
+      /**
+       * <code>required string senderName = 2;</code>
+       */
+      public boolean hasSenderName() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required string senderName = 2;</code>
+       */
+      public java.lang.String getSenderName() {
+        java.lang.Object ref = senderName_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          senderName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string senderName = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getSenderNameBytes() {
+        java.lang.Object ref = senderName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          senderName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string senderName = 2;</code>
+       */
+      public Builder setSenderName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        senderName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string senderName = 2;</code>
+       */
+      public Builder clearSenderName() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        senderName_ = getDefaultInstance().getSenderName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string senderName = 2;</code>
+       */
+      public Builder setSenderNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        senderName_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required string content = 3;
+      private java.lang.Object content_ = "";
+      /**
+       * <code>required string content = 3;</code>
+       */
+      public boolean hasContent() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required string content = 3;</code>
+       */
+      public java.lang.String getContent() {
+        java.lang.Object ref = content_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          content_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string content = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getContentBytes() {
+        java.lang.Object ref = content_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          content_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string content = 3;</code>
+       */
+      public Builder setContent(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        content_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string content = 3;</code>
+       */
+      public Builder clearContent() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        content_ = getDefaultInstance().getContent();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string content = 3;</code>
+       */
+      public Builder setContentBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        content_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required uint64 timestamp = 4;
+      private long timestamp_ ;
+      /**
+       * <code>required uint64 timestamp = 4;</code>
+       */
+      public boolean hasTimestamp() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>required uint64 timestamp = 4;</code>
+       */
+      public long getTimestamp() {
+        return timestamp_;
+      }
+      /**
+       * <code>required uint64 timestamp = 4;</code>
+       */
+      public Builder setTimestamp(long value) {
+        bitField0_ |= 0x00000008;
+        timestamp_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required uint64 timestamp = 4;</code>
+       */
+      public Builder clearTimestamp() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        timestamp_ = 0L;
+        onChanged();
         return this;
       }
 
@@ -8554,10 +9074,11 @@ public final class History {
       "\006 \002(\t\022\021\n\ttimestamp\030\007 \002(\004\")\n\rGroupChatLis" +
       "t\022\030\n\004chat\030\001 \003(\0132\n.GroupChat\"P\n\tGroupChat" +
       "\022\033\n\010chatRoom\030\001 \002(\0132\t.ChatRoom\022&\n\020chatRoo" +
-      "mMessages\030\002 \003(\0132\014.RoomMessage\"b\n\010ChatRoo" +
-      "m\022\020\n\010roomName\030\001 \002(\t\022\026\n\016roomPrivateKey\030\002 ",
-      "\001(\014\022\025\n\rroomPublicKey\030\003 \001(\014\022\025\n\rtimeOfLast" +
-      "GET\030\004 \002(\t\"\r\n\013RoomMessage"
+      "mMessages\030\002 \003(\0132\014.RoomMessage\"I\n\010ChatRoo" +
+      "m\022\020\n\010roomName\030\001 \002(\t\022\030\n\rtimeOfLastGET\030\002 \002",
+      "(\t:\0010\022\021\n\tisPrivate\030\003 \002(\010\"\\\n\013RoomMessage\022" +
+      "\025\n\rsenderAddress\030\001 \002(\t\022\022\n\nsenderName\030\002 \002" +
+      "(\t\022\017\n\007content\030\003 \002(\t\022\021\n\ttimestamp\030\004 \002(\004"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -8617,13 +9138,13 @@ public final class History {
           internal_static_ChatRoom_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_ChatRoom_descriptor,
-              new java.lang.String[] { "RoomName", "RoomPrivateKey", "RoomPublicKey", "TimeOfLastGET", });
+              new java.lang.String[] { "RoomName", "TimeOfLastGET", "IsPrivate", });
           internal_static_RoomMessage_descriptor =
             getDescriptor().getMessageTypes().get(9);
           internal_static_RoomMessage_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_RoomMessage_descriptor,
-              new java.lang.String[] { });
+              new java.lang.String[] { "SenderAddress", "SenderName", "Content", "Timestamp", });
           return null;
         }
       };

@@ -39,6 +39,12 @@ public class FileWriter {
         catch (IOException e){e.printStackTrace();}
     }
 
+    //#####################################
+    //
+    //	Builders
+    //
+    //#####################################
+
     private synchronized KeyRing.SavedKeys.Builder getKeyFileBuilder() {
         KeyRing.SavedKeys.Builder savedKeys = KeyRing.SavedKeys.newBuilder();
         try{savedKeys.mergeDelimitedFrom(new FileInputStream(keyFilePath)); }
@@ -105,6 +111,26 @@ public class FileWriter {
         try{writeMessageFile(b);}
         catch (IOException e){e.printStackTrace();}
     }
+
+    private synchronized History.GroupChatList.Builder getGroupChatFileBuilder() {
+        History.GroupChatList.Builder savedGroupChats = History.GroupChatList.newBuilder();
+        savedGroupChats.mergeFrom(getMessageFileBuilder().getGroupList());
+        return savedGroupChats;
+    }
+
+    private synchronized void writeGroupChatsToFile(History.GroupChatList.Builder savedMessages) throws IOException{
+        History.MessageList.Builder b = getMessageFileBuilder();
+        History.GroupChatList groupChatList = savedMessages.build();
+        b.setGroupList(groupChatList);
+        try{writeMessageFile(b);}
+        catch (IOException e){e.printStackTrace();}
+    }
+
+    //#####################################
+    //
+    //	Contacts
+    //
+    //#####################################
 
 
     public List<Contacts.Contact> getContacts(){
@@ -234,6 +260,12 @@ public class FileWriter {
         return true;
     }
 
+    //#####################################
+    //
+    //	Address Keys
+    //
+    //#####################################
+
     public void addKey(ECKey key, String name, int prefixLength, String address,
                        String uploadHostName, @Nullable String openname){
         KeyRing.SavedKeys.Builder builder = getKeyFileBuilder();
@@ -346,6 +378,53 @@ public class FileWriter {
         return null;
     }
 
+    //#####################################
+    //
+    //	Chat Room Keys
+    //
+    //#####################################
+
+    public void addChatKey(String roomName, byte[] chatRoomKey){
+        KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
+        KeyRing.ChatKey chatKey = KeyRing.ChatKey.newBuilder()
+                .setRoomName(roomName)
+                .setRoomKey(ByteString.copyFrom(chatRoomKey))
+                .build();
+        b.addRoomKey(chatKey);
+        try { writeKeyFile(b);}
+        catch (IOException e) {e.printStackTrace();}
+    }
+
+    public void deleteChatKey(String roomName){
+        KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
+        int index = 0;
+        for (KeyRing.ChatKey key : b.getRoomKeyList()){
+            if (key.getRoomName().equals(roomName)){
+                index = b.getRoomKeyList().indexOf(key);
+                break;
+            }
+        }
+        b.removeRoomKey(index);
+        try { writeKeyFile(b);}
+        catch (IOException e) {e.printStackTrace();}
+    }
+
+    public byte[] getChatRoomKey(String roomName){
+        KeyRing.SavedKeys.Builder b = getKeyFileBuilder();
+        for (KeyRing.ChatKey key : b.getRoomKeyList()){
+            if (key.getRoomName().equals(roomName)){
+                return key.getRoomKey().toByteArray();
+            }
+        }
+        return null;
+    }
+
+    //#####################################
+    //
+    //	Chat Messages
+    //
+    //#####################################
+
     public void newChatConversation(String conversationID, Message m, String theirName, String theirAddress,
                                     String myAddress, boolean sentFromMe){
         History.ChatMessage chatMessage = History.ChatMessage.newBuilder()
@@ -444,6 +523,12 @@ public class FileWriter {
         return builder.getConversationList();
     }
 
+    //#####################################
+    //
+    //	Email
+    //
+    //#####################################
+
     public void addEmail(String toAddress, String fromAddress, String senderName,
                          String body, String subject, long timestamp, Boolean isSentFromMe){
         History.EmailList.Builder b = getEmailFileBuilder();
@@ -488,5 +573,30 @@ public class FileWriter {
         try {writeEmailsToFile(b);}
         catch (IOException e){e.printStackTrace();}
     }
+
+    //#####################################
+    //
+    //	Group Chats
+    //
+    //#####################################
+
+    public void addChatRoom(String roomName, boolean isPrivate){
+        History.GroupChatList.Builder b = getGroupChatFileBuilder();
+        History.ChatRoom chatRoom = History.ChatRoom.newBuilder()
+                .setRoomName(roomName)
+                .setTimeOfLastGET("0")
+                .setIsPrivate(isPrivate).build();
+        History.GroupChat groupChat = History.GroupChat.newBuilder()
+                .setChatRoom(chatRoom).build();
+        b.addChat(groupChat);
+        try {writeGroupChatsToFile(b);}
+        catch (IOException e){e.printStackTrace();}
+    }
+
+    public List<History.GroupChat> getChatRooms(){
+        History.GroupChatList.Builder b = getGroupChatFileBuilder();
+        return b.getChatList();
+    }
+
 
 }

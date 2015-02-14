@@ -1,5 +1,6 @@
 message SavedKeys {
 	repeated Key key                    = 1;
+	repeated ChatKey roomKey            = 2;
 }
 
 message Key {
@@ -11,4 +12,9 @@ message Key {
 	optional string address             = 6;
 	required string uploadNode          = 7;
 	required string timeOfLastGET       = 8 [default = "0"];
+}
+
+message ChatKey {
+	required string roomName    = 1;
+	required bytes  roomKey     = 2;
 }

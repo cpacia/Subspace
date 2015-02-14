@@ -35,6 +35,31 @@ public final class KeyRing {
      */
     KeyRing.KeyOrBuilder getKeyOrBuilder(
         int index);
+
+    // repeated .ChatKey roomKey = 2;
+    /**
+     * <code>repeated .ChatKey roomKey = 2;</code>
+     */
+    java.util.List<KeyRing.ChatKey> 
+        getRoomKeyList();
+    /**
+     * <code>repeated .ChatKey roomKey = 2;</code>
+     */
+    KeyRing.ChatKey getRoomKey(int index);
+    /**
+     * <code>repeated .ChatKey roomKey = 2;</code>
+     */
+    int getRoomKeyCount();
+    /**
+     * <code>repeated .ChatKey roomKey = 2;</code>
+     */
+    java.util.List<? extends KeyRing.ChatKeyOrBuilder> 
+        getRoomKeyOrBuilderList();
+    /**
+     * <code>repeated .ChatKey roomKey = 2;</code>
+     */
+    KeyRing.ChatKeyOrBuilder getRoomKeyOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code SavedKeys}
@@ -95,6 +120,14 @@ public final class KeyRing {
               key_.add(input.readMessage(KeyRing.Key.PARSER, extensionRegistry));
               break;
             }
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                roomKey_ = new java.util.ArrayList<KeyRing.ChatKey>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              roomKey_.add(input.readMessage(KeyRing.ChatKey.PARSER, extensionRegistry));
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -105,6 +138,9 @@ public final class KeyRing {
       } finally {
         if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
           key_ = java.util.Collections.unmodifiableList(key_);
+        }
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          roomKey_ = java.util.Collections.unmodifiableList(roomKey_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -173,8 +209,45 @@ public final class KeyRing {
       return key_.get(index);
     }
 
+    // repeated .ChatKey roomKey = 2;
+    public static final int ROOMKEY_FIELD_NUMBER = 2;
+    private java.util.List<KeyRing.ChatKey> roomKey_;
+    /**
+     * <code>repeated .ChatKey roomKey = 2;</code>
+     */
+    public java.util.List<KeyRing.ChatKey> getRoomKeyList() {
+      return roomKey_;
+    }
+    /**
+     * <code>repeated .ChatKey roomKey = 2;</code>
+     */
+    public java.util.List<? extends KeyRing.ChatKeyOrBuilder> 
+        getRoomKeyOrBuilderList() {
+      return roomKey_;
+    }
+    /**
+     * <code>repeated .ChatKey roomKey = 2;</code>
+     */
+    public int getRoomKeyCount() {
+      return roomKey_.size();
+    }
+    /**
+     * <code>repeated .ChatKey roomKey = 2;</code>
+     */
+    public KeyRing.ChatKey getRoomKey(int index) {
+      return roomKey_.get(index);
+    }
+    /**
+     * <code>repeated .ChatKey roomKey = 2;</code>
+     */
+    public KeyRing.ChatKeyOrBuilder getRoomKeyOrBuilder(
+        int index) {
+      return roomKey_.get(index);
+    }
+
     private void initFields() {
       key_ = java.util.Collections.emptyList();
+      roomKey_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -183,6 +256,12 @@ public final class KeyRing {
 
       for (int i = 0; i < getKeyCount(); i++) {
         if (!getKey(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      for (int i = 0; i < getRoomKeyCount(); i++) {
+        if (!getRoomKey(i).isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -197,6 +276,9 @@ public final class KeyRing {
       for (int i = 0; i < key_.size(); i++) {
         output.writeMessage(1, key_.get(i));
       }
+      for (int i = 0; i < roomKey_.size(); i++) {
+        output.writeMessage(2, roomKey_.get(i));
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -209,6 +291,10 @@ public final class KeyRing {
       for (int i = 0; i < key_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, key_.get(i));
+      }
+      for (int i = 0; i < roomKey_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, roomKey_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -319,6 +405,7 @@ public final class KeyRing {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getKeyFieldBuilder();
+          getRoomKeyFieldBuilder();
         }
       }
       private static Builder create() {
@@ -332,6 +419,12 @@ public final class KeyRing {
           bitField0_ = (bitField0_ & ~0x00000001);
         } else {
           keyBuilder_.clear();
+        }
+        if (roomKeyBuilder_ == null) {
+          roomKey_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+        } else {
+          roomKeyBuilder_.clear();
         }
         return this;
       }
@@ -368,6 +461,15 @@ public final class KeyRing {
           result.key_ = key_;
         } else {
           result.key_ = keyBuilder_.build();
+        }
+        if (roomKeyBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002)) {
+            roomKey_ = java.util.Collections.unmodifiableList(roomKey_);
+            bitField0_ = (bitField0_ & ~0x00000002);
+          }
+          result.roomKey_ = roomKey_;
+        } else {
+          result.roomKey_ = roomKeyBuilder_.build();
         }
         onBuilt();
         return result;
@@ -410,6 +512,32 @@ public final class KeyRing {
             }
           }
         }
+        if (roomKeyBuilder_ == null) {
+          if (!other.roomKey_.isEmpty()) {
+            if (roomKey_.isEmpty()) {
+              roomKey_ = other.roomKey_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+            } else {
+              ensureRoomKeyIsMutable();
+              roomKey_.addAll(other.roomKey_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.roomKey_.isEmpty()) {
+            if (roomKeyBuilder_.isEmpty()) {
+              roomKeyBuilder_.dispose();
+              roomKeyBuilder_ = null;
+              roomKey_ = other.roomKey_;
+              bitField0_ = (bitField0_ & ~0x00000002);
+              roomKeyBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getRoomKeyFieldBuilder() : null;
+            } else {
+              roomKeyBuilder_.addAllMessages(other.roomKey_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -417,6 +545,12 @@ public final class KeyRing {
       public final boolean isInitialized() {
         for (int i = 0; i < getKeyCount(); i++) {
           if (!getKey(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        for (int i = 0; i < getRoomKeyCount(); i++) {
+          if (!getRoomKey(i).isInitialized()) {
             
             return false;
           }
@@ -681,6 +815,246 @@ public final class KeyRing {
           key_ = null;
         }
         return keyBuilder_;
+      }
+
+      // repeated .ChatKey roomKey = 2;
+      private java.util.List<KeyRing.ChatKey> roomKey_ =
+        java.util.Collections.emptyList();
+      private void ensureRoomKeyIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          roomKey_ = new java.util.ArrayList<KeyRing.ChatKey>(roomKey_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          KeyRing.ChatKey, KeyRing.ChatKey.Builder, KeyRing.ChatKeyOrBuilder> roomKeyBuilder_;
+
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public java.util.List<KeyRing.ChatKey> getRoomKeyList() {
+        if (roomKeyBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(roomKey_);
+        } else {
+          return roomKeyBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public int getRoomKeyCount() {
+        if (roomKeyBuilder_ == null) {
+          return roomKey_.size();
+        } else {
+          return roomKeyBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public KeyRing.ChatKey getRoomKey(int index) {
+        if (roomKeyBuilder_ == null) {
+          return roomKey_.get(index);
+        } else {
+          return roomKeyBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public Builder setRoomKey(
+          int index, KeyRing.ChatKey value) {
+        if (roomKeyBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRoomKeyIsMutable();
+          roomKey_.set(index, value);
+          onChanged();
+        } else {
+          roomKeyBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public Builder setRoomKey(
+          int index, KeyRing.ChatKey.Builder builderForValue) {
+        if (roomKeyBuilder_ == null) {
+          ensureRoomKeyIsMutable();
+          roomKey_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          roomKeyBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public Builder addRoomKey(KeyRing.ChatKey value) {
+        if (roomKeyBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRoomKeyIsMutable();
+          roomKey_.add(value);
+          onChanged();
+        } else {
+          roomKeyBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public Builder addRoomKey(
+          int index, KeyRing.ChatKey value) {
+        if (roomKeyBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureRoomKeyIsMutable();
+          roomKey_.add(index, value);
+          onChanged();
+        } else {
+          roomKeyBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public Builder addRoomKey(
+          KeyRing.ChatKey.Builder builderForValue) {
+        if (roomKeyBuilder_ == null) {
+          ensureRoomKeyIsMutable();
+          roomKey_.add(builderForValue.build());
+          onChanged();
+        } else {
+          roomKeyBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public Builder addRoomKey(
+          int index, KeyRing.ChatKey.Builder builderForValue) {
+        if (roomKeyBuilder_ == null) {
+          ensureRoomKeyIsMutable();
+          roomKey_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          roomKeyBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public Builder addAllRoomKey(
+          java.lang.Iterable<? extends KeyRing.ChatKey> values) {
+        if (roomKeyBuilder_ == null) {
+          ensureRoomKeyIsMutable();
+          super.addAll(values, roomKey_);
+          onChanged();
+        } else {
+          roomKeyBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public Builder clearRoomKey() {
+        if (roomKeyBuilder_ == null) {
+          roomKey_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000002);
+          onChanged();
+        } else {
+          roomKeyBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public Builder removeRoomKey(int index) {
+        if (roomKeyBuilder_ == null) {
+          ensureRoomKeyIsMutable();
+          roomKey_.remove(index);
+          onChanged();
+        } else {
+          roomKeyBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public KeyRing.ChatKey.Builder getRoomKeyBuilder(
+          int index) {
+        return getRoomKeyFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public KeyRing.ChatKeyOrBuilder getRoomKeyOrBuilder(
+          int index) {
+        if (roomKeyBuilder_ == null) {
+          return roomKey_.get(index);  } else {
+          return roomKeyBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public java.util.List<? extends KeyRing.ChatKeyOrBuilder> 
+           getRoomKeyOrBuilderList() {
+        if (roomKeyBuilder_ != null) {
+          return roomKeyBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(roomKey_);
+        }
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public KeyRing.ChatKey.Builder addRoomKeyBuilder() {
+        return getRoomKeyFieldBuilder().addBuilder(
+            KeyRing.ChatKey.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public KeyRing.ChatKey.Builder addRoomKeyBuilder(
+          int index) {
+        return getRoomKeyFieldBuilder().addBuilder(
+            index, KeyRing.ChatKey.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .ChatKey roomKey = 2;</code>
+       */
+      public java.util.List<KeyRing.ChatKey.Builder> 
+           getRoomKeyBuilderList() {
+        return getRoomKeyFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          KeyRing.ChatKey, KeyRing.ChatKey.Builder, KeyRing.ChatKeyOrBuilder> 
+          getRoomKeyFieldBuilder() {
+        if (roomKeyBuilder_ == null) {
+          roomKeyBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              KeyRing.ChatKey, KeyRing.ChatKey.Builder, KeyRing.ChatKeyOrBuilder>(
+                  roomKey_,
+                  ((bitField0_ & 0x00000002) == 0x00000002),
+                  getParentForChildren(),
+                  isClean());
+          roomKey_ = null;
+        }
+        return roomKeyBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:SavedKeys)
@@ -2078,6 +2452,577 @@ public final class KeyRing {
     // @@protoc_insertion_point(class_scope:Key)
   }
 
+  public interface ChatKeyOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+
+    // required string roomName = 1;
+    /**
+     * <code>required string roomName = 1;</code>
+     */
+    boolean hasRoomName();
+    /**
+     * <code>required string roomName = 1;</code>
+     */
+    java.lang.String getRoomName();
+    /**
+     * <code>required string roomName = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getRoomNameBytes();
+
+    // required bytes roomKey = 2;
+    /**
+     * <code>required bytes roomKey = 2;</code>
+     */
+    boolean hasRoomKey();
+    /**
+     * <code>required bytes roomKey = 2;</code>
+     */
+    com.google.protobuf.ByteString getRoomKey();
+  }
+  /**
+   * Protobuf type {@code ChatKey}
+   */
+  public static final class ChatKey extends
+      com.google.protobuf.GeneratedMessage
+      implements ChatKeyOrBuilder {
+    // Use ChatKey.newBuilder() to construct.
+    private ChatKey(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private ChatKey(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final ChatKey defaultInstance;
+    public static ChatKey getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public ChatKey getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ChatKey(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              roomName_ = input.readBytes();
+              break;
+            }
+            case 18: {
+              bitField0_ |= 0x00000002;
+              roomKey_ = input.readBytes();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return KeyRing.internal_static_ChatKey_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return KeyRing.internal_static_ChatKey_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              KeyRing.ChatKey.class, KeyRing.ChatKey.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<ChatKey> PARSER =
+        new com.google.protobuf.AbstractParser<ChatKey>() {
+      public ChatKey parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ChatKey(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ChatKey> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    // required string roomName = 1;
+    public static final int ROOMNAME_FIELD_NUMBER = 1;
+    private java.lang.Object roomName_;
+    /**
+     * <code>required string roomName = 1;</code>
+     */
+    public boolean hasRoomName() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required string roomName = 1;</code>
+     */
+    public java.lang.String getRoomName() {
+      java.lang.Object ref = roomName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          roomName_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string roomName = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getRoomNameBytes() {
+      java.lang.Object ref = roomName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        roomName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // required bytes roomKey = 2;
+    public static final int ROOMKEY_FIELD_NUMBER = 2;
+    private com.google.protobuf.ByteString roomKey_;
+    /**
+     * <code>required bytes roomKey = 2;</code>
+     */
+    public boolean hasRoomKey() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required bytes roomKey = 2;</code>
+     */
+    public com.google.protobuf.ByteString getRoomKey() {
+      return roomKey_;
+    }
+
+    private void initFields() {
+      roomName_ = "";
+      roomKey_ = com.google.protobuf.ByteString.EMPTY;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+
+      if (!hasRoomName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasRoomKey()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getRoomNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, roomKey_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getRoomNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, roomKey_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static KeyRing.ChatKey parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static KeyRing.ChatKey parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static KeyRing.ChatKey parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static KeyRing.ChatKey parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static KeyRing.ChatKey parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static KeyRing.ChatKey parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static KeyRing.ChatKey parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static KeyRing.ChatKey parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static KeyRing.ChatKey parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static KeyRing.ChatKey parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(KeyRing.ChatKey prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code ChatKey}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements KeyRing.ChatKeyOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return KeyRing.internal_static_ChatKey_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return KeyRing.internal_static_ChatKey_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                KeyRing.ChatKey.class, KeyRing.ChatKey.Builder.class);
+      }
+
+      // Construct using KeyRing.ChatKey.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        roomName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        roomKey_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return KeyRing.internal_static_ChatKey_descriptor;
+      }
+
+      public KeyRing.ChatKey getDefaultInstanceForType() {
+        return KeyRing.ChatKey.getDefaultInstance();
+      }
+
+      public KeyRing.ChatKey build() {
+        KeyRing.ChatKey result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public KeyRing.ChatKey buildPartial() {
+        KeyRing.ChatKey result = new KeyRing.ChatKey(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.roomName_ = roomName_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.roomKey_ = roomKey_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof KeyRing.ChatKey) {
+          return mergeFrom((KeyRing.ChatKey)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(KeyRing.ChatKey other) {
+        if (other == KeyRing.ChatKey.getDefaultInstance()) return this;
+        if (other.hasRoomName()) {
+          bitField0_ |= 0x00000001;
+          roomName_ = other.roomName_;
+          onChanged();
+        }
+        if (other.hasRoomKey()) {
+          setRoomKey(other.getRoomKey());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasRoomName()) {
+          
+          return false;
+        }
+        if (!hasRoomKey()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        KeyRing.ChatKey parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (KeyRing.ChatKey) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      // required string roomName = 1;
+      private java.lang.Object roomName_ = "";
+      /**
+       * <code>required string roomName = 1;</code>
+       */
+      public boolean hasRoomName() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required string roomName = 1;</code>
+       */
+      public java.lang.String getRoomName() {
+        java.lang.Object ref = roomName_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          roomName_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string roomName = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getRoomNameBytes() {
+        java.lang.Object ref = roomName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          roomName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string roomName = 1;</code>
+       */
+      public Builder setRoomName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        roomName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string roomName = 1;</code>
+       */
+      public Builder clearRoomName() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        roomName_ = getDefaultInstance().getRoomName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string roomName = 1;</code>
+       */
+      public Builder setRoomNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        roomName_ = value;
+        onChanged();
+        return this;
+      }
+
+      // required bytes roomKey = 2;
+      private com.google.protobuf.ByteString roomKey_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>required bytes roomKey = 2;</code>
+       */
+      public boolean hasRoomKey() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required bytes roomKey = 2;</code>
+       */
+      public com.google.protobuf.ByteString getRoomKey() {
+        return roomKey_;
+      }
+      /**
+       * <code>required bytes roomKey = 2;</code>
+       */
+      public Builder setRoomKey(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        roomKey_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bytes roomKey = 2;</code>
+       */
+      public Builder clearRoomKey() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        roomKey_ = getDefaultInstance().getRoomKey();
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:ChatKey)
+    }
+
+    static {
+      defaultInstance = new ChatKey(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:ChatKey)
+  }
+
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_SavedKeys_descriptor;
   private static
@@ -2088,6 +3033,11 @@ public final class KeyRing {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Key_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_ChatKey_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_ChatKey_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -2097,12 +3047,14 @@ public final class KeyRing {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rKeyRing.proto\"\036\n\tSavedKeys\022\021\n\003key\030\001 \003(" +
-      "\0132\004.Key\"\241\001\n\003Key\022\022\n\nprivateKey\030\001 \002(\014\022\021\n\tp" +
-      "ublicKey\030\002 \001(\014\022\014\n\004name\030\003 \002(\t\022\020\n\010openname" +
-      "\030\004 \001(\t\022\024\n\014prefixLength\030\005 \002(\005\022\017\n\007address\030" +
-      "\006 \001(\t\022\022\n\nuploadNode\030\007 \002(\t\022\030\n\rtimeOfLastG" +
-      "ET\030\010 \002(\t:\0010"
+      "\n\rKeyRing.proto\"9\n\tSavedKeys\022\021\n\003key\030\001 \003(" +
+      "\0132\004.Key\022\031\n\007roomKey\030\002 \003(\0132\010.ChatKey\"\241\001\n\003K" +
+      "ey\022\022\n\nprivateKey\030\001 \002(\014\022\021\n\tpublicKey\030\002 \001(" +
+      "\014\022\014\n\004name\030\003 \002(\t\022\020\n\010openname\030\004 \001(\t\022\024\n\014pre" +
+      "fixLength\030\005 \002(\005\022\017\n\007address\030\006 \001(\t\022\022\n\nuplo" +
+      "adNode\030\007 \002(\t\022\030\n\rtimeOfLastGET\030\010 \002(\t:\0010\"," +
+      "\n\007ChatKey\022\020\n\010roomName\030\001 \002(\t\022\017\n\007roomKey\030\002" +
+      " \002(\014"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2114,13 +3066,19 @@ public final class KeyRing {
           internal_static_SavedKeys_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_SavedKeys_descriptor,
-              new java.lang.String[] { "Key", });
+              new java.lang.String[] { "Key", "RoomKey", });
           internal_static_Key_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_Key_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Key_descriptor,
               new java.lang.String[] { "PrivateKey", "PublicKey", "Name", "Openname", "PrefixLength", "Address", "UploadNode", "TimeOfLastGET", });
+          internal_static_ChatKey_descriptor =
+            getDescriptor().getMessageTypes().get(2);
+          internal_static_ChatKey_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_ChatKey_descriptor,
+              new java.lang.String[] { "RoomName", "RoomKey", });
           return null;
         }
       };
