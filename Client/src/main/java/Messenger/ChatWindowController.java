@@ -366,7 +366,7 @@ public class ChatWindowController {
         imView.setFitHeight(35);
         HBox imageHBox = new HBox();
         imageHBox.getChildren().add(imView);
-        imageHBox.setPadding(new Insets(11, 0, 0, 0));
+        imageHBox.setPadding(new Insets(14, 0, 0, 0));
         h.getChildren().addAll(imageHBox, v);
         h.setAlignment(Pos.TOP_LEFT);
         h.setPrefWidth(590);
@@ -407,7 +407,7 @@ public class ChatWindowController {
         imView.setFitHeight(35);
         HBox imageHBox = new HBox();
         imageHBox.getChildren().add(imView);
-        imageHBox.setPadding(new Insets(11, 0, 0, 0));
+        imageHBox.setPadding(new Insets(14, 0, 0, 0));
         h.getChildren().addAll(v, imageHBox);
         h.setAlignment(Pos.TOP_RIGHT);
         h.setPrefWidth(590);

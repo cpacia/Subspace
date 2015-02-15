@@ -559,7 +559,7 @@ public class Controller {
                 }
                 writer.addEmail(addrsArray[0], fromAddress, writer.getNameFromAddress(fromAddress),
                         body, emailSubjectField.getText(), System.currentTimeMillis() / 1000L, true);
-                emailEditor.setHtmlText("<html><head></head><body text=\"#00d0d0\" bgcolor=\"#393939\" contenteditable=\"true\"></body></html>");
+                emailEditor.setHtmlText("<html><head></head><body text=\"#00d0d0\" style=\"width: 728px;word-wrap: break-word;\" bgcolor=\"#393939\" contenteditable=\"true\"></body></html>");
                 emailSubjectField.setText("");
                 emailToField.setText("");
                 cbEmailFrom.getSelectionModel().select(0);
@@ -570,6 +570,7 @@ public class Controller {
                 Image i = new Image(Main.class.getResourceAsStream("logo.png"));
                 Notification info = new Notification("Subspace", "Sent email to: " + name, i);
                 Notification.Notifier.INSTANCE.notify(info);
+                updateEmailListView();
             } else {
                 Action response = Dialogs.create()
                         .owner(Main.getStage())
