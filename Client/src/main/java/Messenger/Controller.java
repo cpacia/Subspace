@@ -34,6 +34,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.web.HTMLEditor;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
@@ -50,6 +52,7 @@ import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.DialogStyle;
 import org.controlsfx.dialog.Dialogs;
 
+import javax.sound.sampled.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -1011,6 +1014,13 @@ public class Controller {
                             }
                             Notification info = new Notification("Subspace", m.getSenderName()+": " + m.getDecryptedMessage(), image);
                             Notification.Notifier.INSTANCE.notify(info);
+                            try{
+                                AudioInputStream audioInputStream =
+                                    AudioSystem.getAudioInputStream(Main.class.getResourceAsStream("chime.wav"));
+                                Clip clip = AudioSystem.getClip();
+                                clip.open(audioInputStream);
+                                clip.start();}
+                            catch (IOException | UnsupportedAudioFileException | LineUnavailableException e){e.printStackTrace();}
                         }
                         if (!writer.conversationExists(cID)) {
                             writer.newChatConversation(cID, m, m.getSenderName(),
@@ -1042,6 +1052,13 @@ public class Controller {
                         }
                         Notification info = new Notification("Subspace", "New email from: " + m.getSenderName(), image);
                         Notification.Notifier.INSTANCE.notify(info);
+                        try{
+                            AudioInputStream audioInputStream =
+                                    AudioSystem.getAudioInputStream(Main.class.getResourceAsStream("chime.wav"));
+                            Clip clip = AudioSystem.getClip();
+                            clip.open(audioInputStream);
+                            clip.start();}
+                        catch (IOException | UnsupportedAudioFileException | LineUnavailableException e){e.printStackTrace();}
                     } else if (m.getMessageType() == Payload.MessageType.CHATROOM){
                         String roomName = writer.getNameFromAddress(m.getToAddress().toString());
                         writer.addChatRoomMessage(roomName, m);

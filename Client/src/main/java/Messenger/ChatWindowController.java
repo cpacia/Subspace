@@ -29,9 +29,11 @@ import org.bitcoinj.core.AddressFormatException;
 import org.controlsfx.dialog.DialogStyle;
 import org.controlsfx.dialog.Dialogs;
 
+import javax.sound.sampled.*;
 import java.awt.*;
 import java.awt.Image;
 import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -328,6 +330,13 @@ public class ChatWindowController {
                     String cID = m.getToAddress().toString() + m.getFromAddress();
                     if (cID.equals(conversationID) && m.getMessageType()== Payload.MessageType.CHAT) {
                         showIncomingMessage(m.getDecryptedMessage(), m.getSenderName(), m.getFromAddress());
+                        try{
+                            AudioInputStream audioInputStream =
+                                    AudioSystem.getAudioInputStream(Main.class.getResourceAsStream("notification.wav"));
+                            Clip clip = AudioSystem.getClip();
+                            clip.open(audioInputStream);
+                            clip.start();}
+                        catch (IOException | UnsupportedAudioFileException | LineUnavailableException e){e.printStackTrace();}
                     }
                 }
             });

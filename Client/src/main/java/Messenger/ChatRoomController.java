@@ -43,8 +43,10 @@ import org.controlsfx.glyphfont.GlyphFont;
 import org.controlsfx.glyphfont.GlyphFontRegistry;
 
 import javax.annotation.Nullable;
+import javax.sound.sampled.*;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -327,6 +329,13 @@ public class ChatRoomController {
         @Override
         public void onMessageReceived(Message m) {
             if (!fileWriter.keyExists(m.getFromAddress()) && m.getMessageType() == Payload.MessageType.CHATROOM) {
+                try{
+                    AudioInputStream audioInputStream =
+                            AudioSystem.getAudioInputStream(Main.class.getResourceAsStream("notification.wav"));
+                    Clip clip = AudioSystem.getClip();
+                    clip.open(audioInputStream);
+                    clip.start();}
+                catch (IOException | UnsupportedAudioFileException | LineUnavailableException e){e.printStackTrace();}
                 String senderName = m.getSenderName();
                 if (fileWriter.contactExists(m.getFromAddress())) {
                     senderName = fileWriter.getNameForContact(m.getFromAddress());
