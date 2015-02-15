@@ -2,6 +2,10 @@ package Messenger;
 
 import Messenger.Utils.openname.OpennameUtils;
 import org.apache.http.HttpException;
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialog;
+import org.controlsfx.dialog.DialogStyle;
+import org.controlsfx.dialog.Dialogs;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,6 +31,7 @@ public class MessageRetriever {
     private List<Thread> threads = new ArrayList<>();
     private List<HttpURLConnection> connections = new ArrayList<>();
     private List<String> deletedAddresses = new ArrayList<>();
+    private boolean errorDialogOpen = false;
 
     public MessageRetriever(List<KeyRing.Key> keys){
         this.keys = keys;
@@ -56,7 +61,7 @@ public class MessageRetriever {
             StringBuffer response = null;
             System.out.println("Getting messages after " + writer.getKeyFromAddress(addr.toString()).getTimeOfLastGET());
             try {
-                URL obj = new URL("http://localhost:8080/" +
+                URL obj = new URL("http://localhost:8335/" +
                         addr.getPrefix() + "?timestamp=" +
                         writer.getKeyFromAddress(addr.toString()).getTimeOfLastGET());
                 HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -73,7 +78,21 @@ public class MessageRetriever {
                 in.close();
                 connections.remove(con);
             } catch (IOException e) {
-                e.printStackTrace();
+                if (!errorDialogOpen) {
+                    errorDialogOpen = true;
+                    Action response2 = Dialogs.create()
+                            .owner(Main.getStage())
+                            .title("Error")
+                            .style(DialogStyle.CROSS_PLATFORM_DARK)
+                            .masthead("Failed to connect to localhost")
+                            .message("Make sure the server is running on port 8335.")
+                            .actions(Dialog.Actions.OK)
+                            .showError();
+                    if (response2 == Dialog.Actions.OK) {
+                        errorDialogOpen = false;
+                        break;
+                    }
+                }
             }
             System.out.println(addr.toString() + ": " + response.toString());
             JSONObject resp = null;
@@ -95,7 +114,23 @@ public class MessageRetriever {
             try{
                 resp = TorLib.getJSON(hostname, 8335, addr.getPrefix() + "?timestamp=" +
                         writer.getKeyFromAddress(addr.toString()).getTimeOfLastGET());
-            } catch (JSONException | IOException | HttpException e){e.printStackTrace();}
+            } catch (JSONException | IOException | HttpException e){
+                if (!errorDialogOpen) {
+                    errorDialogOpen = true;
+                    Action response = Dialogs.create()
+                            .owner(Main.getStage())
+                            .title("Error")
+                            .style(DialogStyle.CROSS_PLATFORM_DARK)
+                            .masthead("Failed to connect to " + hostname)
+                            .message("The server might not be available. Try again later.")
+                            .actions(Dialog.Actions.OK)
+                            .showError();
+                    if (response == Dialog.Actions.OK) {
+                        errorDialogOpen = false;
+                        break;
+                    }
+                }
+            }
             if (deletedAddresses.contains(addr.toString())){
                 deletedAddresses.remove(addr.toString());
                 break;

@@ -121,13 +121,13 @@ class WebResource(resource.Resource):
         post = {"_id": ObjectId(key),
                 "message": value,
                 "timestamp": datetime.datetime.utcnow()}
-        if db.command("dbstats").get("dataSize") < options["limit"]:
+        if db.command("dbstats").get("dataSize") < options["limit"] and len(value) < 100000:
             messages.insert(post)
             self.incoming_posts.append(key)
             log.msg("Setting %s = %s" % (key, value))
             self.kserver.set(key, value)
         else:
-            value = "DB full"
+            value = "Post rejected: Message is either too large or the server is full"
         return value
 
 
@@ -136,16 +136,19 @@ class WebResource(resource.Resource):
         Processes the delayed requests that did not have
         any data to return last time around.
         """
+        def hextobin(hexval):
+            thelen = len(hexval)*4
+            binval = bin(int(hexval, 16))[2:]
+            while ((len(binval)) < thelen):
+                binval = '0' + binval
+            return binval
         # run through delayed requests
         x = len(self.delayed_requests)
         for request in self.delayed_requests:
             x-=1
             reqkey = request.path.split("/")[-1]
             for postkey in self.incoming_posts:
-                binpostkey = str(bin(int(postkey, 16))[2:])
-                if len(binpostkey)<24:
-                    for x in range(0, 24-len(binpostkey)):
-                        binpostkey = "0" + binpostkey
+                binpostkey = hextobin(postkey)
                 if binpostkey[:len(reqkey)] == reqkey:
                     try:
                         map = {}

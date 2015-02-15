@@ -326,7 +326,7 @@ public class ChatRoomController {
     private class ChatRoomListener implements MessageListener {
         @Override
         public void onMessageReceived(Message m) {
-            if (!fileWriter.keyExists(m.getFromAddress())) {
+            if (!fileWriter.keyExists(m.getFromAddress()) && m.getMessageType() == Payload.MessageType.CHATROOM) {
                 String senderName = m.getSenderName();
                 if (fileWriter.contactExists(m.getFromAddress())) {
                     senderName = fileWriter.getNameForContact(m.getFromAddress());

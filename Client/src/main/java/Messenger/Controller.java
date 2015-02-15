@@ -565,7 +565,7 @@ public class Controller {
                 cbEmailFrom.getSelectionModel().select(0);
                 String name = addrsArray[0];
                 if (writer.contactExists(name)) {
-                    name = writer.getNameFromAddress(addrsArray[0]);
+                    name = writer.getNameForContact(addrsArray[0]);
                 }
                 Image i = new Image(Main.class.getResourceAsStream("logo.png"));
                 Notification info = new Notification("Subspace", "Sent email to: " + name, i);

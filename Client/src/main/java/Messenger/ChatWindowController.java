@@ -295,7 +295,12 @@ public class ChatWindowController {
         Main.controller.addChatWindow(conversationID);
         paneOne.setVisible(false);
         paneTwo.setVisible(true);
-        lblTo.setText("  " + toAddress.toString());
+        if (fileWriter.contactExists(toAddress.toString())){
+            lblTo.setText("  " + fileWriter.getNameForContact(toAddress.toString()));
+        }
+        else {
+            lblTo.setText("  " + toAddress.toString());
+        }
         lblTo.setStyle("-fx-text-fill: #dc78dc; -fx-font-size: 16");
         ImageView imView2 = null;
         if (fileWriter.contactExists(toAddress.toString()) && fileWriter.hasOpenname(toAddress.toString())){
