@@ -70,7 +70,7 @@
                         <Button fx:id="btnForward" layoutX="643.0" layoutY="83.0" onAction="#forward" onMousePressed="#forwardButtonPressed" onMouseReleased="#forwardButtonReleased" mnemonicParsing="false" prefHeight="25.0" prefWidth="78.0" text="Forward" style="-fx-background-color: #393939; -fx-text-fill: #dc78dc; -fx-border-color: #dc78dc;"/>
                         <Label fx:id="lblFrom" layoutX="114.0" layoutY="14.0"  prefWidth="485.0" style="-fx-text-fill: #e7e7e7;"/>
                         <Label fx:id="lblSubject" layoutX="114.0" layoutY="42.0" prefWidth="485.0" style="-fx-text-fill: #e7e7e7;"/>
-                        <TextField fx:id="txtTo" layoutX="105.0" layoutY="70.0"  prefWidth="485.0" editable="false" style="-fx-text-fill: #e7e7e7; -fx-background-color: transparent;"/>
+                        <TextField fx:id="txtTo" layoutX="105.0" layoutY="67.0"  prefWidth="485.0" editable="false" style="-fx-text-fill: #e7e7e7; -fx-background-color: transparent;"/>
                         <Label fx:id="lblDate" layoutX="115.0" layoutY="98.0"  prefWidth="473.0" style="-fx-text-fill: #e7e7e7;"/>
                      </children>
                   </Pane>
