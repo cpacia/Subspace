@@ -114,9 +114,13 @@ A length of 32 bits would imply the user would only download her messages, minim
 
 #####Scalability
 
-The network described here would scale much better than Bitmessage as the messages would not be stored by the entire network, but rather only by the server to which they were uploaded (and possibly other servers which voluntarily chose to download and store some messages locally for quicker access).
+The network described here would scale much better than Bitmessage as the messages would not be stored by the entire network, but rather only by the server to which they were uploaded.
 
-Furthermore, as the on and off ramps to the network, the servers could (if needed) charge a small fee for their services, incentivizing people to start up additional servers when the load gets high and rationing disk space by price rather than proof of work.
+As the on and off ramps to the network, the servers could (if needed) charge a small fee for their services, incentivizing people to start up additional servers when the load gets high and rationing disk space by price rather than proof of work.
+
+While the network model differs from that of purely p2p network run by volunteers, it can still benefit from volunteer nodes. With minimal configuration, people with spare disk space and bandwidth, but without the time or resources needed to run a full server, could run a network-only node. Such a node would not accept POSTs from clients, but would operate as a node in the DHT, randomly download and store a configurable amount of messages from the network ― inserting its IP address into the DHT accordingly ― and serve them when asked. 
+
+This would provide redundancy and resilience to the network. With enough nodes, each storing only a fraction of the total messages, we can guarantee all messages will remain reachable at all times, even if a server goes down.
 
 #####Anti-spam
 
