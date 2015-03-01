@@ -70,8 +70,8 @@ class WebResource(resource.Resource):
             value = value or NoResource().render(request)
             request.write(value)
             request.finish()
-        if "user" in request.args:
-            u = request.args["user"][0]
+        if "timestamp" not in request.args:
+            u = request.path.split("/")[-1]
             respond(fs.get_last_version(user=u).read())
             return server.NOT_DONE_YET
         prefix = request.path.split("/")[-1]
