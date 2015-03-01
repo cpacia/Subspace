@@ -6,6 +6,7 @@ from twisted.web import resource, server
 from twisted.web.resource import NoResource
 
 from pymongo import MongoClient
+import gridfs
 
 import sys, os
 sys.path.append(os.path.dirname(__file__))
@@ -35,6 +36,7 @@ udpserver.setServiceParent(application)
 
 db = MongoClient().message_database
 messages = db.messages
+fs = gridfs.GridFS(db)
 if "ttl" in options:
     messages.ensure_index("timestamp", expireAfterSeconds=options["ttl"])
 else:
@@ -68,6 +70,10 @@ class WebResource(resource.Resource):
             value = value or NoResource().render(request)
             request.write(value)
             request.finish()
+        if "user" in request.args:
+            u = request.args["user"][0]
+            respond(fs.get_last_version(user=u).read())
+            return server.NOT_DONE_YET
         prefix = request.path.split("/")[-1]
         ts = request.args["timestamp"][0]
         utc = datetime.datetime.utcfromtimestamp(float(ts))
@@ -116,10 +122,16 @@ class WebResource(resource.Resource):
             return server.NOT_DONE_YET
 
     def render_POST(self, request):
+
+        if 'file' in request.args:
+            u = request.args["user"]
+            print request.args["file"][0]
+            fs.put(request.args["file"][0], user=u)
+            return "File uploaded successfully"
         key = request.path.split('/')[-1]
         value = request.content.getvalue()
         post = {"_id": ObjectId(key),
-                "message": value,
+                 "message": value,
                 "timestamp": datetime.datetime.utcnow()}
         if db.command("dbstats").get("dataSize") < options["limit"] and len(value) < 100000:
             messages.insert(post)
@@ -176,6 +188,6 @@ webserver.setServiceParent(application)
 
 
 # To test, you can set with:
-# $> curl --data <cipherText> http://localhost:8335/prefix?timestamp=
+# $> curl --data <cipherText> http://localhost:8335/12bytekey
 # and get with:
-# $> curl http://localhost:8335/prefix
+# $> curl http://localhost:8335/prefix?timestamp=
