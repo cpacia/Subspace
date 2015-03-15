@@ -7,7 +7,6 @@ import org.bouncycastle.jce.interfaces.ECPublicKey;
 import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 
 import org.bouncycastle.jce.spec.ECPrivateKeySpec;
-import org.bouncycastle.jce.spec.ECPublicKeySpec;
 import org.bouncycastle.util.encoders.Hex;
 import org.spongycastle.asn1.sec.SECNamedCurves;
 import org.spongycastle.asn1.x9.X9ECParameters;
@@ -24,7 +23,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
 /**
- * Created by chris on 1/26/15.
+ * Class for creating an elliptic curve key pair using the secp256k1 curve parameters.
  */
 public class ECKey {
     public static final X9ECParameters CURVE_PARAMS = CustomNamedCurves.getByName("secp256k1");
@@ -41,6 +40,7 @@ public class ECKey {
     private ECPrivateKey privKey;
     private ECPublicKey pubKey;
 
+    /**Create a new random key pair*/
     public ECKey() {
         ECNamedCurveParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec("secp256k1");
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
@@ -57,16 +57,19 @@ public class ECKey {
         ((ECPointEncoder) this.pubKey).setPointFormat("COMPRESSED");
     }
 
+    /**Create a key pair by passing in the keys in byte format*/
     public ECKey(byte[] privKeyBytes, byte[] pubKeyBytes) {
         this.pubKey = getPubKeyFromBytes(pubKeyBytes);
         this.privKey = getPrivKeyFromBytes(privKeyBytes);
     }
 
+    /**Create a key pair by passing in the keys in the EC key objects*/
     public ECKey(ECPrivateKey privKey, ECPublicKey pubKey) {
         this.pubKey = pubKey;
         this.privKey = privKey;
     }
 
+    /**Create a new key pair from the private key object*/
     public ECKey(ECPrivateKey privateKey) {
         X9ECParameters ecp = SECNamedCurves.getByName("secp256k1");
         ECDomainParameters domainParams = new ECDomainParameters(ecp.getCurve(),
@@ -78,22 +81,22 @@ public class ECKey {
 
     }
 
-    public static ECKey fromPrivOnly(ECPrivateKey privateKey) {
-        return new ECKey(privateKey);
-    }
-
+    /**Create a new key pair from private key bytes*/
     public static ECKey fromPrivOnly(byte[] privKeyBytes) {
         return new ECKey(getPrivKeyFromBytes(privKeyBytes));
     }
 
+    /**Create an ECKey object from the public key bytes. The object will only contain the public key instance*/
     public static ECKey fromPubOnly(byte[] pubKeyBytes) {
         return new ECKey(null, getPubKeyFromBytes(pubKeyBytes));
     }
 
+    /**Create an ECKey object from the public key object. It will only contain the public key instance*/
     public static ECKey fromPubOnly(ECPublicKey pubKey) {
         return new ECKey(null, pubKey);
     }
 
+    /**Boolean checking if the ECKey instance has a matching private key or is it pub only*/
     public boolean hasPrivKey() {
         if (this.privKey != null) {
             return true;
@@ -102,23 +105,28 @@ public class ECKey {
         }
     }
 
+    /**Returns the private key object*/
     public ECPrivateKey getPrivKey() {
         return this.privKey;
     }
 
+    /**Returns the private key in bytes*/
     public byte[] getPrivKeyBtyes() {
         return this.privKey.getD().toByteArray();
     }
 
+    /**Returns the public key object*/
     public ECPublicKey getPubKey() {
         return this.pubKey;
     }
 
+    /**Returns the public key bytes in compressed format*/
     public byte[] getPubKeyBytes() {
         ECPoint pubPoint = CURVE.getCurve().decodePoint(this.pubKey.getQ().getEncoded(true));
         return pubPoint.getEncoded();
     }
 
+    /**Returns the ECPrivateKey object given the private key bytes*/
     public static ECPrivateKey getPrivKeyFromBytes(byte[] privKeyBytes) {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         ECNamedCurveParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec("secp256k1");
@@ -137,7 +145,11 @@ public class ECKey {
         return privateKey;
     }
 
-    //There's got to be a better way to do this
+    /**
+     * Returns the ECPublicKey object given the pubkey bytes.
+     * ECPublicKey is encoded in X.509 format, there should be a better way to covert from bytes than this.
+     */
+
     public static ECPublicKey getPubKeyFromBytes(byte[] pubKeyBytes) {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         if (pubKeyBytes.length == 33) {

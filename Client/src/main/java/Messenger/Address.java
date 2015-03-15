@@ -13,11 +13,10 @@ import java.security.SecureRandom;
 import java.util.Arrays;
 
 /**
- * Created by chris on 1/26/15.
+ * Class for creating a subspace address.
+ * The address format is <version: 1><prefix: 1><public key: 33><checksum: 4>
  */
 public class Address {
-
-    //Address format:
 
     private ECKey key;
     public static int version = 0;
@@ -27,6 +26,7 @@ public class Address {
     private byte[] checksum = new byte[4];
     private byte[] versionedchecksummed;
 
+    /**Creates an address from a new ECKey*/
     public Address(int prefixLength) throws InvalidPrefixLengthException{
         if (prefixLength > 32) throw new InvalidPrefixLengthException();
         ECKey key = new ECKey();
@@ -34,16 +34,19 @@ public class Address {
         createAddressFromKey(prefixLength, key);
     }
 
+    /**Creates an address using a supplied ECKey*/
     public Address(int prefixLength, ECKey key) throws InvalidPrefixLengthException{
         if (prefixLength > 32) throw new InvalidPrefixLengthException();
         this.key = key;
         createAddressFromKey(prefixLength, key);
     }
 
+    /**Creates an address from its string representation*/
     public Address(String address) throws AddressFormatException{
         parse(address);
     }
 
+    /**Creates the address by concatenating the various byte arrays*/
     private void createAddressFromKey(int prefixLength, ECKey key){
         this.prefixLength = prefixLength;
         byte[] length = new byte[]{(byte) prefixLength};
@@ -72,6 +75,7 @@ public class Address {
         this.versionedchecksummed = outputStream2.toByteArray();
     }
 
+    /**Takes in the string representation of the address and parses it into it's parts*/
     private void parse(String address) throws AddressFormatException{
         this.versionedchecksummed = Base58.decode(address);
         this.version = this.versionedchecksummed[0] & 0xFF;
@@ -88,26 +92,32 @@ public class Address {
         this.key = ECKey.fromPubOnly(this.publicKey);
     }
 
+    /**Returns the base 58 encoded address*/
     public String toString(){
         return Base58.encode(versionedchecksummed);
     }
 
+    /**Returns the public key object for the address*/
     public ECPublicKey getPublicKey() {
         return (ECPublicKey) this.key.getPubKey();
     }
 
+    /**Returns the ECKey for the address*/
     public ECKey getECKey(){
         return key;
     }
 
+    /**Returns the prefix length used by this address*/
     public int getPrefixLength(){
         return prefixLength;
     }
 
+    /**Returns the first four bytes of the public key*/
     public byte[] getFullPrefix(){
         return prefix;
     }
 
+    /**Returns the prefix as a binary string*/
     public String getPrefix(){
         if (prefixLength==0){return "";}
         else {
@@ -120,6 +130,10 @@ public class Address {
         }
     }
 
+    /**
+     * Tests that the address is formatted correct and the checksum is valid.
+     * Returns True if it's valid.
+     */
     public static boolean validateAddress(String addr){
         byte[] versionedchecksummed;
         try{versionedchecksummed = Base58.decode(addr);}

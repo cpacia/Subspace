@@ -13,12 +13,13 @@ import java.io.ByteArrayOutputStream;
 import java.security.MessageDigest;
 
 /**
- * Created by chris on 1/29/15.
+ * Class for creating an identicon from a string.
  */
 public class Identicon {
 
     private static final String IDENTICON_IMAGE_FORMAT = "PNG";
 
+    /**Creates an ImageView of an identicon from the given string. The color parameter is the background color*/
     public static ImageView generate(String name, Color color) throws Exception{
         IdenticonRenderer renderer = new NineBlockIdenticonRenderer2(color);
         MessageDigest md;

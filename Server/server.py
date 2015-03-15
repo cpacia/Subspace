@@ -8,6 +8,8 @@ from twisted.web.resource import NoResource
 from pymongo import MongoClient
 import gridfs
 
+from OpenSSL import SSL
+
 import sys, os
 sys.path.append(os.path.dirname(__file__))
 from kademlia.network import Server
@@ -48,6 +50,25 @@ def unix_time(utc):
         delta = utc - epoch
         return delta.total_seconds()
 
+class ChainedOpenSSLContextFactory(ssl.DefaultOpenSSLContextFactory):
+    def __init__(self, privateKeyFileName, certificateChainFileName,
+                 sslmethod=SSL.SSLv23_METHOD):
+        """
+        @param privateKeyFileName: Name of a file containing a private key
+        @param certificateChainFileName: Name of a file containing a certificate chain
+        @param sslmethod: The SSL method to use
+        """
+        self.privateKeyFileName = privateKeyFileName
+        self.certificateChainFileName = certificateChainFileName
+        self.sslmethod = sslmethod
+        self.cacheContext()
+
+    def cacheContext(self):
+        ctx = SSL.Context(self.sslmethod)
+        ctx.use_certificate_chain_file(self.certificateChainFileName)
+        ctx.use_privatekey_file(self.privateKeyFileName)
+        self._context = ctx
+
 class WebResource(resource.Resource):
     def __init__(self, kserver):
         resource.Resource.__init__(self)
@@ -66,13 +87,15 @@ class WebResource(resource.Resource):
         return self
 
     def render_GET(self, request):
-        def respond(value):
+        def respond(value, is_payment_request):
             value = value or NoResource().render(request)
+            if is_payment_request:
+                request.responseHeaders.addRawHeader(b"content-type", b"application/bitcoin-paymentrequest")
             request.write(value)
             request.finish()
         if "timestamp" not in request.args:
             u = request.path.split("/")[-1]
-            respond(fs.get_last_version(user=u).read())
+            respond(fs.get_last_version(user=u).read(), True)
             return server.NOT_DONE_YET
         prefix = request.path.split("/")[-1]
         ts = request.args["timestamp"][0]
@@ -113,7 +136,7 @@ class WebResource(resource.Resource):
             dict[str(post.get("_id"))] = post.get("message")
         if bool(dict)==True:
             dict["timestamp"] = unix_time(post.get("timestamp"))
-            respond(json.dumps(dict))
+            respond(json.dumps(dict), False)
             return server.NOT_DONE_YET
         else:
             self.delayed_requests.append(request)
@@ -125,7 +148,6 @@ class WebResource(resource.Resource):
 
         if 'file' in request.args:
             u = request.args["user"]
-            print request.args["file"][0]
             fs.put(request.args["file"][0], user=u)
             return "File uploaded successfully"
         key = request.path.split('/')[-1]
@@ -180,8 +202,8 @@ class WebResource(resource.Resource):
 
 website = server.Site(WebResource(kserver))
 if "useSSL" in options:
-    webserver = internet.SSLServer(8335, website, ssl.DefaultOpenSSLContextFactory(
-            options["sslkey"], options["sslcert"]))
+    webserver = internet.SSLServer(8335, website, ChainedOpenSSLContextFactory(options["sslkey"], options["sslcert"]))
+    #webserver = internet.SSLServer(8335, website, ssl.DefaultOpenSSLContextFactory(options["sslkey"], options["sslcert"]))
 else:
     webserver = internet.TCPServer(8080, website)
 webserver.setServiceParent(application)

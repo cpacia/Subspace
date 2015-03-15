@@ -1,7 +1,7 @@
 package Messenger;
 
 /**
- * Created by chris on 2/14/15.
+ * Exception to be thrown if the signature on received messages is invalid.
  */
 public class BadSignatureException extends Exception{
     public BadSignatureException() {

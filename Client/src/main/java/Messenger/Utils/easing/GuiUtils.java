@@ -10,6 +10,7 @@ import javafx.util.Duration;
 import java.net.URL;
 import static com.google.common.base.Preconditions.checkState;
 
+/**A class for adding transition animations to panes*/
 public class GuiUtils {
 
     public static final int UI_ANIMATION_TIME_MSEC = 600;

@@ -13,11 +13,18 @@ import java.io.*;
 import java.net.URL;
 
 /**
- * Created by chris on 2/8/15.
+ * Class for downloading the openname avatar and saving it to disk
  */
 public class OpennameUtils {
 
+    /**
+     * Downloads the openname profie while blocking.
+     * Saves the avatar to disk and returns the formatted name.
+     **/
     public static String blockingOpennameDownload(String openname, String dataFolderPath){
+        //I haven't yet figured out how to parse the avatar image from a raw http query response.
+        //For now I'm using ImageIO.read() which does not send DNS query over Tor.
+        //To allow that we have to set some proxy settings.
         System.getProperties().put( "proxySet", "true" );
         System.getProperties().put( "socksProxyHost", "127.0.0.1" );
         System.getProperties().put( "socksProxyPort", "9150" );
@@ -36,12 +43,17 @@ public class OpennameUtils {
             System.getProperties().put( "proxySet", "false" );
             return null;
         }
+        //Reset the proxy settings so we don't keep leaking our IP during the DNS query.
         System.getProperties().put( "proxySet", "false" );
         return formatted;
     }
 
+    /**Creates a new thread and downloads the avatar and saves it to disk**/
     public static void downloadAvatar(String openname, String dataFolderPath,
                                       OpennameListener listener, Address addr){
+        //I haven't yet figured out how to parse the avatar image from a raw http query response.
+        //For now I'm using ImageIO.read() which does not send DNS query over Tor.
+        //To allow that we have to set some proxy settings.
         System.getProperties().put( "proxySet", "true" );
         System.getProperties().put( "socksProxyHost", "127.0.0.1" );
         System.getProperties().put( "socksProxyPort", "9150" );
@@ -63,14 +75,17 @@ public class OpennameUtils {
         };
         Thread t = new Thread(task);
         t.start();
+        //Reset the proxy settings so we don't keep leaking our IP during the DNS query.
         System.getProperties().put( "proxySet", "false" );
     }
 
+    /**Download the openname json object over Tor**/
     private static JSONObject getOneNameJSON(String openname) throws JSONException, HttpException, IOException{
         return TorLib.getJSON("bitcoinauthenticator.org",
                     "onename.php?id=" + openname + ".json");
     }
 
+    /**Crop the avatar into a square so it looks better**/
     private static BufferedImage cropDownloadedAvatarImage(BufferedImage image) throws IOException {
         //Scale the image
         int imageWidth = image.getWidth();

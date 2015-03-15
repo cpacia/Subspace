@@ -9,10 +9,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * Created by chris on 2/13/15.
+ * Base58 encoding and decoding with a 4 byte checksum added.
  */
 public class Base58Check {
 
+    /**Encode a hex string to base 58 while appending a checksum*/
     public static String encode(String hex){
         byte [] hexBytes = hexStringToByteArray(hex);
         byte [] checksum = new byte[4];
@@ -26,10 +27,12 @@ public class Base58Check {
         return Base58.encode(outputStream.toByteArray());
     }
 
+    /**Decodes a base 58 string and tests its checksum*/
     public static byte[] decode(String base58Check) throws AddressFormatException{
         return Base58.decodeChecked(base58Check);
     }
 
+    /**Utitily method for going from a hex string to byte array*/
     public static byte[] hexStringToByteArray(String s) {
         int len = s.length();
         byte[] data = new byte[len / 2];

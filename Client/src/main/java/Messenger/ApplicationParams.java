@@ -4,13 +4,18 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by chris on 1/22/15.
+ * This class holds the location of the application data directory as well as the OS type
  */
 public class ApplicationParams {
+
+    //Name of the appliction. Will be used when creating the data folder.
     public static final String APP_NAME = "Subspace";
+    //File object of the data directory
     private static File applicationDataFolder;
+    //The type of OS the application is running on.
     private static OS_TYPE osType;
 
+    /**Gets the OS type and data folder. Creates a new data folder if it doesn't exist.*/
     public ApplicationParams(String[] args) throws IOException{
         String tmp = null;
         try {
@@ -36,14 +41,17 @@ public class ApplicationParams {
         }
     }
 
+    /**Returns the application data directory*/
     public File getApplicationDataFolder(){
         return this.applicationDataFolder;
     }
 
+    /**Returns the type of OS*/
     public OS_TYPE getOsType(){
         return osType;
     }
 
+    /**Enum for defining the OS type*/
     public enum OS_TYPE {
         WINDOWS,
         LINUX,
@@ -79,6 +87,7 @@ public class ApplicationParams {
         }
     }
 
+    /**Exception if we don't recognize the OS*/
     public static class WrongOperatingSystemException extends Exception {
         public WrongOperatingSystemException() {
             super();

@@ -11,7 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by chris on 1/30/15.
+ * This class handles all reading and writing from disk.
+ * The format on disk follows the protobuf format in the contacts.proto, history.proto, and keyring.proto
+ * The builders handle the reading and writing, while the rest of the methods add or retrieve specific data.
+ * The method names should be explanatory enough to tell what they do.
  */
 public class FileWriter {
 
@@ -22,7 +25,7 @@ public class FileWriter {
     File contactsFile;
     String contactsFilePath;
 
-
+    /**Will create the data files on disk if they don't already exist*/
     public FileWriter() {
         boolean b = (new File(Main.params.getApplicationDataFolder()+"/avatars/")).mkdirs();
         keyFilePath = Main.params.getApplicationDataFolder() + "/keyring.dat";
@@ -147,15 +150,6 @@ public class FileWriter {
     public List<Contacts.Contact> getContacts(){
         Contacts.ContactList.Builder b = getContactsFileBuilder();
         return b.getContactList();
-    }
-
-    public boolean isContactFresh(String address){
-        for (Contacts.Contact c : getContacts()){
-            if (c.getAddress().equals(address)){
-                return c.getIsFresh();
-            }
-        }
-        return false;
     }
 
     public void addContact(String address, String name, @Nullable String openname){

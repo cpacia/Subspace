@@ -1,7 +1,7 @@
 package Messenger;
 
 /**
- * Created by chris on 2/3/15.
+ * Exception to be thrown if the Hmac check on received messages fails.
  */
 
 public class BadHMACException extends Exception {

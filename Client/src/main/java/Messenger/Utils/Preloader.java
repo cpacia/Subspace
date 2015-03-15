@@ -10,14 +10,18 @@ import javax.imageio.ImageIO;
 import java.io.*;
 
 /**
- * Created by chris on 2/14/15.
+ * This class loads the app with a contact (chris pacia) and a chat room (#dilithiumchamber) if it's the first
+ * time the messenger has been loaded.
  */
 public class Preloader {
 
     static FileWriter f = new FileWriter();
 
+    /**Sets the contact and chat room*/
     public static void set(){
+        //If this is the first startup
         if (!f.getPreloaded()){
+            //Move the avatar image from resources to the avatar folder
             try {
                 InputStream inputStream = Main.class.getResourceAsStream("chrispacia.jpg");
                 OutputStream outputStream = new FileOutputStream(
@@ -28,7 +32,9 @@ public class Preloader {
                     outputStream.write(bytes, 0, read);
                 }
             } catch (IOException e){e.printStackTrace();}
+            //Add the contact
             f.addContact("117jqTQWfRp7GNJgjnMEJUw6QDQY5WFvhuMVHdYgxwTcxKQ2xBLW", "Chris Pacia", "chrispacia");
+            //Add the chatroom
             String roomName = "#dilithiumchamber";
             f.addChatRoom(roomName, false);
             byte[] privKey = Utils.doubleDigest(roomName.getBytes());
@@ -38,6 +44,7 @@ public class Preloader {
             } catch (InvalidPrefixLengthException e2) {e2.printStackTrace();}
             f.addKey(ecKey, roomName, 32, addr.toString(),
                     "bitcoinauthenticator.org", null, null);
+            //Set the preloaded boolean in contacts to true as it has now been loaded.
             f.setPreloaded(true);
         }
     }

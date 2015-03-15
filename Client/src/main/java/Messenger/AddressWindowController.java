@@ -47,7 +47,8 @@ import java.util.Optional;
 import static Messenger.Utils.easing.GuiUtils.*;
 
 /**
- * Created by chris on 1/27/15.
+ * The controller for Address window.
+ * Handles all UI actions.
  */
 public class AddressWindowController {
     @FXML
@@ -97,10 +98,15 @@ public class AddressWindowController {
     Stage stage;
     String importedPrivKey = "";
 
+    /**
+     * Passes in our stage so we can use it.
+     * This is called by controller launching this window.
+     */
     public void setStage(Stage stage){
         this.stage = stage;
     }
 
+    /**Automatically called when the controller loads*/
     public void initialize() {
         FileWriter f = new FileWriter();
         data = FXCollections.observableArrayList();
