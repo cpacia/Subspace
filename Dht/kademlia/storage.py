@@ -66,6 +66,31 @@ class ForgetfulStorage(object):
             return self[key]
         return default
 
+    def get_range(self, prefix, default=None):
+        self.cull()
+        results = []
+        length = len(prefix)
+        min = prefix
+        max = prefix
+        for x in range(0, 160-length):
+            min += "0"
+            max += "1"
+        max = hex(int(max, 2))[2:-1]
+        min = hex(int(min, 2))[2:-1]
+        if len(min) < 40:
+            for x in range(0, 40-len(min)):
+                min = "0" + min
+        if len(max) < 40:
+            for x in range(0, 40-len(max)):
+                max = "0" + max
+        for key in self.data:
+            if max > key > min:
+                results.append(self[key])
+        if len(results) is not 0:
+            return results
+        else:
+            return default
+
     def __getitem__(self, key):
         self.cull()
         return self.data[key][1]
