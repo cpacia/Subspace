@@ -1,0 +1,11 @@
+/target/
+/dist/
+*.pickle
+*.pid
+_trial_temp
+apidoc
+*.pyc
+build
+dist
+kademlia.egg-info
+docs/_build
