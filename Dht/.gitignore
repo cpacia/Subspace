@@ -8,4 +8,5 @@ apidoc
 build
 dist
 kademlia.egg-info
+/.idea
 docs/_build

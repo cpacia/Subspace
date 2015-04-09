@@ -12,7 +12,7 @@ from kademlia.protocol import KademliaProtocol
 from kademlia.utils import deferredDict, digest
 from kademlia.storage import ForgetfulStorage
 from kademlia.node import Node
-from kademlia.crawling import ValueSpiderCrawl
+from kademlia.crawling import RangeSpiderCrawl
 from kademlia.crawling import NodeSpiderCrawl
 
 
@@ -23,6 +23,7 @@ class Server(object):
     """
 
     def __init__(self, ksize=20, alpha=3, id=None, storage=None):
+	print "**************** USING NEW VERSION *******************"
         """
         Create a server instance.  This will start listening on the given port.
 
@@ -133,20 +134,37 @@ class Server(object):
         Returns:
             :class:`None` if not found, the value otherwise.
         """
-        node = Node(digest(key))
-        nearest = self.protocol.router.findNeighbors(node)
+        print "1"
+        length = len(key)
+        min = key
+        max = key
+        for x in range(0, 160-length):
+            min += "0"
+            max += "1"
+        max = hex(int(max, 2))[2:-1]
+        min = hex(int(min, 2))[2:-1]
+        if len(min) < 40:
+            for x in range(0, 40-len(min)):
+                min = "0" + min
+        if len(max) < 40:
+            for x in range(0, 40-len(max)):
+                max = "0" + max
+        print "2"
+        lowest_node = Node(min)
+        highest_node = Node(max)
+        nearest = self.protocol.router.findNeighbors(lowest_node)
         if len(nearest) == 0:
             self.log.warning("There are no known neighbors to get key %s" % key)
             return defer.succeed(None)
-        spider = ValueSpiderCrawl(self.protocol, node, nearest, self.ksize, self.alpha)
-        return spider.find()
+        spider = RangeSpiderCrawl(self.protocol, lowest_node, highest_node, self.ksize, self.alpha)
+        spider.find()
 
     def set(self, key, value):
         """
         Set the given key to the given value in the network.
         """
         self.log.debug("setting '%s' = '%s' on network" % (key, value))
-        dkey = digest(key)
+        dkey = key
 
         def store(nodes):
             self.log.info("setting '%s' on %s" % (key, map(str, nodes)))

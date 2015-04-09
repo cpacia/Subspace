@@ -60,6 +60,21 @@ class SpiderCrawl(object):
             self.nearest.markContacted(peer)
         return deferredDict(ds).addCallback(self._nodesFound)
 
+class RangeSpiderCrawl():
+    def __init__(self, protocol, lowest_node, highest_node, ksize, alpha):
+        print "3"
+        self.protocol = protocol
+        self.ksize = ksize
+        self.alpha = alpha
+        self.lowest_node = lowest_node
+        self.highest_node = highest_node
+
+    def find(self):
+        nearest = self.protocol.router.findNeighbors(self.lowest_node)
+        spider = NodeSpiderCrawl(self.protocol, self.lowest_node, nearest, self.ksize, self.alpha)
+        self.lowest_node = spider.find()
+        print self.lowest_node
+
 
 class ValueSpiderCrawl(SpiderCrawl):
     def __init__(self, protocol, node, peers, ksize, alpha):
