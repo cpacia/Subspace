@@ -11,6 +11,7 @@ cached-microdescs.new
 *.config
 *.spvchain
 *.wallet
+*.pyc
 *.orig
 PairingQRCode.png
 bin/

@@ -23,7 +23,6 @@ class Server(object):
     """
 
     def __init__(self, ksize=20, alpha=3, id=None, storage=None):
-	print "**************** USING NEW VERSION *******************"
         """
         Create a server instance.  This will start listening on the given port.
 
@@ -134,7 +133,6 @@ class Server(object):
         Returns:
             :class:`None` if not found, the value otherwise.
         """
-        print "1"
         length = len(key)
         min = key
         max = key
@@ -149,14 +147,13 @@ class Server(object):
         if len(max) < 40:
             for x in range(0, 40-len(max)):
                 max = "0" + max
-        print "2"
         lowest_node = Node(min)
         highest_node = Node(max)
         nearest = self.protocol.router.findNeighbors(lowest_node)
         if len(nearest) == 0:
             self.log.warning("There are no known neighbors to get key %s" % key)
             return defer.succeed(None)
-        spider = RangeSpiderCrawl(self.protocol, lowest_node, highest_node, self.ksize, self.alpha)
+        spider = RangeSpiderCrawl(self.protocol, key, lowest_node, highest_node, self.ksize, self.alpha)
         spider.find()
 
     def set(self, key, value):

@@ -61,19 +61,24 @@ class SpiderCrawl(object):
         return deferredDict(ds).addCallback(self._nodesFound)
 
 class RangeSpiderCrawl():
-    def __init__(self, protocol, lowest_node, highest_node, ksize, alpha):
-        print "3"
+    def __init__(self, protocol, prefix, lowest_node, highest_node, ksize, alpha):
         self.protocol = protocol
+        self.prefix = prefix
         self.ksize = ksize
         self.alpha = alpha
         self.lowest_node = lowest_node
         self.highest_node = highest_node
 
     def find(self):
+        def process_result(nodes):
+            for node in nodes:
+                self.lowest_node = node
+                ret = self.protocol.callFindRange(self.lowest_node, self.lowest_node, self.prefix)
+                print ret
         nearest = self.protocol.router.findNeighbors(self.lowest_node)
         spider = NodeSpiderCrawl(self.protocol, self.lowest_node, nearest, self.ksize, self.alpha)
-        self.lowest_node = spider.find()
-        print self.lowest_node
+        spider.find().addCallback(process_result)
+
 
 
 class ValueSpiderCrawl(SpiderCrawl):

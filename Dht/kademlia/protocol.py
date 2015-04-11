@@ -4,7 +4,7 @@ from twisted.internet import defer
 
 from rpcudp.protocol import RPCProtocol
 
-from kademlia.node import Node
+from kademlia.node import Node, NodeHeap
 from kademlia.routing import RoutingTable
 from kademlia.log import Logger
 from kademlia.utils import digest
@@ -16,6 +16,7 @@ class KademliaProtocol(RPCProtocol):
         self.router = RoutingTable(self, ksize, sourceNode)
         self.storage = storage
         self.sourceNode = sourceNode
+        self.ksize = ksize
         self.log = Logger(system=self)
 
     def getRefreshIDs(self):
@@ -57,11 +58,14 @@ class KademliaProtocol(RPCProtocol):
             return self.rpc_find_node(sender, nodeid, key)
         return {'value': value}
 
-    def rpc_find_range(self, sender, nodeid, prefix):
+    def rpc_find_range(self, sender, nodeid, key, prefix):
         source = Node(nodeid, sender[0], sender[1])
         self.router.addContact(source)
         values = self.storage.get_range(prefix, None)
-        neighbors = self.router.findNeighbors(self.sourceNode)
+        peers = self.router.findNeighbors(self.sourceNode)
+        nearest = NodeHeap(self.sourceNode, self.ksize)
+        nearest.push(peers)
+        neighbors = nearest.getIDs()
         return {'values': values, 'neighbors': neighbors}
 
     def callFindNode(self, nodeToAsk, nodeToFind):
@@ -74,9 +78,9 @@ class KademliaProtocol(RPCProtocol):
         d = self.find_value(address, self.sourceNode.id, nodeToFind.id)
         return d.addCallback(self.handleCallResponse, nodeToAsk)
 
-    def callFindRange(self, nodeToAsk, prefix):
+    def callFindRange(self, nodeToAsk, nodeToFind, prefix):
         address = (nodeToAsk.ip, nodeToAsk.port)
-        d = self.find_range(address, self.sourceNode.id, prefix)
+        d = self.find_range(address, self.sourceNode.id, nodeToFind.id, prefix)
         return d.addCallback(self.handleCallResponse, nodeToAsk)
 
     def callPing(self, nodeToAsk):
