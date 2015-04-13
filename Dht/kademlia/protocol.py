@@ -58,14 +58,11 @@ class KademliaProtocol(RPCProtocol):
             return self.rpc_find_node(sender, nodeid, key)
         return {'value': value}
 
-    def rpc_find_range(self, sender, nodeid, key, prefix):
+    def rpc_find_range(self, sender, nodeid, prefix):
         source = Node(nodeid, sender[0], sender[1])
         self.router.addContact(source)
         values = self.storage.get_range(prefix, None)
-        peers = self.router.findNeighbors(self.sourceNode)
-        nearest = NodeHeap(self.sourceNode, self.ksize)
-        nearest.push(peers)
-        neighbors = nearest.getIDs()
+        neighbors = self.router.getNeighbors(self.sourceNode)
         return {'values': values, 'neighbors': neighbors}
 
     def callFindNode(self, nodeToAsk, nodeToFind):
@@ -78,9 +75,9 @@ class KademliaProtocol(RPCProtocol):
         d = self.find_value(address, self.sourceNode.id, nodeToFind.id)
         return d.addCallback(self.handleCallResponse, nodeToAsk)
 
-    def callFindRange(self, nodeToAsk, nodeToFind, prefix):
+    def callFindRange(self, nodeToAsk, prefix):
         address = (nodeToAsk.ip, nodeToAsk.port)
-        d = self.find_range(address, self.sourceNode.id, nodeToFind.id, prefix)
+        d = self.find_range(address, self.sourceNode.id, prefix)
         return d.addCallback(self.handleCallResponse, nodeToAsk)
 
     def callPing(self, nodeToAsk):

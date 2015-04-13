@@ -184,7 +184,6 @@ class RoutingTable(object):
         nodes = []
         for neighbor in TableTraverser(self, node):
             if neighbor.id != node.id and (exclude is None or not neighbor.sameHomeAs(exclude)):
-                nodes.append(neighbor)
-            if len(nodes) == k:
-                break
+                tup = (neighbor.id, neighbor.ip, neighbor.port)
+                nodes.append(tup)
         return nodes

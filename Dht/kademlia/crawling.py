@@ -60,24 +60,97 @@ class SpiderCrawl(object):
             self.nearest.markContacted(peer)
         return deferredDict(ds).addCallback(self._nodesFound)
 
-class RangeSpiderCrawl():
-    def __init__(self, protocol, prefix, lowest_node, highest_node, ksize, alpha):
-        self.protocol = protocol
+class RangeSpiderCrawl(SpiderCrawl):
+    def __init__(self, protocol, prefix, lowest_node, highest_node, peers, ksize, alpha):
+        SpiderCrawl.__init__(self, protocol, lowest_node, peers, ksize, alpha)
         self.prefix = prefix
-        self.ksize = ksize
-        self.alpha = alpha
         self.lowest_node = lowest_node
         self.highest_node = highest_node
+        self.get_more_nodes = True
+        self.nodesToQuery = NodeHeap(self.lowest_node, 1000000)
+        self.nodesToQuery.push(peers)
+        self.foundValues = []
+        self.lastNodesQueried = []
+
 
     def find(self):
-        def process_result(nodes):
-            for node in nodes:
-                self.lowest_node = node
-                ret = self.protocol.callFindRange(self.lowest_node, self.lowest_node, self.prefix)
-                print ret
-        nearest = self.protocol.router.findNeighbors(self.lowest_node)
-        spider = NodeSpiderCrawl(self.protocol, self.lowest_node, nearest, self.ksize, self.alpha)
-        spider.find().addCallback(process_result)
+        """
+        Find either the closest nodes or the value requested.
+        """
+        if self.get_more_nodes:
+            return self._find(self.protocol.callFindNode)
+        else:
+            self.log.info("crawling with nearest: %s" % str(tuple(self.nodesToQuery)))
+            count = self.alpha
+            if self.nodesToQuery.getIDs() == self.lastNodesQueried:
+                self.log.info("last iteration same as current - checking all in list now")
+                count = len(self.nearest)
+            self.lastNodesQueried = self.nodesToQuery.getIDs()
+            ds = {}
+            for peer in self.nodesToQuery.getUncontacted()[:count]:
+                ds[peer.id] = self.protocol.callFindRange(peer, self.prefix)
+                self.nodesToQuery.markContacted(peer)
+        return deferredDict(ds).addCallback(self._nodesFound)
+
+    def _nodesFound(self, responses):
+        """
+        Handle the result of an iteration in _find.
+        """
+        if self.get_more_nodes:
+            toremove = []
+            for peerid, response in responses.items():
+                response = RPCFindResponse(response)
+                if not response.happened():
+                    toremove.append(peerid)
+                else:
+                    self.nearest.push(response.getNodeList())
+                    self.nodesToQuery.push(response.getNodeList())
+            self.nearest.remove(toremove)
+            self.nodesToQuery.remove(toremove)
+            self.get_more_nodes = False
+            return self.find()
+        else:
+            toremove = []
+            for peerid, response in responses.items():
+                response = RPCFindResponse(response)
+                if not response.happened():
+                    toremove.append(peerid)
+                else:
+                    values = response.getValues()
+                    if values is not None:
+                        for value in values:
+                            self.foundValues.append(value)
+                        neighbors = response.getNeighbors()
+                        for neighbor in neighbors:
+                            n = Node(neighbor[0], neighbor[1], neighbor[2])
+                            self.nodesToQuery.push(n)
+            if self.nodesToQuery.allBeenContacted() and len(self.foundValues) == 0:
+                return None
+            elif self.nodesToQuery.allBeenContacted():
+                return self._handleFoundValues(self.foundValues)
+            self.nodesToQuery.remove(toremove)
+            temp = self.nodesToQuery.getUncontacted()
+            for node in temp:
+                self.nodesToQuery.push(node)
+                if self.highest_node > node.id > self.lowest_node.id:
+                    self.lowest_node = node
+            self.nodesToQuery = NodeHeap(self.lowest_node, 1000000)
+            for node in temp:
+                self.nodesToQuery.push(node)
+            return self.find()
+
+
+
+    def _handleFoundValues(self, values):
+        """
+        We got some values!  Exciting.  Let's remove duplicates
+        from our list before returning.
+        """
+        ret = []
+        for value in values:
+            if value not in ret:
+                ret.append(value)
+        return ret
 
 
 
@@ -187,6 +260,12 @@ class RPCFindResponse(object):
 
     def getValue(self):
         return self.response[1]['value']
+
+    def getValues(self):
+        return self.response[1]['values']
+
+    def getNeighbors(self):
+        return self.response[1]['neighbors']
 
     def getNodeList(self):
         """

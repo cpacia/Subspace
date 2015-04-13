@@ -153,8 +153,8 @@ class Server(object):
         if len(nearest) == 0:
             self.log.warning("There are no known neighbors to get key %s" % key)
             return defer.succeed(None)
-        spider = RangeSpiderCrawl(self.protocol, key, lowest_node, highest_node, self.ksize, self.alpha)
-        spider.find()
+        spider = RangeSpiderCrawl(self.protocol, key, lowest_node, highest_node, nearest, self.ksize, self.alpha)
+        return spider.find()
 
     def set(self, key, value):
         """
