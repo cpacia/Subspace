@@ -72,7 +72,6 @@ class RangeSpiderCrawl(SpiderCrawl):
         self.foundValues = []
         self.lastNodesQueried = []
 
-
     def find(self):
         """
         Find either the closest nodes or the value requested.

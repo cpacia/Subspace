@@ -1,0 +1,12 @@
+Metadata-Version: 1.1
+Name: kademlia
+Version: 0.4
+Summary: Kademlia is a distributed hash table for decentralized peer-to-peer computer networks.
+Home-page: http://github.com/bmuller/kademlia
+Author: Brian Muller
+Author-email: bamuller@gmail.com
+License: MIT
+Description: UNKNOWN
+Platform: UNKNOWN
+Requires: twisted
+Requires: rpcudp

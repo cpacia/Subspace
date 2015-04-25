@@ -5,24 +5,48 @@ from twisted.internet import reactor, task, ssl
 from twisted.web import resource, server
 from twisted.web.resource import NoResource
 
+from config import Config
+
 from pymongo import MongoClient
-import gridfs
 
 from OpenSSL import SSL
 
-import sys, os
-sys.path.append(os.path.dirname(__file__))
 from kademlia.network import Server
 from kademlia import log
-import datetime
+
 from bson.objectid import ObjectId
+
+import sys, os
+import datetime
 import json
-import calendar
-import params
+
+sys.path.append(os.path.dirname(__file__))
+
+def get_options():
+    options = {}
+    f = file('Subspace.cfg')
+    cfg = Config(f)
+    if "useSSL" in cfg:
+        options["useSSL"] = cfg.useSSL
+    if "sslkey" in cfg:
+        options["sslkey"] = cfg.sslkey
+    if "sslcert" in cfg:
+        options["sslcert"] = cfg.sslcert
+    if "node" in cfg:
+        options["node"] = cfg.node
+    if "limit" in cfg:
+        options["limit"] = cfg.limit
+    if "storeall" in cfg:
+        options["storeall"] = cfg.storeall
+    if "storesome" in cfg:
+        options["storesome"] = cfg.storesome
+    if "ttl" in cfg:
+        options["ttl"] = cfg.ttl
+    return options
 
 #start mongodb -> sudo service mongod start
 
-options = params.get_options()
+options = get_options()
 application = service.Application("kademlia")
 application.setComponent(ILogObserver, log.FileLogObserver(sys.stdout, log.INFO).emit)
 
@@ -38,7 +62,6 @@ udpserver.setServiceParent(application)
 
 db = MongoClient().message_database
 messages = db.messages
-fs = gridfs.GridFS(db)
 if "ttl" in options:
     messages.ensure_index("timestamp", expireAfterSeconds=options["ttl"])
 else:
@@ -87,16 +110,10 @@ class WebResource(resource.Resource):
         return self
 
     def render_GET(self, request):
-        def respond(value, is_payment_request):
+        def respond(value):
             value = value or NoResource().render(request)
-            if is_payment_request:
-                request.responseHeaders.addRawHeader(b"content-type", b"application/bitcoin-paymentrequest")
             request.write(value)
             request.finish()
-        if "timestamp" not in request.args:
-            u = request.path.split("/")[-1]
-            respond(fs.get_last_version(user=u).read(), True)
-            return server.NOT_DONE_YET
         prefix = request.path.split("/")[-1]
         ts = request.args["timestamp"][0]
         utc = datetime.datetime.utcfromtimestamp(float(ts))
@@ -134,25 +151,24 @@ class WebResource(resource.Resource):
             if post.get("timestamp") > timestamp:
                 timestamp = post.get("timestamp")
             dict[str(post.get("_id"))] = post.get("message")
-        if bool(dict)==True:
+        d = self.kserver.get(prefix)
+        try:
+            for val in d:
+                dict.update(val)
+        except TypeError, te:
+            log.msg("Dht query returned no values")
+        if bool(dict):
             dict["timestamp"] = unix_time(post.get("timestamp"))
-            respond(json.dumps(dict), False)
+            respond(json.dumps(dict))
             return server.NOT_DONE_YET
         else:
             self.delayed_requests.append(request)
-            #d = self.kserver.get(request.path.split('/')[-1])
-            #d.addCallback(respond)
             return server.NOT_DONE_YET
 
     def render_POST(self, request):
-
-        if 'file' in request.args:
-            u = request.args["user"]
-            fs.put(request.args["file"][0], user=u)
-            return "File uploaded successfully"
         key = request.path.split('/')[-1]
         value = request.content.getvalue()
-        post = {"_id": ObjectId(key),
+        post = {"_id": ObjectId(key[:24]),
                  "message": value,
                 "timestamp": datetime.datetime.utcnow()}
         if db.command("dbstats").get("dataSize") < options["limit"] and len(value) < 100000:
@@ -182,7 +198,7 @@ class WebResource(resource.Resource):
             x-=1
             reqkey = request.path.split("/")[-1]
             for postkey in self.incoming_posts:
-                binpostkey = hextobin(postkey)
+                binpostkey = hextobin(postkey[:24])
                 if binpostkey[:len(reqkey)] == reqkey:
                     try:
                         map = {}

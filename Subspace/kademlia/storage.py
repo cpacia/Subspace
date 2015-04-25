@@ -85,7 +85,7 @@ class ForgetfulStorage(object):
                 max = "0" + max
         for key in self.data:
             if max > key > min:
-                results.append(self[key])
+                results.append({key: self[key]})
         if len(results) is not 0:
             return results
         else:
