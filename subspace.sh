@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $1 == "start" ] ; then
+if [ "$1" == "start" ] ; then
 	echo "Subspace starting..."
 	cd "$HOME/.subspace"
 	if [ "$2" == "--noisy" ] ; then
@@ -8,7 +8,7 @@ if [ $1 == "start" ] ; then
 	else 
 		twistd -oy subspaced.py
 	fi
-elif [ $1 == "stop" ] ; then
+elif [ "$1" == "stop" ] ; then
 	echo "Stopping subspace..."
 	cd "$HOME/.subspace"
 	kill -INT `cat twistd.pid`

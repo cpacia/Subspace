@@ -2,13 +2,14 @@ from config import Config
 from os.path import expanduser
 from twisted.application import service, internet
 from twisted.python.log import ILogObserver
-from twisted.internet import ssl, task
+from twisted.internet import ssl, task, threads
 from twisted.web import resource, server
 from twisted.web.resource import NoResource
 from OpenSSL import SSL
 from subspace.network import Server
 from subspace import log
 from bitcoin import main
+from txjsonrpc.netstring import jsonrpc
 
 
 import thread
@@ -39,7 +40,7 @@ else:
 
 pubkey = main.encode_pubkey(main.privkey_to_pubkey(privkey), "hex_compressed")
 
-application = service.Application("kademlia")
+application = service.Application("subspace")
 application.setComponent(ILogObserver, log.FileLogObserver(sys.stdout, log.INFO).emit)
 
 if os.path.isfile('cache.pickle'):
@@ -174,6 +175,23 @@ rpc_server = pyjsonrpc.ThreadingHttpServer(
     server_address = ('localhost', cfg.rpcport if "rpcport" in cfg else 8336),
     RequestHandlerClass = AuthHandler
 )
-def start_rpc_server(arg):
+def start_rpc_server(args):
     rpc_server.serve_forever()
-thread = thread.start_new_thread(start_rpc_server, ("Thread-rpc", ))
+thread = thread.start_new_thread(start_rpc_server(" ", ), ("Thread-rpc", ))
+
+'''
+class Example(jsonrpc.JSONRPC):
+    """An example object to be published."""
+
+    def echo(self, x):
+        """Return all passed args."""
+        return x
+
+factory = jsonrpc.RPCFactory(Example)
+
+# Let's add introspection, just for fun
+factory.addIntrospection()
+
+jsonrpcServer = internet.TCPServer(8336, factory)
+jsonrpcServer.setServiceParent(application)
+'''
