@@ -1,20 +1,33 @@
 __author__ = 'chris'
-import pyjsonrpc
-import sys, os
-import argparse
-
 from twisted.internet import reactor
 from txjsonrpc.netstring.jsonrpc import Proxy
+from os.path import expanduser
+from subspace.message import MessageBuilder
 
-http_client = pyjsonrpc.HttpClient(
-    url = "http://localhost:8336",
-    username = "Username",
-    password = "Password"
-)
+import sys, os
+import argparse
+import string
+import pickle
+import random
+
+datafolder = expanduser("~") + "/.subspace/"
+if os.path.isfile(datafolder + 'keys.pickle'):
+    privkey = pickle.load(open(datafolder + "keys.pickle", "rb"))
+
+def doContinue(value):
+    val = value
+
+def printValue(value):
+    print str(value)
+    reactor.stop()
+
+def printError(error):
+    print 'error', error
+    reactor.stop()
 
 class Parser(object):
 
-    def __init__(self):
+    def __init__(self, proxy):
         parser = argparse.ArgumentParser(
             description='Subspace v0.1',
             usage='''
@@ -23,6 +36,7 @@ class Parser(object):
 
 commands:
     getmessages      returns a list of your messages in json format
+    getprivkey       returns your private encryption key
     getpubkey        returns your node's public encryption key
     send             sends a message to the given public key
     start            start the Subspace daemon
@@ -35,8 +49,26 @@ commands:
             parser.print_help()
             exit(1)
         getattr(self, args.command)()
+        self.proxy = proxy
 
     def send(self):
+        def genMessage(range):
+            if range is False:
+                print "Cannot find any peers. Maybe check your internet connection?"
+                return
+            message = MessageBuilder(args.key, privkey, args.message, range)
+            blocks = message.encrypt()
+            items = blocks.items()
+            random.shuffle(items)
+            i = 1
+            for key, value in items:
+                d = proxy.callRemote('send', key, value)
+                if i < len(blocks):
+                    d.addCallbacks(doContinue, printError)
+                else:
+                    d.addCallbacks(printValue, printError)
+                i += 1
+
         parser = argparse.ArgumentParser(
             description="Send a message to the recipient's public key",
             usage='''usage:
@@ -46,8 +78,14 @@ commands:
                             help="the unencrypted message to send (will be encrypted)",
                             nargs='+')
         args = parser.parse_args(sys.argv[2:])
-        http_client.send(args.key, args.message)
-        print "Message to %s sent successfully" % args.key
+        if len(args.key) != 66 or all(c in string.hexdigits for c in args.key) is not True:
+            print "Invalid key. Enter a 33 byte public key in either hexadecimal for base58check format."
+            return
+
+        d = proxy.callRemote('getrange')
+        d.addCallbacks(genMessage, printError)
+        reactor.run()
+
 
     def getmessages(self):
         parser = argparse.ArgumentParser(
@@ -55,7 +93,20 @@ commands:
             usage='''usage:
     subspace getmessages''')
         args = parser.parse_args(sys.argv[2:])
-        print http_client.getmessages()
+        d = proxy.callRemote('getmessages')
+        d.addCallbacks(printValue, printError)
+        reactor.run()
+
+    def getprivkey(self):
+        parser = argparse.ArgumentParser(
+            description="Returns your private encryption key",
+            usage='''usage:
+    subspace getprivkey''')
+        parser.add_argument('-b', '--base58', help="returns the key in base58check format")
+        args = parser.parse_args(sys.argv[2:])
+        d = proxy.callRemote('getprivkey')
+        d.addCallbacks(printValue, printError)
+        reactor.run()
 
     def getpubkey(self):
         parser = argparse.ArgumentParser(
@@ -64,6 +115,9 @@ commands:
     subspace getpubkey''')
         parser.add_argument('-b', '--base58', help="returns the key in base58check format")
         args = parser.parse_args(sys.argv[2:])
-        print http_client.getpubkey()
+        d = proxy.callRemote('getpubkey')
+        d.addCallbacks(printValue, printError)
+        reactor.run()
 
-Parser()
+proxy = Proxy('127.0.0.1', 7080)
+Parser(proxy)

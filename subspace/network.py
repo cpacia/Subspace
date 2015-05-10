@@ -1,6 +1,7 @@
 """
 Package for interacting on the network at a high level.
 """
+import os
 import random
 import pickle
 
@@ -14,6 +15,9 @@ from subspace.storage import ForgetfulStorage
 from subspace.node import Node
 from subspace.crawling import ValueSpiderCrawl
 from subspace.crawling import NodeSpiderCrawl
+from subspace.node import NodeHeap
+
+from bitcoin import main
 
 
 class Server(object):
@@ -140,6 +144,27 @@ class Server(object):
             return defer.succeed(None)
         spider = ValueSpiderCrawl(self.protocol, node, nearest, self.ksize, self.alpha)
         return spider.find()
+
+    def getRange(self):
+        node = Node(main.hash160(os.urandom(32).encode("hex")))
+
+        def calculate_range(nodes):
+            high = long("0000000000000000000000000000000000000000", 16)
+            low = long("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16)
+            for node in nodes:
+                if node.long_id > high:
+                    high = node.long_id
+                if node.long_id < low:
+                    low = node.long_id
+            return high - low
+
+        nearest = self.protocol.router.findNeighbors(node)
+        if len(nearest) == 0:
+            self.log.warning("There are no known neighbors to get range")
+            return defer.succeed(False)
+        spider = NodeSpiderCrawl(self.protocol, node, nearest, self.ksize, self.alpha)
+        return spider.find().addCallback(calculate_range)
+
 
     def set(self, key, value):
         """

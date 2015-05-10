@@ -1,7 +1,12 @@
 #!/bin/bash
 
 if [ "$1" == "start" ] ; then
-	echo "Subspace starting..."
+	echo "  _________    ___."                                      
+	echo " /   _____/__ _\_ |__  _________________   ____  ____ " 
+	echo " \_____  \|  |  \ __ \/  ___/\____ \__  \_/ ___\/ __ \ "
+	echo " /        \  |  / \_\ \___ \ |  |_> > __ \  \__\  ___/ "
+	echo "/_______  /____/|___  /____ >|   __(____ /\___  >___  >"
+	echo "        \/          \/    \/ |__|       \/    \/    \/"  
 	cd "$HOME/.subspace"
 	if [ "$2" == "--noisy" ] ; then
 		twistd -noy subspaced.py

@@ -7,11 +7,5 @@ cp subspace-cli.py "$HOME/.subspace/subspace-cli.py"
 cp subspaced.py "$HOME/.subspace/subspaced.py"
 cp subspace.conf "$HOME/.subspace/subspace.conf"
 sudo cp subspace.sh /usr/bin/subspace
-sudo chmod +x /usr/bin/subspace
-echo "  _________    ___."                                      
-echo " /   _____/__ _\_ |__  _________________   ____  ____ " 
-echo " \_____  \|  |  \ __ \/  ___/\____ \__  \_/ ___\/ __ \ "
-echo " /        \  |  / \_\ \___ \ |  |_> > __ \  \__\  ___/ "
-echo "/_______  /____/|___  /____ >|   __(____ /\___  >___  >"
-echo "        \/          \/    \/ |__|       \/    \/    \/"           
+sudo chmod +x /usr/bin/subspace         
 echo "Subspace v0.1 installation complete"

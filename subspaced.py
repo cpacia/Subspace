@@ -2,7 +2,7 @@ from config import Config
 from os.path import expanduser
 from twisted.application import service, internet
 from twisted.python.log import ILogObserver
-from twisted.internet import ssl, task, threads
+from twisted.internet import ssl, task
 from twisted.web import resource, server
 from twisted.web.resource import NoResource
 from OpenSSL import SSL
@@ -11,14 +11,8 @@ from subspace import log
 from bitcoin import main
 from txjsonrpc.netstring import jsonrpc
 
-
-import thread
 import sys, os
-import pyjsonrpc
-import base64
-import httplib
 import pickle
-import json
 
 sys.path.append(os.path.dirname(__file__))
 
@@ -129,69 +123,31 @@ if "server" in cfg:
         webserver = internet.TCPServer(cfg.serverport if "serverport" in cfg else 8080, server_protocol)
     webserver.setServiceParent(application)
 
-# Threading RPC-Server
-class RequestHandler(pyjsonrpc.HttpRequestHandler):
-
-    @pyjsonrpc.rpcmethod
-    def add(self, a, b):
-         """Test method"""
-         return a + b
-
-    @pyjsonrpc.rpcmethod
-    def getpubkey(self):
-        return pubkey
-
-    @pyjsonrpc.rpcmethod
-    def send(self, key, value):
-        log.msg("Setting %s = %s" % (key, value))
-        kserver.set(key, value)
-        return value
-
-    @pyjsonrpc.rpcmethod
-    def getmessages(self):
-        data = kserver.storage.get_all()
-        return data
-
-
-class AuthHandler(RequestHandler):
-
-    def do_POST(self):
-        address = self.client_address[0]
-        key = base64.b64encode(username + ":" + password)
-        if self.headers.getheader('Authorization') == None:
-            self.send_response(httplib.UNAUTHORIZED)
-            pass
-        elif self.headers.getheader('Authorization') == 'Basic '+key:
-            if address == "127.0.0.1" or (cfg.rpcallowip if "rpcallowip" in cfg else "127.0.0.1"):
-                RequestHandler.do_POST(self)
-            else:
-                self.send_response(httplib.UNAUTHORIZED)
-            pass
-        else:
-            self.send_response(httplib.UNAUTHORIZED)
-            pass
-
-rpc_server = pyjsonrpc.ThreadingHttpServer(
-    server_address = ('localhost', cfg.rpcport if "rpcport" in cfg else 8336),
-    RequestHandlerClass = AuthHandler
-)
-def start_rpc_server(args):
-    rpc_server.serve_forever()
-thread = thread.start_new_thread(start_rpc_server(" ", ), ("Thread-rpc", ))
-
-'''
-class Example(jsonrpc.JSONRPC):
+# RPC-Server
+class RPCCalls(jsonrpc.JSONRPC):
     """An example object to be published."""
 
-    def echo(self, x):
-        """Return all passed args."""
-        return x
+    def jsonrpc_getpubkey(self):
+        return pubkey
 
-factory = jsonrpc.RPCFactory(Example)
+    def jsonrpc_getprivkey(self):
+        return privkey
 
-# Let's add introspection, just for fun
+    def jsonrpc_getmessages(self):
+        return kserver.storage.get_all()
+
+    def jsonrpc_send(self, key, value):
+        log.msg("Setting %s = %s" % (key, value))
+        kserver.set(key, value)
+        return "Message sent successfully"
+
+    def jsonrpc_getrange(self):
+        return kserver.getRange()
+
+factory = jsonrpc.RPCFactory(RPCCalls)
+
 factory.addIntrospection()
 
-jsonrpcServer = internet.TCPServer(8336, factory)
+jsonrpcServer = internet.TCPServer(7080, factory, interface='127.0.0.1')
 jsonrpcServer.setServiceParent(application)
-'''
+
