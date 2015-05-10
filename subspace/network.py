@@ -146,7 +146,6 @@ class Server(object):
         return spider.find()
 
     def getRange(self):
-        node = Node(main.hash160(os.urandom(32).encode("hex")))
 
         def calculate_range(nodes):
             high = long("0000000000000000000000000000000000000000", 16)
@@ -158,12 +157,13 @@ class Server(object):
                     low = node.long_id
             return high - low
 
-        nearest = self.protocol.router.findNeighbors(node)
+        nearest = self.protocol.router.findNeighbors(self.node)
         if len(nearest) == 0:
             self.log.warning("There are no known neighbors to get range")
             return defer.succeed(False)
-        spider = NodeSpiderCrawl(self.protocol, node, nearest, self.ksize, self.alpha)
-        return spider.find().addCallback(calculate_range)
+        heap = NodeHeap(self.node, self.ksize)
+        heap.push(nearest)
+        return calculate_range(list(heap))
 
 
     def set(self, key, value):
