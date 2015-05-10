@@ -3,6 +3,7 @@ from twisted.internet import reactor
 from txjsonrpc.netstring.jsonrpc import Proxy
 from os.path import expanduser
 from subspace.message import MessageBuilder
+from bitcoin import *
 
 import sys, os
 import argparse
@@ -39,7 +40,7 @@ commands:
     getprivkey       returns your private encryption key
     getpubkey        returns your node's public encryption key
     send             sends a message to the given public key
-    start            start the Subspace daemon
+    start            start the subspace daemon
     stop             close subspace and disconnect
 ''')
         parser.add_argument('command', help='Execute the given command')
@@ -99,25 +100,37 @@ commands:
         reactor.run()
 
     def getprivkey(self):
+        def printKey(key):
+            if args.base58:
+                print encode_privkey(key, "wif")
+            else:
+                print key
+            reactor.stop()
         parser = argparse.ArgumentParser(
             description="Returns your private encryption key",
             usage='''usage:
     subspace getprivkey''')
-        parser.add_argument('-b', '--base58', help="returns the key in base58check format")
+        parser.add_argument('-b', '--base58', action='store_true', help="returns the key in base58check format")
         args = parser.parse_args(sys.argv[2:])
         d = proxy.callRemote('getprivkey')
-        d.addCallbacks(printValue, printError)
+        d.addCallbacks(printKey, printError)
         reactor.run()
 
     def getpubkey(self):
+        def printKey(key):
+            if args.base58:
+                print hex_to_b58check(key, 0)
+            else:
+                print key
+            reactor.stop()
         parser = argparse.ArgumentParser(
             description="Returns your node's public encryption key",
             usage='''usage:
     subspace getpubkey''')
-        parser.add_argument('-b', '--base58', help="returns the key in base58check format")
+        parser.add_argument('-b', '--base58', action='store_true', help="returns the key in base58check format")
         args = parser.parse_args(sys.argv[2:])
         d = proxy.callRemote('getpubkey')
-        d.addCallbacks(printValue, printError)
+        d.addCallbacks(printKey, printError)
         reactor.run()
 
 proxy = Proxy('127.0.0.1', 7080)
