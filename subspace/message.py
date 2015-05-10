@@ -65,7 +65,7 @@ class MessageBuilder(object):
         nonce = 0
 
         if self.range == 0:
-            ciphertext = ciphertext + hashlib.sha512(entropy + str(nonce)).hexdigest()[:38]
+            ciphertext = ciphertext + hashlib.sha512(entropy + str(nonce)).hexdigest()[:50]
             blocks[main.hash160(ciphertext)] = ciphertext
             return blocks
         else:
@@ -73,7 +73,7 @@ class MessageBuilder(object):
             high = long(self.pubkey_hex[:40], 16) + range / 2
 
             while True:
-                c = ciphertext + hashlib.sha512(entropy + str(nonce)).hexdigest()[:38]
+                c = ciphertext + hashlib.sha512(entropy + str(nonce)).hexdigest()[:50]
                 hash = long(main.hash160(c), 16)
                 if low < hash < high:
                     ciphertext = c

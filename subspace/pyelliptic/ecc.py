@@ -9,6 +9,8 @@ from .openssl import OpenSSL
 from .cipher import Cipher
 from .hash import hmac_sha256, equals
 from struct import pack, unpack
+from bitcoin import main
+import binascii
 
 
 class ECC:
@@ -61,6 +63,7 @@ class ECC:
                     raise Exception("Bad ECC keys ...")
             self.curve = curve
             self._set_keys(pubkey_x, pubkey_y, raw_privkey)
+
         else:
             self.privkey, self.pubkey_x, self.pubkey_y = self._generate()
 
@@ -124,6 +127,13 @@ class ECC:
         pubkey_y = pubkey[i:i + tmplen]
         i += tmplen
         return curve, pubkey_x, pubkey_y, i
+
+    @staticmethod
+    def _decode_keys(pubkey):
+        pubkey_x = pubkey[:32]
+        pubkey_y = pubkey[32:64]
+        return 714, pubkey_x, pubkey_y, 64
+
 
     @staticmethod
     def _decode_privkey(privkey):
@@ -436,7 +446,7 @@ class ECC:
         pubkey = ephem.get_pubkey()
         iv = OpenSSL.rand(OpenSSL.get_cipher(ciphername).get_blocksize())
         ctx = Cipher(key_e, iv, 1, ciphername)
-        ciphertext = iv + pubkey + ctx.ciphering(data)
+        ciphertext = iv + ephem.pubkey_x + ephem.pubkey_y + ctx.ciphering(data)
         mac = hmac_sha256(key_m, ciphertext)
         return ciphertext + mac
 
@@ -447,7 +457,7 @@ class ECC:
         blocksize = OpenSSL.get_cipher(ciphername).get_blocksize()
         iv = data[:blocksize]
         i = blocksize
-        curve, pubkey_x, pubkey_y, i2 = ECC._decode_pubkey(data[i:])
+        curve, pubkey_x, pubkey_y, i2 = ECC._decode_keys(data[i:])
         i += i2
         ciphertext = data[i:len(data)-32]
         i += len(ciphertext)

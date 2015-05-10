@@ -55,6 +55,7 @@ commands:
         def genMessage(range):
             if range is False:
                 print "Cannot find any peers. Maybe check your internet connection?"
+                reactor.stop()
                 return
             message = MessageBuilder(args.key, privkey, args.message, range)
             blocks = message.encrypt()
