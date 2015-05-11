@@ -1,22 +1,20 @@
 __author__ = 'chris'
-from twisted.internet import reactor
-from txjsonrpc.netstring.jsonrpc import Proxy
-from os.path import expanduser
-from subspace.message import MessageBuilder
-from bitcoin import *
 
-import sys, os
 import argparse
 import string
 import pickle
-import random
+
+from twisted.internet import reactor
+from txjsonrpc.netstring.jsonrpc import Proxy
+from os.path import expanduser
+from bitcoin import *
 
 datafolder = expanduser("~") + "/.subspace/"
 if os.path.isfile(datafolder + 'keys.pickle'):
     privkey = pickle.load(open(datafolder + "keys.pickle", "rb"))
 
 def doContinue(value):
-    val = value
+    pass
 
 def printValue(value):
     print str(value)
@@ -30,7 +28,7 @@ class Parser(object):
 
     def __init__(self, proxy):
         parser = argparse.ArgumentParser(
-            description='Subspace v0.1',
+            description='Subspace v0.2',
             usage='''
     subspace <command> [<args>]
     subspace <command> --help
@@ -53,24 +51,6 @@ commands:
         self.proxy = proxy
 
     def send(self):
-        def genMessage(range):
-            if range is False:
-                print "Cannot find any peers. Maybe check your internet connection?"
-                reactor.stop()
-                return
-            message = MessageBuilder(args.key, privkey, args.message, range)
-            blocks = message.encrypt()
-            items = blocks.items()
-            random.shuffle(items)
-            i = 1
-            for key, value in items:
-                d = proxy.callRemote('send', key, value)
-                if i < len(blocks):
-                    d.addCallbacks(doContinue, printError)
-                else:
-                    d.addCallbacks(printValue, printError)
-                i += 1
-
         parser = argparse.ArgumentParser(
             description="Send a message to the recipient's public key",
             usage='''usage:
@@ -84,10 +64,9 @@ commands:
             print "Invalid key. Enter a 33 byte public key in either hexadecimal for base58check format."
             return
 
-        d = proxy.callRemote('getrange')
-        d.addCallbacks(genMessage, printError)
+        d = proxy.callRemote('send', args.key, args.message)
+        d.addCallbacks(printValue, printError)
         reactor.run()
-
 
     def getmessages(self):
         parser = argparse.ArgumentParser(

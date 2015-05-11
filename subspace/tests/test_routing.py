@@ -1,7 +1,7 @@
 from twisted.trial import unittest
 
-from kademlia.routing import KBucket
-from kademlia.tests.utils import mknode, FakeProtocol
+from subspace.routing import KBucket
+from subspace.tests.utils import mknode, FakeProtocol
 
 
 class KBucketTest(unittest.TestCase):

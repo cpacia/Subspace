@@ -1,9 +1,9 @@
 """
 Package for interacting on the network at a high level.
 """
-import os
 import random
 import pickle
+import string
 
 from twisted.internet.task import LoopingCall
 from twisted.internet import defer, reactor, task
@@ -16,8 +16,6 @@ from subspace.node import Node
 from subspace.crawling import ValueSpiderCrawl
 from subspace.crawling import NodeSpiderCrawl
 from subspace.node import NodeHeap
-
-from bitcoin import main
 
 
 class Server(object):
@@ -137,16 +135,18 @@ class Server(object):
         Returns:
             :class:`None` if not found, the value otherwise.
         """
-        node = Node(digest(key))
+        node = Node(key)
         nearest = self.protocol.router.findNeighbors(node)
         if len(nearest) == 0:
             self.log.warning("There are no known neighbors to get key %s" % key)
+            return defer.succeed(None)
+        elif len(key) != 40 or all(c in string.hexdigits for c in key) is not True:
+            self.log.warning("Invalid key")
             return defer.succeed(None)
         spider = ValueSpiderCrawl(self.protocol, node, nearest, self.ksize, self.alpha)
         return spider.find()
 
     def getRange(self):
-
         def calculate_range(nodes):
             high = long("0000000000000000000000000000000000000000", 16)
             low = long("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16)
@@ -160,7 +160,7 @@ class Server(object):
         nearest = self.protocol.router.findNeighbors(self.node)
         if len(nearest) == 0:
             self.log.warning("There are no known neighbors to get range")
-            return defer.succeed(False)
+            return False
         heap = NodeHeap(self.node, self.ksize)
         heap.push(nearest)
         return calculate_range(list(heap))
@@ -171,18 +171,23 @@ class Server(object):
         Set the given key to the given value in the network.
         """
         self.log.debug("setting '%s' = '%s' on network" % (key, value))
-        dkey = digest(key)
 
         def store(nodes):
             self.log.info("setting '%s' on %s" % (key, map(str, nodes)))
-            ds = [self.protocol.callStore(node, dkey, value) for node in nodes]
+            ds = [self.protocol.callStore(node, key, value) for node in nodes]
             return defer.DeferredList(ds).addCallback(self._anyRespondSuccess)
 
-        node = Node(dkey)
+        node = Node(key)
         nearest = self.protocol.router.findNeighbors(node)
         if len(nearest) == 0:
             self.log.warning("There are no known neighbors to set key %s" % key)
             return defer.succeed(False)
+        elif len(key) != 40 or all(c in string.hexdigits for c in key) is not True:
+            self.log.warning("Invalid key cannot set on network")
+            return defer.succeed(None)
+        elif len(value) != 946 or all(c in string.hexdigits for c in key) is not True:
+            self.log.warning("Invalid message cannot set on network")
+            return defer.succeed(None)
         spider = NodeSpiderCrawl(self.protocol, node, nearest, self.ksize, self.alpha)
         return spider.find().addCallback(store)
 

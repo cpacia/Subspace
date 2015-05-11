@@ -1,18 +1,21 @@
+import pickle
+
 from config import Config
 from os.path import expanduser
+from OpenSSL import SSL
+from txjsonrpc.netstring import jsonrpc
+
 from twisted.application import service, internet
 from twisted.python.log import ILogObserver
 from twisted.internet import ssl, task
 from twisted.web import resource, server
 from twisted.web.resource import NoResource
-from OpenSSL import SSL
+
 from subspace.network import Server
 from subspace import log
-from bitcoin import main
-from txjsonrpc.netstring import jsonrpc
+from subspace.message import *
 
-import sys, os
-import pickle
+
 
 sys.path.append(os.path.dirname(__file__))
 
@@ -29,10 +32,10 @@ bootstrap_port = cfg.bootstrapport if "bootstrapport" in cfg else "8335"
 if os.path.isfile(datafolder + 'keys.pickle'):
     privkey = pickle.load(open(datafolder + "keys.pickle", "rb"))
 else:
-    privkey = main.random_key()
+    privkey = random_key()
     pickle.dump(privkey, open(datafolder + "keys.pickle", "wb"))
 
-pubkey = main.encode_pubkey(main.privkey_to_pubkey(privkey), "hex_compressed")
+pubkey = encode_pubkey(privkey_to_pubkey(privkey), "hex_compressed")
 
 application = service.Application("subspace")
 application.setComponent(ILogObserver, log.FileLogObserver(sys.stdout, log.INFO).emit)
@@ -43,7 +46,6 @@ else:
     kserver = Server()
     kserver.bootstrap([(bootstrap_node, bootstrap_port)])
 kserver.saveStateRegularly('cache.pickle', 10)
-
 udpserver = internet.UDPServer(cfg.port if "port" in cfg else 8335, kserver.protocol)
 udpserver.setServiceParent(application)
 
@@ -134,15 +136,20 @@ class RPCCalls(jsonrpc.JSONRPC):
         return privkey
 
     def jsonrpc_getmessages(self):
-        return kserver.storage.get_all()
+        return MessageDecoder(privkey, kserver).getMessages()
 
-    def jsonrpc_send(self, key, value):
-        log.msg("Setting %s = %s" % (key, value))
-        kserver.set(key, value)
-        return "Message sent successfully"
-
-    def jsonrpc_getrange(self):
-        return kserver.getRange()
+    def jsonrpc_send(self, pubkey, message):
+        r = kserver.getRange()
+        if r is False:
+            return "Counldn't find any peers. Maybe check your internet connection?"
+        else:
+            blocks = MessageEncoder(pubkey, privkey, message, r).getblocks()
+            items = blocks.items()
+            random.shuffle(items)
+            for key, value in items:
+                log.msg("Setting %s = %s" % (key, value))
+                kserver.set(key, value)
+            return "Message sent successfully"
 
 factory = jsonrpc.RPCFactory(RPCCalls)
 

@@ -1,4 +1,5 @@
 import random
+import string
 
 from twisted.internet import defer
 
@@ -38,6 +39,12 @@ class SubspaceProtocol(RPCProtocol):
     def rpc_store(self, sender, nodeid, key, value):
         source = Node(nodeid, sender[0], sender[1])
         self.router.addContact(source)
+        if len(key) != 40 or all(c in string.hexdigits for c in key) is not True:
+            self.log.warning("Got an invalid store request from %s" % str(sender))
+            return False
+        elif len(value) != 946 or all(c in string.hexdigits for c in key) is not True:
+            self.log.warning("Got an invalid store request from %s" % str(sender))
+            return False
         self.log.debug("got a store request from %s, storing value" % str(sender))
         self.storage[key] = value
         return True

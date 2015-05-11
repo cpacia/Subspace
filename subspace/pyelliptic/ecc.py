@@ -9,9 +9,6 @@ from .openssl import OpenSSL
 from .cipher import Cipher
 from .hash import hmac_sha256, equals
 from struct import pack, unpack
-from bitcoin import main
-import binascii
-
 
 class ECC:
     """
