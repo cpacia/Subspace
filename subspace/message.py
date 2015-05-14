@@ -2,6 +2,7 @@ __author__ = 'chris'
 
 from bitcoin import *
 from subspace.pyelliptic import *
+from twisted.internet import defer
 
 """
 TODO: clean up this module. Plaintext will be serialized with protobuf including timestamp, sender pubkey,
@@ -71,8 +72,8 @@ class MessageEncoder(object):
             blocks[hash160(ciphertext)] = ciphertext
             return blocks
         else:
-            low = long(self.pubkey_hex[:40], 16) - self.range / 2
-            high = long(self.pubkey_hex[:40], 16) + self.range / 2
+            low = long(self.pubkey_hex[2:42], 16) - self.range / 2
+            high = long(self.pubkey_hex[2:42], 16) + self.range / 2
 
             while True:
                 c = ciphertext + hashlib.sha512(entropy + str(nonce)).hexdigest()[:50]
@@ -117,11 +118,8 @@ class MessageDecoder(object):
                 n = n + 40
             cipherblocks = []
             for blockid in blockids:
-                if self.messageDic.has_key(blockid):
-                    cipherblocks.append(self.messageDic[blockid])
-                else:
-                    # this needs to be deffered
-                    cipherblocks.append(self.kserver.get(blockid))
+                cipherblocks.append(self.kserver.get(blockid))
+            defer.gatherResults(cipherblocks)
             ciphertext = ""
             for block in cipherblocks:
                 ciphertext += block[1]

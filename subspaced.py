@@ -1,4 +1,5 @@
 import pickle
+import time
 
 from config import Config
 from os.path import expanduser
@@ -43,7 +44,7 @@ application.setComponent(ILogObserver, log.FileLogObserver(sys.stdout, log.INFO)
 if os.path.isfile('cache.pickle'):
     kserver = Server.loadState('cache.pickle')
 else:
-    kserver = Server()
+    kserver = Server(id=pubkey[2:42])
     kserver.bootstrap([(bootstrap_node, bootstrap_port)])
 kserver.saveStateRegularly('cache.pickle', 10)
 udpserver = internet.UDPServer(cfg.port if "port" in cfg else 8335, kserver.protocol)
