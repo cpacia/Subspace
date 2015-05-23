@@ -1,6 +1,6 @@
 import pickle
 
-from config import Config
+from ConfigParser import SafeConfigParser
 from os.path import expanduser
 from OpenSSL import SSL
 from txjsonrpc.netstring import jsonrpc
@@ -22,12 +22,13 @@ sys.path.append(os.path.dirname(__file__))
 datafolder = expanduser("~") + "/.subspace/"
 
 f = file(datafolder + 'subspace.conf')
-cfg = Config(f)
+cfg = SafeConfigParser()
+cfg.read(f)
 
-username = cfg.rpcusername if "rpcusername" in cfg else "Username"
-password = cfg.rpcpassword if "rpcpassword" in cfg else "Password"
-bootstrap_node = cfg.bootstrapnode if "bootstrapnode" in cfg else "1.2.3.4"
-bootstrap_port = cfg.bootstrapport if "bootstrapport" in cfg else "8335"
+username = cfg.get("SUBSPACED", "rpcusername") if cfg.has_option("SUBSPACED", "rpcusername") else "Username"
+password = cfg.get("SUBSPACED", "rpcpassword") if cfg.has_option("SUBSPACED", "rpcpassword") else "Password"
+bootstrap_node = cfg.get("SUBSPACED", "bootstrapnode") if cfg.has_option("SUBSPACED", "bootstrapnode") else "1.2.3.4"
+bootstrap_port = cfg.get("SUBSPACED", "bootstrapport") if cfg.has_option("SUBSPACED", "bootstrapport") else "8335"
 
 if os.path.isfile(datafolder + 'keys.pickle'):
     privkey = pickle.load(open(datafolder + "keys.pickle", "rb"))
@@ -46,7 +47,7 @@ else:
     kserver = Server()
     kserver.bootstrap([(bootstrap_node, bootstrap_port)])
 kserver.saveStateRegularly('cache.pickle', 10)
-udpserver = internet.UDPServer(cfg.port if "port" in cfg else 8335, kserver.protocol)
+udpserver = internet.UDPServer(cfg.get("SUBSPACED", "port") if cfg.has_option("SUBSPACED", "port") else 8335, kserver.protocol)
 udpserver.setServiceParent(application)
 
 class ChainedOpenSSLContextFactory(ssl.DefaultOpenSSLContextFactory):
@@ -114,15 +115,15 @@ class WebResource(resource.Resource):
         any data to return last time around.
         """
 
-if "server" in cfg:
+if cfg.has_option("SUBSPACED", "server"):
     server_protocol = server.Site(WebResource(kserver))
-    if "useSSL" in cfg:
-        webserver = internet.SSLServer(cfg.serverport if "serverport" in cfg else 8080,
+    if cfg.has_option("SUBSPACED", "useSSL"):
+        webserver = internet.SSLServer(cfg.get("SUBSPACED", "serverport") if cfg.has_option("SUBSPACED", "serverport") else 8080,
                                    server_protocol,
-                                   ChainedOpenSSLContextFactory(cfg.sslkey, cfg.sslcert))
+                                   ChainedOpenSSLContextFactory(cfg.get("SUBSPACED", "sslkey"), cfg.get("SUBSPACED", "sslcert")))
         #webserver = internet.SSLServer(8335, website, ssl.DefaultOpenSSLContextFactory(options["sslkey"], options["sslcert"]))
     else:
-        webserver = internet.TCPServer(cfg.serverport if "serverport" in cfg else 8080, server_protocol)
+        webserver = internet.TCPServer(cfg.get("SUBSPACED", "serverport") if cfg.has_option("SUBSPACED", "serverport") else 8080, server_protocol)
     webserver.setServiceParent(application)
 
 # RPC-Server
