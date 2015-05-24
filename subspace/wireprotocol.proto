@@ -1,0 +1,28 @@
+//Compile with: protoc --python_out=/path/to/Subspace/subspace wireprotocol.proto
+
+message Message {
+	required bytes magic            = 1;
+	required bytes messageID        = 2;
+	required Node sender            = 3;
+	required Command command        = 4;
+	repeated string arguments       = 5;
+}
+
+enum Command {
+	PING        = 1;
+	STORE       = 2;
+	DONT_STORE  = 3;
+	FIND_NODE   = 4;
+	FIND_VALUE  = 5;
+	GET_NODES   = 6;
+}
+
+message Node {
+	required string nodeID      = 3;
+	repeated Services services  = 4;
+}
+
+enum Services {
+	NODE_LITE   = 1;
+	NODE_SERVER = 2;
+}
