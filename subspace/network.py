@@ -185,9 +185,6 @@ class Server(object):
         elif len(key) != 40 or all(c in string.hexdigits for c in key) is not True:
             self.log.warning("Invalid key cannot set on network")
             return defer.succeed(None)
-        elif len(value) != 946 or all(c in string.hexdigits for c in key) is not True:
-            self.log.warning("Invalid message cannot set on network")
-            return defer.succeed(None)
         spider = NodeSpiderCrawl(self.protocol, node, nearest, self.ksize, self.alpha)
         return spider.find().addCallback(store)
 

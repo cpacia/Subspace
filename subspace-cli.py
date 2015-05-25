@@ -112,5 +112,5 @@ commands:
         d.addCallbacks(printKey, printError)
         reactor.run()
 
-proxy = Proxy('127.0.0.1', 7081)
+proxy = Proxy('127.0.0.1', 7080)
 Parser(proxy)

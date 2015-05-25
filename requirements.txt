@@ -1,4 +1,3 @@
-config
 txjson-rpc
 bitcoin
 u-msgpack-python

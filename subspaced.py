@@ -1,5 +1,4 @@
 import pickle
-import time
 
 from ConfigParser import SafeConfigParser
 from os.path import expanduser
@@ -145,10 +144,8 @@ class RPCCalls(jsonrpc.JSONRPC):
         if r is False:
             return "Counldn't find any peers. Maybe check your internet connection?"
         else:
-            blocks = MessageEncoder(pubkey, privkey, message, r).getblocks()
-            items = blocks.items()
-            random.shuffle(items)
-            for key, value in items:
+            message = MessageEncoder(pubkey, privkey, message, r).get_messages()
+            for key, value in message.items():
                 log.msg("Setting %s = %s" % (key, value))
                 kserver.set(key, value)
             return "Message sent successfully"

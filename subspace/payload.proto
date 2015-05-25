@@ -1,0 +1,18 @@
+//Compile with: protoc --python_out=/path/to/Subspace/subspace payload.proto
+
+message SignedPayload {
+	required bytes serializedMessageData = 1;
+	required bytes HMac                  = 2;
+}
+
+message MessageData {
+    required bytes messageID           = 1;
+    required uint64 sequence           = 2;
+	required string senderAddress      = 3;
+	optional string messageType        = 4;
+	required uint64 timeStamp          = 5;
+	optional string subject            = 6;
+	required string unencryptedMessage = 7;
+	optional string senderName         = 8;
+	optional bytes pad                = 9;
+}
