@@ -18,7 +18,7 @@ _sym_db = _symbol_database.Default()
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='payload.proto',
   package='',
-  serialized_pb=_b('\n\rpayload.proto\"<\n\rSignedPayload\x12\x1d\n\x15serializedMessageData\x18\x01 \x02(\x0c\x12\x0c\n\x04HMac\x18\x02 \x02(\x0c\"\xbf\x01\n\x0bMessageData\x12\x11\n\tmessageID\x18\x01 \x02(\x0c\x12\x10\n\x08sequence\x18\x02 \x02(\x04\x12\x15\n\rsenderAddress\x18\x03 \x02(\t\x12\x13\n\x0bmessageType\x18\x04 \x01(\t\x12\x11\n\ttimeStamp\x18\x05 \x02(\x04\x12\x0f\n\x07subject\x18\x06 \x01(\t\x12\x1a\n\x12unencryptedMessage\x18\x07 \x02(\t\x12\x12\n\nsenderName\x18\x08 \x01(\t\x12\x0b\n\x03pad\x18\t \x01(\x0c')
+  serialized_pb=_b('\n\rpayload.proto\"<\n\rSignedPayload\x12\x1d\n\x15serializedMessageData\x18\x01 \x02(\x0c\x12\x0c\n\x04HMac\x18\x02 \x02(\x0c\"\xbb\x01\n\x0bMessageData\x12\x11\n\tmessageID\x18\x01 \x02(\x0c\x12\x10\n\x08sequence\x18\x02 \x02(\x04\x12\x11\n\tsenderKey\x18\x03 \x02(\t\x12\x13\n\x0bmessageType\x18\x04 \x01(\t\x12\x11\n\ttimeStamp\x18\x05 \x02(\x04\x12\x0f\n\x07subject\x18\x06 \x01(\t\x12\x1a\n\x12unencryptedMessage\x18\x07 \x02(\t\x12\x12\n\nsenderName\x18\x08 \x01(\t\x12\x0b\n\x03pad\x18\t \x01(\x0c')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -84,7 +84,7 @@ _MESSAGEDATA = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='senderAddress', full_name='MessageData.senderAddress', index=2,
+      name='senderKey', full_name='MessageData.senderKey', index=2,
       number=3, type=9, cpp_type=9, label=2,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -144,7 +144,7 @@ _MESSAGEDATA = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=80,
-  serialized_end=271,
+  serialized_end=267,
 )
 
 DESCRIPTOR.message_types_by_name['SignedPayload'] = _SIGNEDPAYLOAD

@@ -8,7 +8,7 @@ message SignedPayload {
 message MessageData {
     required bytes messageID           = 1;
     required uint64 sequence           = 2;
-	required string senderAddress      = 3;
+	required string senderKey          = 3;
 	optional string messageType        = 4;
 	required uint64 timeStamp          = 5;
 	optional string subject            = 6;

@@ -69,7 +69,7 @@ class ChainedOpenSSLContextFactory(ssl.DefaultOpenSSLContextFactory):
         ctx.use_privatekey_file(self.privateKeyFileName)
         self._context = ctx
 
-# Web-Server
+# Http-Server
 class WebResource(resource.Resource):
     def __init__(self, kserver):
         resource.Resource.__init__(self)
@@ -137,15 +137,15 @@ class RPCCalls(jsonrpc.JSONRPC):
         return privkey
 
     def jsonrpc_getmessages(self):
-        return MessageDecoder(privkey, kserver).getMessages()
+        return MessageDecoder(privkey, kserver.storage.get_all()).get_messages()
 
     def jsonrpc_send(self, pubkey, message):
         r = kserver.getRange()
         if r is False:
             return "Counldn't find any peers. Maybe check your internet connection?"
         else:
-            message = MessageEncoder(pubkey, privkey, message, r).get_messages()
-            for key, value in message.items():
+            messages = MessageEncoder(pubkey, privkey, message[0], r).create_messages()
+            for key, value in messages.items():
                 log.msg("Setting %s = %s" % (key, value))
                 kserver.set(key, value)
             return "Message sent successfully"
