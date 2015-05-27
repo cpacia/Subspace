@@ -9,4 +9,4 @@ cp subspaced.py "$HOME/.subspace/subspaced.py"
 cp subspace.conf "$HOME/.subspace/subspace.conf"
 sudo cp subspace.sh /usr/bin/subspace
 sudo chmod +x /usr/bin/subspace         
-echo "Subspace v0.1 installation complete"
+echo "Subspace v0.2 installation complete"

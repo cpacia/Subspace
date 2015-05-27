@@ -174,6 +174,8 @@ class Server(object):
 
         def store(nodes):
             self.log.info("setting '%s' on %s" % (key, map(str, nodes)))
+            for node in nodes:
+                self.log.info(node.long_id)
             ds = [self.protocol.callStore(node, key, value) for node in nodes]
             return defer.DeferredList(ds).addCallback(self._anyRespondSuccess)
 
