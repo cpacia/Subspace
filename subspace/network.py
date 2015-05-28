@@ -24,7 +24,7 @@ class Server(object):
     to start listening as an active node on the network.
     """
 
-    def __init__(self, ksize=20, alpha=3, id=None, storage=None):
+    def __init__(self, ksize=40, alpha=3, id=None, storage=None):
         """
         Create a server instance.  This will start listening on the given port.
 
@@ -161,9 +161,9 @@ class Server(object):
         if len(nearest) == 0:
             self.log.warning("There are no known neighbors to get range")
             return False
-        heap = NodeHeap(self.node, self.ksize)
-        heap.push(nearest)
-        return calculate_range(list(heap))
+        #heap = NodeHeap(self.node, self.ksize)
+        #heap.push(nearest)
+        return calculate_range(list(nearest))
 
 
     def set(self, key, value):
@@ -174,8 +174,6 @@ class Server(object):
 
         def store(nodes):
             self.log.info("setting '%s' on %s" % (key, map(str, nodes)))
-            for node in nodes:
-                self.log.info(node.long_id)
             ds = [self.protocol.callStore(node, key, value) for node in nodes]
             return defer.DeferredList(ds).addCallback(self._anyRespondSuccess)
 
