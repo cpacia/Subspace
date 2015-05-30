@@ -61,11 +61,15 @@ commands:
                             help="the unencrypted message to send (will be encrypted)",
                             nargs='+')
         args = parser.parse_args(sys.argv[2:])
+        key = args.key
         if len(args.key) != 66 or all(c in string.hexdigits for c in args.key) is not True:
-            print "Invalid key. Enter a 33 byte public key in either hexadecimal for base58check format."
-            return
+            try:
+                key = b58check_to_hex(args.key)
+            except:
+                print "Invalid key. Enter a 33 byte public key in either hexadecimal for base58check format."
+                return
 
-        d = proxy.callRemote('send', args.key, args.message)
+        d = proxy.callRemote('send', key, args.message)
         d.addCallbacks(printValue, printError)
         reactor.run()
 
