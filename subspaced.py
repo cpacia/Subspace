@@ -1,5 +1,5 @@
 import pickle
-import threading
+import socket
 
 from ConfigParser import SafeConfigParser
 from os.path import expanduser
@@ -16,11 +16,6 @@ from subspace.network import Server
 from subspace import log
 from subspace.message import *
 
-from multiprocessing.pool import ThreadPool
-
-
-
-
 sys.path.append(os.path.dirname(__file__))
 
 datafolder = expanduser("~") + "/.subspace/"
@@ -33,6 +28,11 @@ username = cfg.get("SUBSPACED", "rpcusername") if cfg.has_option("SUBSPACED", "r
 password = cfg.get("SUBSPACED", "rpcpassword") if cfg.has_option("SUBSPACED", "rpcpassword") else "Password"
 bootstrap_node = cfg.get("SUBSPACED", "bootstrapnode") if cfg.has_option("SUBSPACED", "bootstrapnode") else "1.2.3.4"
 bootstrap_port = cfg.get("SUBSPACED", "bootstrapport") if cfg.has_option("SUBSPACED", "bootstrapport") else "8335"
+
+try:
+    socket.inet_aton(bootstrap_node)
+except socket.error:
+    bootstrap_node = socket.gethostbyname(bootstrap_node)
 
 if os.path.isfile(datafolder + 'keys.pickle'):
     privkey = pickle.load(open(datafolder + "keys.pickle", "rb"))
@@ -57,14 +57,11 @@ udpserver.setServiceParent(application)
 class MessageListener():
 
     def __init__(self):
-        self.new_messages = []
+        self.new_messages = {}
 
     def notify(self, key, value):
-        encrypted_message = {}
-        ciphertext = ["", value]
-        encrypted_message[key] = ciphertext
-        for m in MessageDecoder(privkey, encrypted_message).get_messages():
-            self.new_messages.append(m)
+        v = ["", value]
+        self.new_messages[key] = v
 
 listener = MessageListener()
 kserver.protocol.addMessageListener(listener)
@@ -159,8 +156,8 @@ class RPCCalls(jsonrpc.JSONRPC):
         return MessageDecoder(privkey, kserver.storage.get_all()).get_messages()
 
     def jsonrpc_getnew(self):
-        messages = listener.new_messages
-        listener.new_messages = []
+        messages = MessageDecoder(privkey, listener.new_messages).get_messages()
+        listener.new_messages = {}
         return messages
 
     def jsonrpc_send(self, pubkey, message):
