@@ -24,7 +24,7 @@ class Server(object):
     to start listening as an active node on the network.
     """
 
-    def __init__(self, ksize=40, alpha=3, id=None, storage=None):
+    def __init__(self, ksize=20, alpha=3, id=None, storage=None):
         """
         Create a server instance.  This will start listening on the given port.
 
@@ -185,7 +185,7 @@ class Server(object):
         elif len(key) != 40 or all(c in string.hexdigits for c in key) is not True:
             self.log.warning("Invalid key cannot set on network")
             return defer.succeed(None)
-        spider = NodeSpiderCrawl(self.protocol, node, nearest, self.ksize, self.alpha)
+        spider = NodeSpiderCrawl(self.protocol, node, nearest, 40, self.alpha)
         return spider.find().addCallback(store)
 
     def _anyRespondSuccess(self, responses):

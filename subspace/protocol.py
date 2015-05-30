@@ -18,6 +18,13 @@ class SubspaceProtocol(RPCProtocol):
         self.storage = storage
         self.sourceNode = sourceNode
         self.log = Logger(system=self)
+        self.listeners = []
+
+    def addMessageListener(self, listener):
+        self.listeners.append(listener)
+
+    def removeMessageListener(self, listener):
+        self.listeners.remove(listener)
 
     def getRefreshIDs(self):
         """
@@ -44,6 +51,8 @@ class SubspaceProtocol(RPCProtocol):
             return False
         self.log.debug("got a store request from %s, storing value" % str(sender))
         self.storage[key] = value
+        for listener in self.listeners:
+            listener.notify(key, value)
         return True
 
     def rpc_find_node(self, sender, nodeid, key):

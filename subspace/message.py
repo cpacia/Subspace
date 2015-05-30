@@ -94,8 +94,8 @@ class MessageEncoder(object):
                 message_hash = hash160(ciphertext + nonce_hash)
                 key = message_hash
             else:
-                low = long(self.pubkey_hex[2:42], 16) - self.range / 2
-                high = long(self.pubkey_hex[2:42], 16) + self.range / 2
+                low = long(self.pubkey_hex[2:42], 16) - self.range / 4
+                high = long(self.pubkey_hex[2:42], 16) + self.range / 4
                 while True:
                     nonce_hash = digest(entropy + str(nonce))
                     message_hash = hash160(ciphertext + nonce_hash)

@@ -1,4 +1,5 @@
 import pickle
+import threading
 
 from ConfigParser import SafeConfigParser
 from os.path import expanduser
@@ -7,13 +8,16 @@ from txjsonrpc.netstring import jsonrpc
 
 from twisted.application import service, internet
 from twisted.python.log import ILogObserver
-from twisted.internet import ssl, task
+from twisted.internet import ssl, task, reactor
 from twisted.web import resource, server
 from twisted.web.resource import NoResource
 
 from subspace.network import Server
 from subspace import log
 from subspace.message import *
+
+from multiprocessing.pool import ThreadPool
+
 
 
 
@@ -49,6 +53,21 @@ else:
 kserver.saveStateRegularly('cache.pickle', 10)
 udpserver = internet.UDPServer(cfg.get("SUBSPACED", "port") if cfg.has_option("SUBSPACED", "port") else 8335, kserver.protocol)
 udpserver.setServiceParent(application)
+
+class MessageListener():
+
+    def __init__(self):
+        self.new_messages = []
+
+    def notify(self, key, value):
+        encrypted_message = {}
+        ciphertext = ["", value]
+        encrypted_message[key] = ciphertext
+        for m in MessageDecoder(privkey, encrypted_message).get_messages():
+            self.new_messages.append(m)
+
+listener = MessageListener()
+kserver.protocol.addMessageListener(listener)
 
 class ChainedOpenSSLContextFactory(ssl.DefaultOpenSSLContextFactory):
     def __init__(self, privateKeyFileName, certificateChainFileName,
@@ -139,6 +158,11 @@ class RPCCalls(jsonrpc.JSONRPC):
     def jsonrpc_getmessages(self):
         return MessageDecoder(privkey, kserver.storage.get_all()).get_messages()
 
+    def jsonrpc_getnew(self):
+        messages = listener.new_messages
+        listener.new_messages = []
+        return messages
+
     def jsonrpc_send(self, pubkey, message):
         r = kserver.getRange()
         if r is False:
@@ -151,9 +175,6 @@ class RPCCalls(jsonrpc.JSONRPC):
             return "Message sent successfully"
 
 factory = jsonrpc.RPCFactory(RPCCalls)
-
 factory.addIntrospection()
-
 jsonrpcServer = internet.TCPServer(7080, factory, interface='127.0.0.1')
 jsonrpcServer.setServiceParent(application)
-

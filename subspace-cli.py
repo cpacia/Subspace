@@ -35,6 +35,7 @@ class Parser(object):
 
 commands:
     getmessages      returns a list of your messages in json format
+    getnew           returns messages that have not been previously returned by this command
     getprivkey       returns your private encryption key
     getpubkey        returns your node's public encryption key
     send             sends a message to the given public key
@@ -110,6 +111,16 @@ commands:
         args = parser.parse_args(sys.argv[2:])
         d = proxy.callRemote('getpubkey')
         d.addCallbacks(printKey, printError)
+        reactor.run()
+
+    def getnew(self):
+        parser = argparse.ArgumentParser(
+            description="Returns messages that have not previously been returned by this command",
+            usage='''usage:
+    subspace getnew''')
+        args = parser.parse_args(sys.argv[2:])
+        d = proxy.callRemote('getnew')
+        d.addCallbacks(printValue, printError)
         reactor.run()
 
 proxy = Proxy('127.0.0.1', 7080)
