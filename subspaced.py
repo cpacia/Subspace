@@ -34,7 +34,6 @@ try:
     socket.inet_aton(bootstrap_node)
 except socket.error:
     bootstrap_node = str(socket.gethostbyname(bootstrap_node))
-print bootstrap_node, bootstrap_port
 
 if os.path.isfile(datafolder + 'keys.pickle'):
     privkey = pickle.load(open(datafolder + "keys.pickle", "rb"))
