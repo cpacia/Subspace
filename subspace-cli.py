@@ -68,7 +68,6 @@ commands:
             except:
                 print "Invalid key. Enter a 33 byte public key in either hexadecimal for base58check format."
                 return
-
         d = proxy.callRemote('send', key, args.message)
         d.addCallbacks(printValue, printError)
         reactor.run()

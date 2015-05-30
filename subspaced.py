@@ -1,5 +1,6 @@
 import pickle
 import socket
+import codecs
 
 from ConfigParser import SafeConfigParser
 from os.path import expanduser
@@ -20,19 +21,20 @@ sys.path.append(os.path.dirname(__file__))
 
 datafolder = expanduser("~") + "/.subspace/"
 
-f = file(datafolder + 'subspace.conf')
 cfg = SafeConfigParser()
-cfg.read(f)
+with codecs.open(datafolder + 'subspace.conf', 'r', encoding='utf-8') as f:
+    cfg.readfp(f)
 
 username = cfg.get("SUBSPACED", "rpcusername") if cfg.has_option("SUBSPACED", "rpcusername") else "Username"
 password = cfg.get("SUBSPACED", "rpcpassword") if cfg.has_option("SUBSPACED", "rpcpassword") else "Password"
 bootstrap_node = cfg.get("SUBSPACED", "bootstrapnode") if cfg.has_option("SUBSPACED", "bootstrapnode") else "1.2.3.4"
-bootstrap_port = cfg.get("SUBSPACED", "bootstrapport") if cfg.has_option("SUBSPACED", "bootstrapport") else "8335"
+bootstrap_port = int(cfg.get("SUBSPACED", "bootstrapport")) if cfg.has_option("SUBSPACED", "bootstrapport") else 8335
 
 try:
     socket.inet_aton(bootstrap_node)
 except socket.error:
-    bootstrap_node = socket.gethostbyname(bootstrap_node)
+    bootstrap_node = str(socket.gethostbyname(bootstrap_node))
+print bootstrap_node, bootstrap_port
 
 if os.path.isfile(datafolder + 'keys.pickle'):
     privkey = pickle.load(open(datafolder + "keys.pickle", "rb"))
@@ -161,11 +163,12 @@ class RPCCalls(jsonrpc.JSONRPC):
         return messages
 
     def jsonrpc_send(self, pubkey, message):
+        message = " ".join(message)
         r = kserver.getRange()
         if r is False:
             return "Counldn't find any peers. Maybe check your internet connection?"
         else:
-            messages = MessageEncoder(pubkey, privkey, message[0], r).create_messages()
+            messages = MessageEncoder(pubkey, privkey, message, r).create_messages()
             for key, value in messages.items():
                 log.msg("Setting %s = %s" % (key, value))
                 kserver.set(key, value)

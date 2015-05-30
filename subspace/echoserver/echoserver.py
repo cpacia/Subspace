@@ -5,6 +5,8 @@ import daemon
 from twisted.internet import reactor
 from txjsonrpc.netstring.jsonrpc import Proxy
 
+from subspace import log
+
 from bitcoin import *
 
 def run_echoserver():
@@ -14,10 +16,14 @@ def run_echoserver():
         d.addCallbacks(echo, printError)
 
     def echo(messages):
+        def printResp(resp):
+            log.INFO(resp)
         for message in messages:
             value = message["plaintext"]
             key = message["sender"]
+            log.INFO("Received message from %s : %s" % (key, value))
             d = proxy.callRemote('send', key, value)
+            d.addCallback(printResp)
         getNew()
 
     def printError(error):
