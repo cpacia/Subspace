@@ -163,7 +163,8 @@ class RPCCalls(jsonrpc.JSONRPC):
         return messages
 
     def jsonrpc_send(self, pubkey, message):
-        message = " ".join(message)
+        if type(message) is list:
+            message = " ".join(message)
         r = kserver.getRange()
         if r is False:
             return "Counldn't find any peers. Maybe check your internet connection?"
