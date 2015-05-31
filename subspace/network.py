@@ -159,15 +159,18 @@ class Server(object):
             return calculate_range()
 
 
-    def set(self, key, value):
+    def send(self, key, value, store=True):
         """
         Set the given key to the given value in the network.
         """
         self.log.debug("setting '%s' = '%s' on network" % (key, value))
 
-        def store(nodes):
+        def set(nodes):
             self.log.info("setting '%s' on %s" % (key, map(str, nodes)))
-            ds = [self.protocol.callStore(node, key, value) for node in nodes]
+            if store:
+                ds = [self.protocol.callStore(node, key, value) for node in nodes]
+            else:
+                ds = [self.protocol.callRtc(node, key, value) for node in nodes]
             return defer.DeferredList(ds).addCallback(self._anyRespondSuccess)
 
         node = Node(key)
@@ -179,7 +182,7 @@ class Server(object):
             self.log.warning("Invalid key cannot set on network")
             return defer.succeed(None)
         spider = NodeSpiderCrawl(self.protocol, node, nearest, 40, self.alpha)
-        return spider.find().addCallback(store)
+        return spider.find().addCallback(set)
 
     def _anyRespondSuccess(self, responses):
         """

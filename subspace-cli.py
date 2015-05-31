@@ -62,6 +62,7 @@ commands:
         parser.add_argument('-m', '--message', required=True,
                             help="the unencrypted message to send (will be encrypted)",
                             nargs='+')
+        parser.add_argument('-d', '--dontstore', action='store_true', help="sends to an online recipient without storing on the network")
         args = parser.parse_args(sys.argv[2:])
         key = args.key
         if len(args.key) != 66 or all(c in string.hexdigits for c in args.key) is not True:
@@ -70,7 +71,10 @@ commands:
             except:
                 print "Invalid key. Enter a 33 byte public key in either hexadecimal for base58check format."
                 return
-        d = proxy.callRemote('send', key, args.message)
+        if args.dontstore:
+            d = proxy.callRemote('send', key, args.message, False)
+        else:
+            d = proxy.callRemote('send', key, args.message)
         d.addCallbacks(printValue, printError)
         reactor.run()
 

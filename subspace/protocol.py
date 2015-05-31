@@ -55,6 +55,17 @@ class SubspaceProtocol(RPCProtocol):
             listener.notify(key, value)
         return True
 
+    def rpc_rtc(self, sender, nodeid, key, value):
+        source = Node(nodeid, sender[0], sender[1])
+        self.router.addContact(source)
+        if len(key) != 40 or all(c in string.hexdigits for c in key) is not True:
+            self.log.warning("Got an invalid rtc request from %s" % str(sender))
+            return False
+        self.log.debug("got a rtc message from %s" % str(sender))
+        for listener in self.listeners:
+            listener.notify(key, value)
+        return True
+
     def rpc_find_node(self, sender, nodeid, key):
         self.log.info("finding neighbors of %i in local table" % long(nodeid.encode('hex'), 16))
         source = Node(nodeid, sender[0], sender[1])
@@ -88,6 +99,11 @@ class SubspaceProtocol(RPCProtocol):
     def callStore(self, nodeToAsk, key, value):
         address = (nodeToAsk.ip, nodeToAsk.port)
         d = self.store(address, self.sourceNode.id, key, value)
+        return d.addCallback(self.handleCallResponse, nodeToAsk)
+
+    def callRtc(self, nodeToAsk, key, value):
+        address = (nodeToAsk.ip, nodeToAsk.port)
+        d = self.rtc(address, self.sourceNode.id, key, value)
         return d.addCallback(self.handleCallResponse, nodeToAsk)
 
     def transferKeyValues(self, node):

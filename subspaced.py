@@ -176,7 +176,7 @@ class RPCCalls(jsonrpc.JSONRPC):
         listener.new_messages = {}
         return messages
 
-    def jsonrpc_send(self, pubkey, message):
+    def jsonrpc_send(self, pubkey, message, store=True):
         if type(message) is list:
             message = " ".join(message)
         r = kserver.getRange()
@@ -186,7 +186,10 @@ class RPCCalls(jsonrpc.JSONRPC):
             messages = MessageEncoder(pubkey, privkey, message, r).create_messages()
             for key, value in messages.items():
                 log.msg("Setting %s = %s" % (key, value))
-                kserver.set(key, value)
+                if store:
+                    kserver.send(key, value)
+                else:
+                    kserver.send(key, value, False)
             return "Message sent successfully"
 
 factory = jsonrpc.RPCFactory(RPCCalls)

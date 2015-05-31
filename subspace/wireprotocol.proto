@@ -11,7 +11,7 @@ message Message {
 enum Command {
 	PING        = 1;
 	STORE       = 2;
-	DONT_STORE  = 3;
+	RTC         = 3;
 	FIND_NODE   = 4;
 	FIND_VALUE  = 5;
 	GET_NODES   = 6;

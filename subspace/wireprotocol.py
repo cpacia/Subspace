@@ -19,7 +19,7 @@ _sym_db = _symbol_database.Default()
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='wireprotocol.proto',
   package='',
-  serialized_pb=_b('\n\x12wireprotocol.proto\"p\n\x07Message\x12\r\n\x05magic\x18\x01 \x02(\x0c\x12\x11\n\tmessageID\x18\x02 \x02(\x0c\x12\x15\n\x06sender\x18\x03 \x02(\x0b\x32\x05.Node\x12\x19\n\x07\x63ommand\x18\x04 \x02(\x0e\x32\x08.Command\x12\x11\n\targuments\x18\x05 \x03(\t\"3\n\x04Node\x12\x0e\n\x06nodeID\x18\x03 \x02(\t\x12\x1b\n\x08services\x18\x04 \x03(\x0e\x32\t.Services*\\\n\x07\x43ommand\x12\x08\n\x04PING\x10\x01\x12\t\n\x05STORE\x10\x02\x12\x0e\n\nDONT_STORE\x10\x03\x12\r\n\tFIND_NODE\x10\x04\x12\x0e\n\nFIND_VALUE\x10\x05\x12\r\n\tGET_NODES\x10\x06**\n\x08Services\x12\r\n\tNODE_LITE\x10\x01\x12\x0f\n\x0bNODE_SERVER\x10\x02')
+  serialized_pb=_b('\n\x12wireprotocol.proto\"p\n\x07Message\x12\r\n\x05magic\x18\x01 \x02(\x0c\x12\x11\n\tmessageID\x18\x02 \x02(\x0c\x12\x15\n\x06sender\x18\x03 \x02(\x0b\x32\x05.Node\x12\x19\n\x07\x63ommand\x18\x04 \x02(\x0e\x32\x08.Command\x12\x11\n\targuments\x18\x05 \x03(\t\"3\n\x04Node\x12\x0e\n\x06nodeID\x18\x03 \x02(\t\x12\x1b\n\x08services\x18\x04 \x03(\x0e\x32\t.Services*U\n\x07\x43ommand\x12\x08\n\x04PING\x10\x01\x12\t\n\x05STORE\x10\x02\x12\x07\n\x03RTC\x10\x03\x12\r\n\tFIND_NODE\x10\x04\x12\x0e\n\nFIND_VALUE\x10\x05\x12\r\n\tGET_NODES\x10\x06**\n\x08Services\x12\r\n\tNODE_LITE\x10\x01\x12\x0f\n\x0bNODE_SERVER\x10\x02')
 )
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
@@ -38,7 +38,7 @@ _COMMAND = _descriptor.EnumDescriptor(
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='DONT_STORE', index=2, number=3,
+      name='RTC', index=2, number=3,
       options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
@@ -57,7 +57,7 @@ _COMMAND = _descriptor.EnumDescriptor(
   containing_type=None,
   options=None,
   serialized_start=189,
-  serialized_end=281,
+  serialized_end=274,
 )
 _sym_db.RegisterEnumDescriptor(_COMMAND)
 
@@ -79,15 +79,15 @@ _SERVICES = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=283,
-  serialized_end=325,
+  serialized_start=276,
+  serialized_end=318,
 )
 _sym_db.RegisterEnumDescriptor(_SERVICES)
 
 Services = enum_type_wrapper.EnumTypeWrapper(_SERVICES)
 PING = 1
 STORE = 2
-DONT_STORE = 3
+RTC = 3
 FIND_NODE = 4
 FIND_VALUE = 5
 GET_NODES = 6
