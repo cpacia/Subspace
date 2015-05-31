@@ -72,7 +72,7 @@ class MessageListener():
 
     def attempt_decrypt(self):
         self.new_messages.extend(MessageDecoder(privkey, self.encrypted).get_messages())
-        self.encrypted = {}
+        self.encrypted.clear()
 
 
 listener = MessageListener()
@@ -182,7 +182,9 @@ class RPCCalls(jsonrpc.JSONRPC):
 
     def jsonrpc_getnew(self):
         listener.attempt_decrypt()
-        return listener.new_messages
+        messages = listener.new_messages
+        listener.new_messages = []
+        return messages
 
     def jsonrpc_send(self, pubkey, message, store=True):
         if type(message) is list:
