@@ -27,15 +27,16 @@ cfg = SafeConfigParser()
 with codecs.open(datafolder + 'subspace.conf', 'r', encoding='utf-8') as f:
     cfg.readfp(f)
 
-username = cfg.get("SUBSPACED", "rpcusername") if cfg.has_option("SUBSPACED", "rpcusername") else "Username"
-password = cfg.get("SUBSPACED", "rpcpassword") if cfg.has_option("SUBSPACED", "rpcpassword") else "Password"
-bootstrap_node = cfg.get("SUBSPACED", "bootstrapnode") if cfg.has_option("SUBSPACED", "bootstrapnode") else "1.2.3.4"
-bootstrap_port = int(cfg.get("SUBSPACED", "bootstrapport")) if cfg.has_option("SUBSPACED", "bootstrapport") else 8335
-
-try:
-    socket.inet_aton(bootstrap_node)
-except socket.error:
-    bootstrap_node = str(socket.gethostbyname(bootstrap_node))
+seeds = cfg.items("bootstrap")
+bootstrap_list = []
+for seed in seeds:
+    try:
+        socket.inet_aton(seed[0])
+        tup = (str(seed[0]), int(seed[1]))
+    except socket.error:
+        ip = str(socket.gethostbyname(seed[0]))
+        tup = (ip, int(seed[1]))
+    bootstrap_list.append(tup)
 
 if os.path.isfile(datafolder + 'keys.pickle'):
     privkey = pickle.load(open(datafolder + "keys.pickle", "rb"))
@@ -52,7 +53,7 @@ if os.path.isfile('cache.pickle'):
     kserver = Server.loadState('cache.pickle')
 else:
     kserver = Server(id=pubkey[2:42])
-    kserver.bootstrap([(bootstrap_node, bootstrap_port)])
+    kserver.bootstrap(bootstrap_list)
 kserver.saveStateRegularly('cache.pickle', 10)
 udpserver = internet.UDPServer(cfg.get("SUBSPACED", "port") if cfg.has_option("SUBSPACED", "port") else 8335, kserver.protocol)
 udpserver.setServiceParent(application)
@@ -137,13 +138,13 @@ class WebResource(resource.Resource):
 if cfg.has_option("SUBSPACED", "server"):
     server_protocol = server.Site(WebResource(kserver))
     if cfg.has_option("SUBSPACED", "useSSL"):
-        webserver = internet.SSLServer(cfg.get("SUBSPACED", "serverport") if cfg.has_option("SUBSPACED", "serverport") else 8080,
+        httpserver = internet.SSLServer(cfg.get("SUBSPACED", "serverport") if cfg.has_option("SUBSPACED", "serverport") else 8080,
                                    server_protocol,
                                    ChainedOpenSSLContextFactory(cfg.get("SUBSPACED", "sslkey"), cfg.get("SUBSPACED", "sslcert")))
-        #webserver = internet.SSLServer(8335, website, ssl.DefaultOpenSSLContextFactory(options["sslkey"], options["sslcert"]))
+        #httpserver = internet.SSLServer(8335, website, ssl.DefaultOpenSSLContextFactory(cfg.get("SUBSPACED", "sslkey"), cfg.get("SUBSPACED", "sslcert")))
     else:
-        webserver = internet.TCPServer(cfg.get("SUBSPACED", "serverport") if cfg.has_option("SUBSPACED", "serverport") else 8080, server_protocol)
-    webserver.setServiceParent(application)
+        httpserver = internet.TCPServer(cfg.get("SUBSPACED", "serverport") if cfg.has_option("SUBSPACED", "serverport") else 8080, server_protocol)
+    httpserver.setServiceParent(application)
 
 # RPC-Server
 class RPCCalls(jsonrpc.JSONRPC):
@@ -156,7 +157,9 @@ class RPCCalls(jsonrpc.JSONRPC):
             num_peers += bucket.__len__()
         info["known peers"] = num_peers
         info["stored messages"] = len(kserver.storage.data)
-        info["db size"] = sys.getsizeof(kserver.storage.data)
+        size = sys.getsizeof(kserver.storage.data)
+        size += sum(map(sys.getsizeof, kserver.storage.data.itervalues())) + sum(map(sys.getsizeof, kserver.storage.data.iterkeys()))
+        info["db size"] = size
         return info
 
     def jsonrpc_getpubkey(self):
@@ -188,5 +191,5 @@ class RPCCalls(jsonrpc.JSONRPC):
 
 factory = jsonrpc.RPCFactory(RPCCalls)
 factory.addIntrospection()
-jsonrpcServer = internet.TCPServer(7080, factory, interface='127.0.0.1')
+jsonrpcServer = internet.TCPServer(7080, factory, interface=cfg.get("SUBSPACED", "rpcallowip") if cfg.has_option("SUBSPACED", "rpcallowip") else "127.0.0.1")
 jsonrpcServer.setServiceParent(application)
