@@ -147,23 +147,16 @@ class Server(object):
         return spider.find()
 
     def getRange(self):
-        def calculate_range(nodes):
-            high = long("0000000000000000000000000000000000000000", 16)
-            low = long("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF", 16)
-            for node in nodes:
-                if node.long_id > high:
-                    high = node.long_id
-                if node.long_id < low:
-                    low = node.long_id
-            return high - low
-
+        def calculate_range():
+            index = self.protocol.router.getBucketFor(self.node)
+            bucket = self.protocol.router.buckets[index]
+            return bucket.range[1] - bucket.range[0]
         nearest = self.protocol.router.findNeighbors(self.node)
         if len(nearest) == 0:
             self.log.warning("There are no known neighbors to get range")
             return False
-        #heap = NodeHeap(self.node, self.ksize)
-        #heap.push(nearest)
-        return calculate_range(list(nearest))
+        else:
+            return calculate_range()
 
 
     def set(self, key, value):

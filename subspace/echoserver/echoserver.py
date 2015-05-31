@@ -6,10 +6,6 @@ from daemon import Daemon
 from twisted.internet import reactor
 from txjsonrpc.netstring.jsonrpc import Proxy
 
-from subspace import log
-
-from bitcoin import *
-
 def run_echoserver():
     def getNew():
         time.sleep(1)
@@ -29,9 +25,9 @@ def run_echoserver():
 
     def printError(error):
         print 'error', error
+        getNew()
 
     proxy = Proxy('127.0.0.1', 7080)
-    running = False
     getNew()
     reactor.run()
 
@@ -40,7 +36,7 @@ class EchoDaemon(Daemon):
             run_echoserver()
 
 if __name__ == "__main__":
-        daemon = EchoDaemon('/tmp/daemon-example.pid')
+        daemon = EchoDaemon('/tmp/echodaemon.pid')
         if len(sys.argv) == 2:
                 if 'start' == sys.argv[1]:
                         daemon.start()

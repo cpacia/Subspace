@@ -17,6 +17,8 @@ from subspace.network import Server
 from subspace import log
 from subspace.message import *
 
+version = 20000
+
 sys.path.append(os.path.dirname(__file__))
 
 datafolder = expanduser("~") + "/.subspace/"
@@ -145,7 +147,17 @@ if cfg.has_option("SUBSPACED", "server"):
 
 # RPC-Server
 class RPCCalls(jsonrpc.JSONRPC):
-    """An example object to be published."""
+
+    def jsonrpc_getinfo(self):
+        info = {}
+        info["version"] = version
+        num_peers = 0
+        for bucket in kserver.protocol.router.buckets:
+            num_peers += bucket.__len__()
+        info["known peers"] = num_peers
+        info["stored messages"] = len(kserver.storage.data)
+        info["db size"] = sys.getsizeof(kserver.storage.data)
+        return info
 
     def jsonrpc_getpubkey(self):
         return pubkey

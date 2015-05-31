@@ -3,6 +3,7 @@ __author__ = 'chris'
 import argparse
 import string
 import pickle
+import json
 
 from twisted.internet import reactor
 from txjsonrpc.netstring.jsonrpc import Proxy
@@ -17,7 +18,7 @@ def doContinue(value):
     pass
 
 def printValue(value):
-    print str(value)
+    print json.dumps(value, indent=4)
     reactor.stop()
 
 def printError(error):
@@ -34,6 +35,7 @@ class Parser(object):
     subspace <command> --help
 
 commands:
+    getinfo          returns an object containing various state info
     getmessages      returns a list of your messages in json format
     getnew           returns messages that have not been previously returned by this command
     getprivkey       returns your private encryption key
@@ -123,6 +125,16 @@ commands:
     subspace getnew''')
         args = parser.parse_args(sys.argv[2:])
         d = proxy.callRemote('getnew')
+        d.addCallbacks(printValue, printError)
+        reactor.run()
+
+    def getinfo(self):
+        parser = argparse.ArgumentParser(
+            description="Returns an object containing various state info",
+            usage='''usage:
+    subspace getinfo''')
+        args = parser.parse_args(sys.argv[2:])
+        d = proxy.callRemote('getinfo')
         d.addCallbacks(printValue, printError)
         reactor.run()
 

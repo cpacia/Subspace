@@ -8,13 +8,6 @@ from subspace.utils import digest
 
 from pyelliptic.hash import hmac_sha256
 
-"""
-TODO: clean up this module. Plaintext will be serialized with protobuf including timestamp, sender pubkey,
-sender name, and hmac. Create a few methods for returning various parts of the object such as the serialized plaintext.
-And add some comments so people know what's going on.
-
-"""
-
 class MessageEncoder(object):
 
     def __init__(self, recipient_pub, sender_priv, message, range):
