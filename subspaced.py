@@ -61,11 +61,19 @@ udpserver.setServiceParent(application)
 class MessageListener():
 
     def __init__(self):
-        self.new_messages = {}
+        self.encrypted = {}
+        self.new_messages = []
+        loopingCall = task.LoopingCall(self.attempt_decrypt)
+        loopingCall.start(30, True)
 
     def notify(self, key, value):
         v = ["", value]
-        self.new_messages[key] = v
+        self.encrypted[key] = v
+
+    def attempt_decrypt(self):
+        self.new_messages.extend(MessageDecoder(privkey, self.encrypted).get_messages())
+        self.encrypted = {}
+
 
 listener = MessageListener()
 kserver.protocol.addMessageListener(listener)
@@ -134,6 +142,7 @@ class WebResource(resource.Resource):
         Processes the delayed requests that did not have
         any data to return last time around.
         """
+        #TODO
 
 if cfg.has_option("SUBSPACED", "server"):
     server_protocol = server.Site(WebResource(kserver))
@@ -172,9 +181,8 @@ class RPCCalls(jsonrpc.JSONRPC):
         return MessageDecoder(privkey, kserver.storage.get_all()).get_messages()
 
     def jsonrpc_getnew(self):
-        messages = MessageDecoder(privkey, listener.new_messages).get_messages()
-        listener.new_messages = {}
-        return messages
+        listener.attempt_decrypt()
+        return listener.new_messages
 
     def jsonrpc_send(self, pubkey, message, store=True):
         if type(message) is list:
