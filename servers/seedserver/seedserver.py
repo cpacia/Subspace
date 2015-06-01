@@ -10,7 +10,6 @@ from twisted.application import service, internet
 from twisted.python.log import ILogObserver
 from twisted.internet import ssl, task, reactor
 from twisted.web import resource, server
-from twisted.web.resource import NoResource
 
 from subspace.network import Server
 from subspace import log
@@ -33,14 +32,17 @@ bootstrap_list = [("1.2.4.5", 8335)]
 application = service.Application("subspace_seed_server")
 application.setComponent(ILogObserver, log.FileLogObserver(sys.stdout, log.INFO).emit)
 
+node_id = random_key()[:40]
+this_node = Node(node_id, "the_server_ip_address", 8335)
+
 if os.path.isfile('cache.pickle'):
     kserver = Server.loadState('cache.pickle')
 else:
-    kserver = Server(id=random_key()[:40])
+    kserver = Server(id=node_id)
     kserver.bootstrap(bootstrap_list)
 
 kserver.saveStateRegularly('cache.pickle', 10)
-udpserver = internet.UDPServer(8336, kserver.protocol)
+udpserver = internet.UDPServer(8335, kserver.protocol)
 udpserver.setServiceParent(application)
 
 class ChainedOpenSSLContextFactory(ssl.DefaultOpenSSLContextFactory):
@@ -66,48 +68,57 @@ class WebResource(resource.Resource):
     def __init__(self, kserver):
         resource.Resource.__init__(self)
         self.kserver = kserver
+        self.protobuf = []
+        self.json = []
         loopingCall = task.LoopingCall(self.crawl)
         loopingCall.start(60, True)
 
     def crawl(self):
-        for bucket in self.kserver.protocol.router.buckets:
-            for node in bucket.getNodes():
-                self.kserver.protocol.callPing(node)
-        node = Node(random_key[:40])
-        nearest = self.kserver.protocol.router.findNeighbors(node)
-        spider = NodeSpiderCrawl(self.kserver.protocol, node, nearest, 100, self.alpha)
-        spider.find()
-
-    def getChild(self, child, request):
-        return self
-
-    def render_GET(self, request):
-        def respond(uncompressed_data):
+        def gather_results(result):
+            nodes = []
+            for bucket in self.kserver.protocol.router.buckets:
+                nodes.extend(bucket.getNodes())
+            nodes.append(this_node)
+            shuffle(nodes)
+            seeds = peerseeds.PeerSeeds()
+            json_list = []
+            for node in nodes[:50]:
+                node_dic = {}
+                node_dic["ip"] = node.ip
+                node_dic["port"] = node.port
+                json_list.append(node_dic)
+                data = seeds.seed.add()
+                data.ip_address = node.ip
+                data.port = node.port
+                #TODO add in services after the wire protocol is updated
+            seeds.timestamp = int(time.time())
+            seeds.net = "main"
+            uncompressed_data = seeds.SerializeToString()
             buf = StringIO()
             f = gzip.GzipFile(mode='wb', fileobj=buf)
             try:
                 f.write(uncompressed_data)
             finally:
                 f.close()
-            compressed_data = buf.getvalue()
-            request.write(compressed_data)
-            request.finish()
+            self.protobuf = buf.getvalue()
+            self.json = json.dumps(json_list, indent=4)
 
-        nodes = []
         for bucket in self.kserver.protocol.router.buckets:
-            nodes.append(bucket.getNodes())
-        shuffle(nodes)
-        seeds = peerseeds.PeerSeeds()
-        for node in nodes[:50]:
-            data = peerseeds.PeerSeedData()
-            data.ip_address = node.ip
-            data.port = node.port
-            #TODO add in services after the wire protocol is updated
-            seeds.PeerSeedData.append(data)
-        seeds.timestamp = int(time.time())
-        seeds.net = "main"
+            for node in bucket.getNodes():
+                self.kserver.protocol.callPing(node)
+        node = Node(random_key()[:40])
+        nearest = self.kserver.protocol.router.findNeighbors(node)
+        spider = NodeSpiderCrawl(self.kserver.protocol, node, nearest, 100, 4)
+        d = spider.find().addCallback(gather_results)
+
+    def getChild(self, child, request):
+        return self
+
+    def render_GET(self, request):
         log.msg("Received a request for nodes, responding...")
-        respond(seeds.SerializeToString())
+        request.write(self.protobuf)
+        request.finish()
+        return server.NOT_DONE_YET
 
 server_protocol = server.Site(WebResource(kserver))
 seed_server = internet.SSLServer(8080, server_protocol, ChainedOpenSSLContextFactory(ssl_key, ssl_cert))
