@@ -42,8 +42,7 @@ By using this structure a node only needs to store a fraction of the overall mes
 
 ######TODO
 1. Switch out the wire protocol from pickling to protobuf.
-2. Create a new RPC command which allows for synchronous messaging without requiring nodes to store the messages. 
-3. Add support for lightweight p2p clients that don't store messages and can outsource the iterative queries.
-4. Explore using the DHT over TCP instead of/in addition to UDP to allow for better Tor support.
-5. Maybe switch to 256 bit DHT.
-6. Maybe encrypt the wire protocol. 
+2. Add support for lightweight p2p clients that don't store messages and can outsource the iterative queries.
+3. Explore using the DHT over TCP instead of/in addition to UDP to allow for better Tor support.
+4. Maybe switch to 256 bit DHT.
+5. Maybe encrypt the wire protocol. 

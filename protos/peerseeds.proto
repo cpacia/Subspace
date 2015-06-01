@@ -1,0 +1,18 @@
+//Compile with: protoc --python_out=/path/to/Subspace/servers/seedserver peerseeds.proto
+
+message PeerSeedData {
+    required string ip_address = 1;
+    required uint32 port       = 2;
+    repeated Services services = 3;
+}
+
+enum Services {
+	NODE_LITE   = 1;
+	NODE_SERVER = 2;
+}
+
+message PeerSeeds {
+    repeated PeerSeedData seed = 1;
+    required uint64 timestamp  = 2;   // seconds since UNIX epoch
+    required string net        = 3;
+}

@@ -14,5 +14,5 @@ message MessageData {
 	optional string subject            = 6;
 	required string unencryptedMessage = 7;
 	optional string senderName         = 8;
-	optional bytes pad                = 9;
+	optional bytes pad                 = 9;
 }

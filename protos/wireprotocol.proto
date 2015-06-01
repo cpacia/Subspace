@@ -18,8 +18,8 @@ enum Command {
 }
 
 message Node {
-	required string nodeID      = 3;
-	repeated Services services  = 4;
+	required string nodeID      = 1;
+	repeated Services services  = 2;
 }
 
 enum Services {

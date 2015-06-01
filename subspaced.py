@@ -204,5 +204,5 @@ class RPCCalls(jsonrpc.JSONRPC):
 
 factory = jsonrpc.RPCFactory(RPCCalls)
 factory.addIntrospection()
-jsonrpcServer = internet.TCPServer(7080, factory, interface=cfg.get("SUBSPACED", "rpcallowip") if cfg.has_option("SUBSPACED", "rpcallowip") else "127.0.0.1")
+jsonrpcServer = internet.TCPServer(8334, factory, interface=cfg.get("SUBSPACED", "rpcallowip") if cfg.has_option("SUBSPACED", "rpcallowip") else "127.0.0.1")
 jsonrpcServer.setServiceParent(application)
