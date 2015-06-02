@@ -116,7 +116,13 @@ class WebResource(resource.Resource):
 
     def render_GET(self, request):
         log.msg("Received a request for nodes, responding...")
-        request.write(self.protobuf)
+        if "format" in request.args:
+            if request.args["format"][0] == "json":
+                request.write(self.json)
+            elif request.args["format"][0] == "protobuf":
+                request.write(self.protobuf)
+        else:
+            request.write(self.protobuf)
         request.finish()
         return server.NOT_DONE_YET
 

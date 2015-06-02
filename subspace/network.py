@@ -4,6 +4,10 @@ Package for interacting on the network at a high level.
 import random
 import pickle
 import string
+import httplib
+import gzip
+
+from cStringIO import StringIO
 
 from twisted.internet.task import LoopingCall
 from twisted.internet import defer, reactor, task
@@ -15,7 +19,8 @@ from subspace.storage import ForgetfulStorage
 from subspace.node import Node
 from subspace.crawling import ValueSpiderCrawl
 from subspace.crawling import NodeSpiderCrawl
-from subspace.node import NodeHeap
+
+from servers.seedserver import peerseeds
 
 
 class Server(object):
@@ -73,6 +78,30 @@ class Server(object):
 
         return defer.gatherResults(ds).addCallback(republishKeys)
 
+    def querySeed(self, seed):
+        def query(seed):
+            nodes = []
+            c = httplib.HTTPSConnection(seed)
+            c.request("GET", "/")
+            response = c.getresponse()
+            self.log.debug("Https response from %s: %s, %s" % (seed, response.status, response.reason))
+            data = response.read()
+            inbuffer = StringIO(data)
+            f = gzip.GzipFile(mode='rb', fileobj=inbuffer)
+            try:
+                reread_data = f.read(len(data))
+            finally:
+                f.close()
+            seeds = peerseeds.PeerSeeds()
+            seeds.ParseFromString(reread_data)
+            for seed in seeds.seed:
+                tup = (str(seed.ip_address), seed.port)
+                nodes.append(tup)
+            return nodes
+        d = defer.Deferred()
+        reactor.callLater(0, d.callback, query(seed))
+        return d
+
     def bootstrappableNeighbors(self):
         """
         Get a :class:`list` of (ip, port) :class:`tuple` pairs suitable for use as an argument
@@ -86,30 +115,50 @@ class Server(object):
         neighbors = self.protocol.router.findNeighbors(self.node)
         return [ tuple(n)[-2:] for n in neighbors ]
 
-    def bootstrap(self, addrs):
+    def bootstrap(self, addrs, seeds):
         """
         Bootstrap the server by connecting to other known nodes in the network.
 
         Args:
             addrs: A `list` of (ip, port) `tuple` pairs.  Note that only IP addresses
                    are acceptable - hostnames will cause an error.
+            seeds: A 'list' ssl seeds formatted as "hostname:port". We will try to bootstrap
+                   using addrs first an if that fails we will query the ssl seeds.
         """
+        def initTable(results):
+                nodes = []
+                for addr, result in results.items():
+                    if result[0]:
+                        nodes.append(Node(result[1], addr[0], addr[1]))
+                if len(nodes) < 1:
+                    return self.bootstrap([], seeds)
+                spider = NodeSpiderCrawl(self.protocol, self.node, nodes, self.ksize, self.alpha)
+                return spider.find()
+
         # if the transport hasn't been initialized yet, wait a second
         if self.protocol.transport is None:
-            return task.deferLater(reactor, 1, self.bootstrap, addrs)
+            return task.deferLater(reactor, 1, self.bootstrap, addrs, seeds)
 
-        def initTable(results):
-            nodes = []
-            for addr, result in results.items():
-                if result[0]:
-                    nodes.append(Node(result[1], addr[0], addr[1]))
-            spider = NodeSpiderCrawl(self.protocol, self.node, nodes, self.ksize, self.alpha)
-            return spider.find()
+        if len(addrs) > 0:
+            ds = {}
+            for addr in addrs:
+                ds[addr] = self.protocol.ping(addr, self.node.id)
+            return deferredDict(ds).addCallback(initTable)
+        else:
+            ds = {}
+            def formatResult(results):
+                tup_list = []
+                for s, nodes in results.items():
+                    tup_list.extend(nodes)
+                ds = {}
+                for addr in tup_list:
+                    ds[addr] = self.protocol.ping(addr, self.node.id)
+                return deferredDict(ds).addCallback(initTable)
 
-        ds = {}
-        for addr in addrs:
-            ds[addr] = self.protocol.ping(addr, self.node.id)
-        return deferredDict(ds).addCallback(initTable)
+            for seed in seeds:
+                ds[seed] = self.querySeed(seed)
+            return deferredDict(ds).addCallback(formatResult)
+
 
     def inetVisibleIP(self):
         """
@@ -211,7 +260,7 @@ class Server(object):
             pickle.dump(data, f)
 
     @classmethod
-    def loadState(self, fname):
+    def loadState(self, fname, addrs, seeds):
         """
         Load the state of this node (the alpha/ksize/id/immediate neighbors)
         from a cache file with the given fname.
@@ -220,7 +269,8 @@ class Server(object):
             data = pickle.load(f)
         s = Server(data['ksize'], data['alpha'], data['id'])
         if len(data['neighbors']) > 0:
-            s.bootstrap(data['neighbors'])
+            data["neighbors"].extend(addrs)
+            s.bootstrap(data['neighbors'], seeds)
         return s
 
     def saveStateRegularly(self, fname, frequency=600):

@@ -27,16 +27,22 @@ cfg = SafeConfigParser()
 with codecs.open(datafolder + 'subspace.conf', 'r', encoding='utf-8') as f:
     cfg.readfp(f)
 
-seeds = cfg.items("bootstrap")
+bootstrap = cfg.items("bootstrap")
 bootstrap_list = []
-for seed in seeds:
+for node in bootstrap:
     try:
-        socket.inet_aton(seed[0])
-        tup = (str(seed[0]), int(seed[1]))
+        socket.inet_aton(node[0])
+        tup = (str(node[0]), int(node[1]))
     except socket.error:
-        ip = str(socket.gethostbyname(seed[0]))
-        tup = (ip, int(seed[1]))
+        ip = str(socket.gethostbyname(node[0]))
+        tup = (ip, int(node[1]))
     bootstrap_list.append(tup)
+
+ssl_seeds = cfg.items("seeds")
+seed_list = []
+for seed in ssl_seeds:
+    s = str(seed[0]) + ":" + str(seed[1])
+    seed_list.append(s)
 
 if os.path.isfile(datafolder + 'keys.pickle'):
     privkey = pickle.load(open(datafolder + "keys.pickle", "rb"))
@@ -50,10 +56,10 @@ application = service.Application("subspace")
 application.setComponent(ILogObserver, log.FileLogObserver(sys.stdout, log.INFO).emit)
 
 if os.path.isfile('cache.pickle'):
-    kserver = Server.loadState('cache.pickle')
+    kserver = Server.loadState('cache.pickle', bootstrap_list, seed_list)
 else:
     kserver = Server(id=pubkey[2:42])
-    kserver.bootstrap(bootstrap_list)
+    kserver.bootstrap(bootstrap_list, seed_list)
 kserver.saveStateRegularly('cache.pickle', 10)
 udpserver = internet.UDPServer(cfg.get("SUBSPACED", "port") if cfg.has_option("SUBSPACED", "port") else 8335, kserver.protocol)
 udpserver.setServiceParent(application)
