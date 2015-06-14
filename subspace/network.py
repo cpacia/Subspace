@@ -1,11 +1,13 @@
 """
 Package for interacting on the network at a high level.
 """
-import random
+
 import pickle
 import string
 import httplib
 import gzip
+
+from binascii import unhexlify
 
 from cStringIO import StringIO
 
@@ -21,6 +23,8 @@ from subspace.crawling import ValueSpiderCrawl
 from subspace.crawling import NodeSpiderCrawl
 
 from servers.seedserver import peerseeds
+
+from bitcoin import *
 
 
 class Server(object):
@@ -43,7 +47,7 @@ class Server(object):
         self.alpha = alpha
         self.log = Logger(system=self)
         self.storage = storage or ForgetfulStorage()
-        self.node = Node(id or digest(random.getrandbits(255)))
+        self.node = Node(id or unhexlify(random_key()))
         self.protocol = SubspaceProtocol(self.node, self.storage, ksize)
         self.refreshLoop = LoopingCall(self.refreshTable).start(3600)
 
@@ -189,7 +193,7 @@ class Server(object):
         if len(nearest) == 0:
             self.log.warning("There are no known neighbors to get key %s" % key)
             return defer.succeed(None)
-        elif len(key) != 40 or all(c in string.hexdigits for c in key) is not True:
+        elif len(key) != 64 or all(c in string.hexdigits for c in key) is not True:
             self.log.warning("Invalid key")
             return defer.succeed(None)
         spider = ValueSpiderCrawl(self.protocol, node, nearest, self.ksize, self.alpha)
@@ -232,7 +236,7 @@ class Server(object):
         if len(nearest) == 0:
             self.log.warning("There are no known neighbors to set key %s" % key)
             return defer.succeed(False)
-        elif len(key) != 40 or all(c in string.hexdigits for c in key) is not True:
+        elif len(key) != 32:
             self.log.warning("Invalid key cannot set on network")
             return defer.succeed(None)
         spider = NodeSpiderCrawl(self.protocol, node, nearest, 40, self.alpha)

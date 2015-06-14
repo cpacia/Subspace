@@ -27,7 +27,7 @@ def run_echoserver():
         print 'error', error
         getNew()
 
-    proxy = Proxy('127.0.0.1', 7080)
+    proxy = Proxy('127.0.0.1', 8334)
     getNew()
     reactor.run()
 

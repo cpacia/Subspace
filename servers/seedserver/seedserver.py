@@ -18,6 +18,8 @@ from subspace.crawling import NodeSpiderCrawl
 
 from servers.seedserver import peerseeds
 
+from binascii import unhexlify
+
 from random import shuffle
 
 from bitcoin import *
@@ -32,7 +34,7 @@ bootstrap_list = [("1.2.4.5", 8335)]
 application = service.Application("subspace_seed_server")
 application.setComponent(ILogObserver, log.FileLogObserver(sys.stdout, log.INFO).emit)
 
-node_id = random_key()[:40]
+node_id = unhexlify(random_key())
 this_node = Node(node_id, "the_server_ip_address", 8335)
 
 if os.path.isfile('cache.pickle'):
@@ -106,7 +108,7 @@ class WebResource(resource.Resource):
         for bucket in self.kserver.protocol.router.buckets:
             for node in bucket.getNodes():
                 self.kserver.protocol.callPing(node)
-        node = Node(random_key()[:40])
+        node = Node(unhexlify(random_key()))
         nearest = self.kserver.protocol.router.findNeighbors(node)
         spider = NodeSpiderCrawl(self.kserver.protocol, node, nearest, 100, 4)
         d = spider.find().addCallback(gather_results)

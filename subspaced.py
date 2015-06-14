@@ -6,6 +6,7 @@ from ConfigParser import SafeConfigParser
 from os.path import expanduser
 from OpenSSL import SSL
 from txjsonrpc.netstring import jsonrpc
+from binascii import unhexlify
 
 from twisted.application import service, internet
 from twisted.python.log import ILogObserver
@@ -58,7 +59,7 @@ application.setComponent(ILogObserver, log.FileLogObserver(sys.stdout, log.INFO)
 if os.path.isfile('cache.pickle'):
     kserver = Server.loadState('cache.pickle', bootstrap_list, seed_list)
 else:
-    kserver = Server(id=pubkey[2:42])
+    kserver = Server(id=unhexlify(pubkey[2:66]))
     kserver.bootstrap(bootstrap_list, seed_list)
 kserver.saveStateRegularly('cache.pickle', 10)
 udpserver = internet.UDPServer(cfg.get("SUBSPACED", "port") if cfg.has_option("SUBSPACED", "port") else 8335, kserver.protocol)
@@ -203,9 +204,9 @@ class RPCCalls(jsonrpc.JSONRPC):
             for key, value in messages.items():
                 log.msg("Setting %s = %s" % (key, value))
                 if store:
-                    kserver.send(key, value)
+                    kserver.send(unhexlify(key), value)
                 else:
-                    kserver.send(key, value, False)
+                    kserver.send(unhexlify(key), value, False)
             return "Message sent successfully"
 
 factory = jsonrpc.RPCFactory(RPCCalls)

@@ -122,7 +122,7 @@ class RoutingTable(object):
         self.flush()
 
     def flush(self):
-        self.buckets = [KBucket(0, 2 ** 160, self.ksize)]
+        self.buckets = [KBucket(0, 2 ** 256, self.ksize)]
 
     def splitBucket(self, index):
         one, two = self.buckets[index].split()

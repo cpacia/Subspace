@@ -76,22 +76,24 @@ class MessageEncoder(object):
         return messages
 
     def create_keys(self, ciphertexts):
-        # We do some trivial brute forcing to get the hash of the message within the same range as the
-        # recipient's public key
+        """
+        We do some trivial brute forcing to get the hash of the message within the same range as the
+        recipient's public key
+        """
         messages = {}
         for ciphertext in ciphertexts:
             entropy = os.urandom(32).encode("hex")
             nonce = 0
             if self.range == 0:
                 nonce_hash = digest(entropy + str(0))
-                message_hash = hash160(ciphertext + nonce_hash)
+                message_hash = sha256(ciphertext + nonce_hash)
                 key = message_hash
             else:
-                low = long(self.pubkey_hex[2:42], 16) - self.range / 4
-                high = long(self.pubkey_hex[2:42], 16) + self.range / 4
+                low = long(self.pubkey_hex[2:66], 16) - self.range / 4
+                high = long(self.pubkey_hex[2:66], 16) + self.range / 4
                 while True:
                     nonce_hash = digest(entropy + str(nonce))
-                    message_hash = hash160(ciphertext + nonce_hash)
+                    message_hash = sha256(ciphertext + nonce_hash)
                     long_hash = long(message_hash, 16)
                     if low < long_hash < high:
                         key = message_hash
@@ -120,7 +122,7 @@ class MessageDecoder(object):
         messages = {}
         for k, v in self.messageDic.items():
             # Don't bother attempting to decrypt if the hash doesn't match
-            if hash160(v[1]) == k:
+            if binascii.unhexlify(sha256(v[1])) == k:
                 ciphertext = v[1][:len(v[1]) - 20]
                 try:
                     messages[k] = self.bob.decrypt(ciphertext)
